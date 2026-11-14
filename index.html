@@ -1410,4 +1410,51 @@
             if (query) {
                 const engines = [
                     { name: `Google で「${q}」を検索`, url: `https://www.google.com/search?q=${encodeURIComponent(q)}` },
-                    { name: `YouTube で「${q}」を検索`, url: `https://www.youtube.com/results?search_query=${encodeU
+                    { name: `YouTube で「${q}」を検索`, url: `https://www.youtube.com/results?search_query=${encodeURIComponent(q)}` }
+                ];
+                engines.forEach(eng => {
+                    const row = document.createElement('a');
+                    row.className = 'spot-cell';
+                    row.href = eng.url;
+                    row.target = '_blank';
+                    row.onclick = () => closeSpotlight();
+                    row.innerHTML = `<div class="spot-icon" style="background:var(--accent);color:#fff;">🔍</div><div style="font-weight:600;">${escapeXml(eng.name)}</div>`;
+                    box.appendChild(row);
+                });
+            }
+        }
+
+        document.getElementById('spotlightSearchInput').addEventListener('input', (e) => renderSpotlight(e.target.value));
+
+        // ショートカットキー
+        document.addEventListener('keydown', (e) => {
+            if ((e.metaKey || e.ctrlKey) && e.key.toLowerCase() === 'k') {
+                e.preventDefault();
+                openSpotlight();
+            } else if (e.key === 'Escape') {
+                closeSpotlight();
+                closeAppModal();
+                closeCustomizeModal();
+                closeAddChoice();
+            }
+        });
+
+        /* =========================================================
+           8. 時計更新
+        ========================================================= */
+        function updateClocks() {
+            const now = new Date();
+            const hh = String(now.getHours()).padStart(2, '0');
+            const mm = String(now.getMinutes()).padStart(2, '0');
+            const ss = String(now.getSeconds()).padStart(2, '0');
+            document.querySelectorAll('.js-live-time').forEach(el => el.textContent = `${hh}:${mm}:${ss}`);
+            document.querySelectorAll('.js-live-date').forEach(el => el.textContent = now.toLocaleDateString('ja-JP', { year: 'numeric', month: 'long', day: 'numeric', weekday: 'short' }));
+        }
+        setInterval(updateClocks, 1000);
+
+        // 起動
+        applyTheme();
+        renderAll();
+    </script>
+</body>
+</html>
