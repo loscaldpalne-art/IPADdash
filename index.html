@@ -2,20 +2,20 @@
 <html lang="ja">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, viewport-fit=cover">
     <title>iPadOS Home</title>
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="theme-color" content="#091326">
     <style>
         :root {
             --icon-size: 72px;
             --icon-radius: 22.5%;
-            --glass: rgba(255, 255, 255, 0.16);
-            --glass-strong: rgba(28, 32, 42, 0.72);
-            --glass-border: rgba(255, 255, 255, 0.22);
+            --grid-cols: 6;
             --accent: #0a84ff;
             --text: #ffffff;
             --text-sub: rgba(255, 255, 255, 0.72);
+            --icon-bg: #ffffff;
         }
 
         * {
@@ -36,99 +36,88 @@
         html, body {
             width: 100%;
             height: 100%;
+            margin: 0;
             overflow: hidden;
             color: var(--text);
-            background-color: #0b1220;
+            background-color: #091326;
             touch-action: manipulation;
         }
 
-        /* 壁紙レイヤー */
+        /* 壁紙レイヤー（iPadOS PWAの下部黒帯を防ぐため上下左右を拡張） */
         .wallpaper {
             position: fixed;
-            inset: 0;
+            top: -80px;
+            left: -40px;
+            right: -40px;
+            bottom: -80px;
             z-index: 0;
             background-size: cover;
             background-position: center;
-            transition: background 0.4s ease, filter 0.3s ease;
+            transition: background 0.35s ease;
         }
 
         .wallpaper.wp-1 {
             background:
-                radial-gradient(circle at 18% 20%, rgba(56, 189, 248, 0.55), transparent 48%),
+                radial-gradient(circle at 18% 20%, rgba(56, 189, 248, 0.58), transparent 48%),
                 radial-gradient(circle at 82% 25%, rgba(99, 102, 241, 0.55), transparent 50%),
-                radial-gradient(circle at 70% 80%, rgba(16, 185, 129, 0.42), transparent 52%),
-                radial-gradient(circle at 20% 85%, rgba(30, 64, 175, 0.7), transparent 55%),
+                radial-gradient(circle at 70% 80%, rgba(16, 185, 129, 0.44), transparent 52%),
+                radial-gradient(circle at 20% 85%, rgba(30, 64, 175, 0.72), transparent 55%),
                 linear-gradient(135deg, #091326 0%, #0f172a 100%);
         }
         .wallpaper.wp-2 {
             background:
-                radial-gradient(circle at 25% 25%, rgba(244, 63, 94, 0.48), transparent 48%),
-                radial-gradient(circle at 78% 20%, rgba(245, 158, 11, 0.42), transparent 48%),
-                radial-gradient(circle at 55% 75%, rgba(139, 92, 246, 0.52), transparent 55%),
+                radial-gradient(circle at 25% 25%, rgba(244, 63, 94, 0.5), transparent 48%),
+                radial-gradient(circle at 78% 20%, rgba(245, 158, 11, 0.44), transparent 48%),
+                radial-gradient(circle at 55% 75%, rgba(139, 92, 246, 0.54), transparent 55%),
                 linear-gradient(150deg, #1b1026 0%, #0d111d 100%);
         }
         .wallpaper.wp-3 {
             background:
-                radial-gradient(circle at 30% 18%, rgba(34, 211, 238, 0.35), transparent 45%),
-                radial-gradient(circle at 80% 70%, rgba(59, 130, 246, 0.35), transparent 50%),
+                radial-gradient(circle at 30% 18%, rgba(34, 211, 238, 0.38), transparent 45%),
+                radial-gradient(circle at 80% 70%, rgba(59, 130, 246, 0.38), transparent 50%),
                 linear-gradient(160deg, #07090f 0%, #111827 55%, #090d16 100%);
         }
         .wallpaper.wp-4 {
             background:
-                radial-gradient(circle at 20% 30%, rgba(52, 211, 153, 0.48), transparent 48%),
-                radial-gradient(circle at 80% 30%, rgba(14, 165, 233, 0.48), transparent 50%),
-                radial-gradient(circle at 50% 85%, rgba(6, 95, 70, 0.6), transparent 55%),
+                radial-gradient(circle at 20% 30%, rgba(52, 211, 153, 0.5), transparent 48%),
+                radial-gradient(circle at 80% 30%, rgba(14, 165, 233, 0.5), transparent 50%),
+                radial-gradient(circle at 50% 85%, rgba(6, 95, 70, 0.62), transparent 55%),
                 linear-gradient(145deg, #06211c 0%, #091522 100%);
         }
         .wallpaper.wp-5 {
             background:
-                radial-gradient(circle at 20% 20%, rgba(255, 255, 255, 0.14), transparent 45%),
-                radial-gradient(circle at 80% 80%, rgba(148, 163, 184, 0.16), transparent 50%),
-                linear-gradient(145deg, #1c1f26 0%, #0c0e12 100%);
+                radial-gradient(circle at 22% 22%, rgba(255, 255, 255, 0.2), transparent 45%),
+                radial-gradient(circle at 78% 78%, rgba(148, 163, 184, 0.2), transparent 50%),
+                linear-gradient(145deg, #1e232e 0%, #0b0e14 100%);
+        }
+        .wallpaper.wp-6 {
+            background:
+                radial-gradient(circle at 30% 25%, rgba(251, 146, 60, 0.55), transparent 48%),
+                radial-gradient(circle at 75% 30%, rgba(56, 189, 248, 0.45), transparent 50%),
+                radial-gradient(circle at 50% 82%, rgba(15, 23, 42, 0.8), transparent 55%),
+                linear-gradient(145deg, #1e293b 0%, #090d16 100%);
         }
 
         /* 全体レイアウト */
         .os-shell {
-            position: relative;
+            position: fixed;
+            inset: 0;
             z-index: 1;
-            width: 100%;
-            height: 100%;
-            height: 100dvh;
             display: flex;
             flex-direction: column;
-            padding-top: env(safe-area-inset-top, 0px);
-            padding-bottom: calc(14px + env(safe-area-inset-bottom, 0px));
+            padding-top: max(28px, calc(env(safe-area-inset-top, 20px) + 6px));
+            padding-bottom: max(18px, calc(env(safe-area-inset-bottom, 0px) + 12px));
         }
 
-        /* ステータスバー */
-        .status-bar {
-            height: 44px;
+        /* 上部コントロール（本体ステータスバーと重ならない右寄せ） */
+        .top-controls {
+            height: 36px;
             padding: 0 22px;
             display: flex;
             align-items: center;
-            justify-content: space-between;
-            font-size: 0.85rem;
-            font-weight: 600;
-            letter-spacing: -0.01em;
-            text-shadow: 0 1px 4px rgba(0, 0, 0, 0.45);
-            flex-shrink: 0;
-        }
-
-        .status-left {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-        }
-
-        .status-date {
-            color: var(--text-sub);
-            font-weight: 500;
-        }
-
-        .status-actions {
-            display: flex;
-            align-items: center;
+            justify-content: flex-end;
             gap: 8px;
+            flex-shrink: 0;
         }
 
         .pill-btn {
@@ -136,9 +125,9 @@
             align-items: center;
             gap: 5px;
             background: rgba(255, 255, 255, 0.14);
-            backdrop-filter: blur(16px);
-            -webkit-backdrop-filter: blur(16px);
-            border: 1px solid rgba(255, 255, 255, 0.18);
+            backdrop-filter: blur(18px);
+            -webkit-backdrop-filter: blur(18px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
             color: #fff;
             border-radius: 999px;
             padding: 5px 12px;
@@ -154,10 +143,7 @@
             border-color: var(--accent);
         }
 
-        .pill-btn svg {
-            width: 14px;
-            height: 14px;
-        }
+        .pill-btn svg { width: 14px; height: 14px; }
 
         /* スワイプ可能なページコンテナ */
         .pages-viewport {
@@ -187,12 +173,12 @@
 
         .page::-webkit-scrollbar { display: none; }
 
-        /* iPad風アイコン配列グリッド */
+        /* アイコン配列グリッド */
         .app-grid {
             max-width: 980px;
             margin: 0 auto;
             display: grid;
-            grid-template-columns: repeat(6, 1fr);
+            grid-template-columns: repeat(var(--grid-cols), 1fr);
             gap: 24px 16px;
             align-content: start;
         }
@@ -214,10 +200,10 @@
             width: var(--icon-size);
             height: var(--icon-size);
             border-radius: var(--icon-radius);
-            background: #ffffff;
+            background: var(--icon-bg);
             box-shadow:
-                0 10px 24px rgba(0, 0, 0, 0.34),
-                0 2px 6px rgba(0, 0, 0, 0.2),
+                0 10px 24px rgba(0, 0, 0, 0.32),
+                0 2px 6px rgba(0, 0, 0, 0.18),
                 inset 0 1px 0 rgba(255, 255, 255, 0.35);
             display: flex;
             align-items: center;
@@ -238,8 +224,8 @@
         }
 
         .app-icon-wrap img.favicon-img {
-            width: 72%;
-            height: 72%;
+            width: 70%;
+            height: 70%;
             object-fit: contain;
             border-radius: 14%;
         }
@@ -253,22 +239,73 @@
             overflow: hidden;
             text-overflow: ellipsis;
             white-space: nowrap;
-            text-shadow: 0 1px 5px rgba(0, 0, 0, 0.75);
+            text-shadow: 0 1px 5px rgba(0, 0, 0, 0.78);
         }
 
-        /* 編集モード（iPad風の揺れと削除バッジ） */
+        .hide-labels .app-label { display: none; }
+
+        /* ====== アイコンテーマ ====== */
+        .theme-dark {
+            --icon-bg: #151821;
+        }
+        .theme-dark .app-icon-wrap {
+            background: #151821;
+            border: 1px solid rgba(255, 255, 255, 0.12);
+            box-shadow:
+                0 10px 24px rgba(0, 0, 0, 0.48),
+                inset 0 1px 0 rgba(255, 255, 255, 0.12);
+        }
+        .theme-dark .app-icon-wrap .svg-bg {
+            fill: #151821 !important;
+        }
+        .theme-dark .app-icon-wrap img.favicon-img {
+            filter: drop-shadow(0 0 1.5px rgba(255, 255, 255, 0.65));
+        }
+
+        /* iOS 26風 クリアガラス & カラーガラス */
+        .theme-glass .app-icon-wrap,
+        .theme-glass-color .app-icon-wrap {
+            background: linear-gradient(145deg, rgba(255, 255, 255, 0.25) 0%, rgba(255, 255, 255, 0.06) 100%);
+            backdrop-filter: blur(22px) saturate(180%);
+            -webkit-backdrop-filter: blur(22px) saturate(180%);
+            border: 1px solid rgba(255, 255, 255, 0.42);
+            box-shadow:
+                inset 0 1.5px 2px rgba(255, 255, 255, 0.58),
+                inset 0 -2px 4px rgba(0, 0, 0, 0.18),
+                0 12px 28px rgba(0, 0, 0, 0.28);
+        }
+        .theme-glass .app-icon-wrap::after,
+        .theme-glass-color .app-icon-wrap::after {
+            content: "";
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(130deg, rgba(255, 255, 255, 0.32) 0%, rgba(255, 255, 255, 0) 42%, rgba(255, 255, 255, 0.08) 100%);
+            pointer-events: none;
+        }
+        .theme-glass .app-icon-wrap .svg-bg,
+        .theme-glass-color .app-icon-wrap .svg-bg {
+            fill: transparent !important;
+        }
+        .theme-glass .app-icon-wrap svg {
+            filter: grayscale(1) brightness(1.38) contrast(1.12) opacity(0.92);
+        }
+        .theme-glass .app-icon-wrap img.favicon-img {
+            filter: grayscale(1) brightness(1.35) contrast(1.15) opacity(0.9);
+        }
+        .theme-glass-color .app-icon-wrap svg,
+        .theme-glass-color .app-icon-wrap img.favicon-img {
+            filter: drop-shadow(0 2px 6px rgba(0, 0, 0, 0.22));
+        }
+
+        /* 編集モード */
         @keyframes jiggle {
             0% { transform: rotate(-1.3deg); }
             50% { transform: rotate(1.3deg); }
             100% { transform: rotate(-1.3deg); }
         }
 
-        .editing .app-slot {
-            animation: jiggle 0.28s infinite ease-in-out;
-        }
-        .editing .app-slot:nth-child(2n) {
-            animation-delay: -0.14s;
-        }
+        .editing .app-slot { animation: jiggle 0.28s infinite ease-in-out; }
+        .editing .app-slot:nth-child(2n) { animation-delay: -0.14s; }
 
         .badge-delete {
             display: none;
@@ -278,7 +315,7 @@
             width: 22px;
             height: 22px;
             border-radius: 50%;
-            background: rgba(215, 220, 230, 0.92);
+            background: rgba(225, 230, 240, 0.94);
             color: #111827;
             border: none;
             box-shadow: 0 2px 6px rgba(0, 0, 0, 0.35);
@@ -288,173 +325,157 @@
             z-index: 5;
         }
 
-        .dock .badge-delete {
-            left: -6px;
-        }
+        .dock .badge-delete { left: -6px; }
+        .editing .badge-delete { display: flex; }
+        .badge-delete svg { width: 12px; height: 12px; }
 
-        .editing .badge-delete {
-            display: flex;
-        }
-
-        .badge-delete svg {
-            width: 12px;
-            height: 12px;
-        }
-
-        /* 編集モード中のページ管理バー */
         .edit-toolbar {
             display: none;
             justify-content: center;
             gap: 8px;
-            padding: 4px 16px 8px;
+            padding: 6px 16px 6px;
             flex-shrink: 0;
+            flex-wrap: wrap;
         }
+        .editing .edit-toolbar { display: flex; }
 
-        .editing .edit-toolbar {
+        /* ====== ウィジェットページ ====== */
+        .widgets-header {
+            max-width: 980px;
+            margin: 0 auto 14px;
             display: flex;
+            justify-content: space-between;
+            align-items: center;
         }
 
-        /* ウィジェットページ（iPadOSスタイル） */
+        .widgets-header h2 {
+            font-size: 0.95rem;
+            font-weight: 700;
+            color: var(--text-sub);
+            letter-spacing: 0.04em;
+        }
+
         .widgets-grid {
             max-width: 980px;
             margin: 0 auto;
             display: grid;
             grid-template-columns: repeat(2, 1fr);
-            gap: 18px;
-            padding-bottom: 20px;
+            gap: 16px;
+            padding-bottom: 24px;
         }
 
         .widget {
-            background: rgba(22, 28, 40, 0.56);
-            backdrop-filter: blur(26px) saturate(160%);
-            -webkit-backdrop-filter: blur(26px) saturate(160%);
-            border: 1px solid rgba(255, 255, 255, 0.16);
+            background: rgba(22, 28, 42, 0.54);
+            backdrop-filter: blur(26px) saturate(165%);
+            -webkit-backdrop-filter: blur(26px) saturate(165%);
+            border: 1px solid rgba(255, 255, 255, 0.18);
             border-radius: 26px;
-            padding: 20px;
-            box-shadow: 0 12px 32px rgba(0, 0, 0, 0.25);
+            padding: 18px 20px;
+            box-shadow:
+                inset 0 1px 0 rgba(255, 255, 255, 0.22),
+                0 12px 32px rgba(0, 0, 0, 0.25);
             display: flex;
             flex-direction: column;
+            min-height: 165px;
         }
 
+        .widget.wide { grid-column: span 2; }
+
         .widget-title {
-            font-size: 0.78rem;
+            font-size: 0.76rem;
             font-weight: 700;
-            text-transform: uppercase;
-            letter-spacing: 0.06em;
+            letter-spacing: 0.05em;
             color: var(--text-sub);
-            margin-bottom: 12px;
+            margin-bottom: 10px;
             display: flex;
             justify-content: space-between;
             align-items: center;
+            gap: 8px;
         }
 
+        .widget-edit-bar { display: none; gap: 4px; align-items: center; }
+        .editing .widget-edit-bar { display: flex; }
+
+        .w-mini-btn {
+            background: rgba(255, 255, 255, 0.14);
+            color: #fff;
+            border: none;
+            border-radius: 6px;
+            padding: 3px 7px;
+            font-size: 0.72rem;
+            font-weight: 600;
+            cursor: pointer;
+        }
+        .w-mini-btn.danger { color: #fca5a5; }
+
         .widget-clock-big {
-            font-size: 3.4rem;
+            font-size: 3.1rem;
             font-weight: 700;
             letter-spacing: -0.04em;
             line-height: 1;
             font-variant-numeric: tabular-nums;
         }
+        .widget-clock-sub { margin-top: 6px; font-size: 0.9rem; color: var(--text-sub); }
 
-        .widget-clock-sub {
-            margin-top: 6px;
-            font-size: 0.95rem;
-            color: var(--text-sub);
+        .analog-wrap { display: flex; align-items: center; gap: 20px; flex: 1; }
+        .analog-face {
+            width: 112px;
+            height: 112px;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.1);
+            border: 2px solid rgba(255, 255, 255, 0.3);
+            position: relative;
+            flex-shrink: 0;
         }
+        .analog-face svg { width: 100%; height: 100%; }
 
-        .timer-row {
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            gap: 12px;
-        }
-
-        .timer-num {
-            font-size: 2.5rem;
-            font-weight: 700;
-            font-variant-numeric: tabular-nums;
-        }
-
-        .timer-btns {
-            display: flex;
-            gap: 6px;
-            flex-wrap: wrap;
-            margin-top: 12px;
-        }
+        .timer-row { display: flex; align-items: center; justify-content: space-between; gap: 12px; }
+        .timer-num { font-size: 2.5rem; font-weight: 700; font-variant-numeric: tabular-nums; }
+        .timer-btns { display: flex; gap: 6px; flex-wrap: wrap; margin-top: 12px; }
 
         .w-btn {
-            background: rgba(255, 255, 255, 0.13);
+            background: rgba(255, 255, 255, 0.14);
             color: #fff;
-            border: 1px solid rgba(255, 255, 255, 0.14);
+            border: 1px solid rgba(255, 255, 255, 0.15);
             border-radius: 10px;
             padding: 7px 12px;
             font-size: 0.8rem;
             font-weight: 600;
             cursor: pointer;
         }
-
-        .w-btn.primary {
-            background: var(--accent);
-            border-color: var(--accent);
-        }
+        .w-btn.primary { background: var(--accent); border-color: var(--accent); }
 
         .w-textarea {
             width: 100%;
-            min-height: 145px;
+            min-height: 115px;
             flex: 1;
             background: rgba(0, 0, 0, 0.22);
             border: 1px solid rgba(255, 255, 255, 0.1);
             border-radius: 14px;
-            padding: 12px;
+            padding: 11px;
             color: #fff;
-            font-size: 0.92rem;
+            font-size: 0.9rem;
             line-height: 1.5;
             resize: none;
             outline: none;
         }
 
-        .todo-add-row {
-            display: flex;
-            gap: 8px;
-            margin-bottom: 10px;
-        }
-
+        .todo-add-row { display: flex; gap: 8px; margin-bottom: 8px; }
         .w-input {
             flex: 1;
             background: rgba(0, 0, 0, 0.25);
             border: 1px solid rgba(255, 255, 255, 0.14);
             border-radius: 10px;
-            padding: 8px 12px;
+            padding: 7px 11px;
             color: #fff;
-            font-size: 0.9rem;
-            outline: none;
-        }
-
-        .todo-scroll {
-            max-height: 140px;
-            overflow-y: auto;
-            display: flex;
-            flex-direction: column;
-            gap: 6px;
-        }
-
-        .todo-row {
-            display: flex;
-            align-items: center;
-            gap: 9px;
-            padding: 7px 10px;
-            background: rgba(255, 255, 255, 0.06);
-            border-radius: 10px;
             font-size: 0.88rem;
+            outline: none;
+            min-width: 0;
         }
-
-        .todo-row.done span {
-            text-decoration: line-through;
-            color: var(--text-sub);
-        }
-
+        .todo-scroll { max-height: 125px; overflow-y: auto; display: flex; flex-direction: column; gap: 6px; }
+        .todo-row { display: flex; align-items: center; gap: 9px; padding: 7px 10px; background: rgba(255, 255, 255, 0.07); border-radius: 10px; font-size: 0.86rem; }
+        .todo-row.done span { text-decoration: line-through; color: var(--text-sub); }
         .todo-row span { flex: 1; word-break: break-word; }
-
         .todo-check {
             width: 18px;
             height: 18px;
@@ -468,13 +489,47 @@
             color: #fff;
             flex-shrink: 0;
         }
+        .todo-row.done .todo-check { background: var(--accent); border-color: var(--accent); }
 
-        .todo-row.done .todo-check {
-            background: var(--accent);
-            border-color: var(--accent);
+        .cd-body { display: flex; align-items: baseline; justify-content: space-between; gap: 12px; margin: 6px 0 10px; }
+        .cd-days { font-size: 2.7rem; font-weight: 800; font-variant-numeric: tabular-nums; line-height: 1; }
+        .cd-unit { font-size: 0.95rem; color: var(--text-sub); margin-left: 4px; }
+        .cd-inputs { display: flex; gap: 6px; margin-top: auto; }
+
+        .schedule-list { display: grid; grid-template-columns: repeat(2, 1fr); gap: 6px; }
+        .sch-row { display: flex; align-items: center; gap: 6px; background: rgba(255, 255, 255, 0.06); border-radius: 10px; padding: 4px 8px; }
+        .sch-num { font-size: 0.75rem; font-weight: 700; color: var(--accent); width: 18px; text-align: center; }
+        .sch-input { flex: 1; background: transparent; border: none; color: #fff; font-size: 0.85rem; outline: none; min-width: 0; }
+
+        .calc-disp {
+            background: rgba(0, 0, 0, 0.28);
+            border-radius: 12px;
+            padding: 8px 12px;
+            text-align: right;
+            font-size: 1.5rem;
+            font-weight: 700;
+            font-variant-numeric: tabular-nums;
+            margin-bottom: 8px;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
         }
+        .calc-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 6px; }
+        .calc-btn {
+            background: rgba(255, 255, 255, 0.12);
+            color: #fff;
+            border: none;
+            border-radius: 10px;
+            padding: 8px 0;
+            font-size: 0.95rem;
+            font-weight: 600;
+            cursor: pointer;
+        }
+        .calc-btn.op { background: rgba(10, 132, 255, 0.45); }
+        .calc-btn.eq { background: var(--accent); }
+        .calc-btn:active { opacity: 0.7; }
 
-        /* 下部：ページドット・検索ピル・Dock */
+        /* 下部エリア */
         .bottom-area {
             flex-shrink: 0;
             display: flex;
@@ -484,22 +539,17 @@
             padding: 4px 16px 0;
         }
 
-        .page-dots-bar {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-        }
-
+        .page-dots-bar { display: flex; align-items: center; gap: 10px; }
         .page-dots {
             display: flex;
             align-items: center;
             gap: 8px;
-            background: rgba(255, 255, 255, 0.12);
+            background: rgba(255, 255, 255, 0.13);
             backdrop-filter: blur(12px);
             -webkit-backdrop-filter: blur(12px);
             padding: 6px 12px;
             border-radius: 999px;
-            border: 1px solid rgba(255, 255, 255, 0.12);
+            border: 1px solid rgba(255, 255, 255, 0.14);
         }
 
         .dot {
@@ -511,11 +561,7 @@
             transition: transform 0.2s, background 0.2s;
             border: none;
         }
-
-        .dot.active {
-            background: #ffffff;
-            transform: scale(1.25);
-        }
+        .dot.active { background: #ffffff; transform: scale(1.25); }
 
         .spotlight-trigger {
             display: inline-flex;
@@ -532,14 +578,8 @@
             font-weight: 500;
             cursor: pointer;
         }
+        .spotlight-trigger svg { width: 12px; height: 12px; opacity: 0.9; }
 
-        .spotlight-trigger svg {
-            width: 12px;
-            height: 12px;
-            opacity: 0.9;
-        }
-
-        /* iPadOS Dock */
         .dock {
             display: flex;
             align-items: center;
@@ -556,23 +596,12 @@
             overflow-x: auto;
             scrollbar-width: none;
         }
-
         .dock::-webkit-scrollbar { display: none; }
+        .dock .app-slot { gap: 0; }
+        .dock .app-icon-wrap { width: 64px; height: 64px; }
+        .dock .app-label { display: none; }
 
-        .dock .app-slot {
-            gap: 0;
-        }
-
-        .dock .app-icon-wrap {
-            width: 64px;
-            height: 64px;
-        }
-
-        .dock .app-label {
-            display: none;
-        }
-
-        /* モーダル共通 */
+        /* モーダル */
         .modal-backdrop {
             display: none;
             position: fixed;
@@ -585,13 +614,12 @@
             justify-content: center;
             padding: 20px;
         }
-
         .modal-backdrop.open { display: flex; }
 
         .sheet {
             width: 100%;
-            max-width: 440px;
-            background: rgba(28, 32, 42, 0.92);
+            max-width: 470px;
+            background: rgba(26, 30, 40, 0.93);
             border: 1px solid rgba(255, 255, 255, 0.16);
             border-radius: 24px;
             padding: 22px;
@@ -599,27 +627,13 @@
             display: flex;
             flex-direction: column;
             gap: 14px;
-            max-height: 90vh;
+            max-height: 88vh;
             overflow-y: auto;
         }
+        .sheet h3 { font-size: 1.08rem; font-weight: 700; }
 
-        .sheet h3 {
-            font-size: 1.08rem;
-            font-weight: 700;
-        }
-
-        .field {
-            display: flex;
-            flex-direction: column;
-            gap: 5px;
-        }
-
-        .field label {
-            font-size: 0.78rem;
-            color: var(--text-sub);
-            font-weight: 600;
-        }
-
+        .field { display: flex; flex-direction: column; gap: 5px; }
+        .field label { font-size: 0.78rem; color: var(--text-sub); font-weight: 600; }
         .field input, .field select {
             background: rgba(255, 255, 255, 0.08);
             border: 1px solid rgba(255, 255, 255, 0.15);
@@ -629,42 +643,49 @@
             font-size: 0.92rem;
             outline: none;
         }
-
         .field select option { background: #1c202a; color: #fff; }
+        .row-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
 
-        .row-2 {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 10px;
-        }
+        .check-line { display: flex; align-items: center; gap: 8px; font-size: 0.86rem; cursor: pointer; }
+        .sheet-actions { display: flex; justify-content: flex-end; gap: 8px; margin-top: 4px; }
+        .move-bar { display: flex; gap: 6px; flex-wrap: wrap; }
 
-        .check-line {
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            font-size: 0.86rem;
+        .theme-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 8px; }
+        .theme-opt {
+            background: rgba(255, 255, 255, 0.07);
+            border: 1.5px solid rgba(255, 255, 255, 0.14);
+            border-radius: 14px;
+            padding: 10px 12px;
+            color: #fff;
+            text-align: left;
             cursor: pointer;
-        }
-
-        .sheet-actions {
             display: flex;
-            justify-content: flex-end;
-            gap: 8px;
-            margin-top: 4px;
+            flex-direction: column;
+            gap: 2px;
         }
+        .theme-opt strong { font-size: 0.86rem; }
+        .theme-opt span { font-size: 0.72rem; color: var(--text-sub); }
+        .theme-opt.active { border-color: var(--accent); background: rgba(10, 132, 255, 0.2); }
 
-        .move-bar {
+        .widget-picker-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 8px; }
+        .wpick-btn {
+            background: rgba(255, 255, 255, 0.08);
+            border: 1px solid rgba(255, 255, 255, 0.14);
+            border-radius: 14px;
+            padding: 12px;
+            color: #fff;
+            text-align: left;
+            cursor: pointer;
             display: flex;
-            gap: 6px;
-            flex-wrap: wrap;
+            flex-direction: column;
+            gap: 3px;
         }
+        .wpick-btn:active { transform: scale(0.97); }
+        .wpick-btn strong { font-size: 0.88rem; }
+        .wpick-btn span { font-size: 0.73rem; color: var(--text-sub); }
 
-        /* Spotlight 検索モーダル */
-        .spotlight-box {
-            align-items: flex-start;
-            padding-top: 10vh;
-        }
-
+        /* Spotlight */
+        .spotlight-box { align-items: flex-start; padding-top: 10vh; }
         .spotlight-panel {
             width: 100%;
             max-width: 560px;
@@ -676,7 +697,6 @@
             overflow: hidden;
             box-shadow: 0 24px 60px rgba(0, 0, 0, 0.55);
         }
-
         .spotlight-input-row {
             display: flex;
             align-items: center;
@@ -684,14 +704,7 @@
             padding: 14px 18px;
             border-bottom: 1px solid rgba(255, 255, 255, 0.1);
         }
-
-        .spotlight-input-row svg {
-            width: 20px;
-            height: 20px;
-            color: var(--text-sub);
-            flex-shrink: 0;
-        }
-
+        .spotlight-input-row svg { width: 20px; height: 20px; color: var(--text-sub); flex-shrink: 0; }
         .spotlight-input {
             flex: 1;
             background: transparent;
@@ -700,7 +713,6 @@
             font-size: 1.08rem;
             outline: none;
         }
-
         .spotlight-results {
             max-height: 50vh;
             overflow-y: auto;
@@ -709,7 +721,6 @@
             flex-direction: column;
             gap: 4px;
         }
-
         .spot-item {
             display: flex;
             align-items: center;
@@ -719,58 +730,37 @@
             text-decoration: none;
             color: #fff;
             cursor: pointer;
-            transition: background 0.12s;
         }
-
-        .spot-item:hover, .spot-item:active {
-            background: rgba(255, 255, 255, 0.12);
-        }
-
+        .spot-item:hover, .spot-item:active { background: rgba(255, 255, 255, 0.12); }
         .spot-mini-icon {
             width: 34px;
             height: 34px;
             border-radius: 9px;
-            background: #fff;
+            background: var(--icon-bg);
             display: flex;
             align-items: center;
             justify-content: center;
             overflow: hidden;
             flex-shrink: 0;
         }
-
         .spot-mini-icon svg { width: 100%; height: 100%; }
         .spot-mini-icon img { width: 72%; height: 72%; object-fit: contain; }
-
-        .spot-meta {
-            display: flex;
-            flex-direction: column;
-        }
-
+        .spot-meta { display: flex; flex-direction: column; }
         .spot-name { font-size: 0.94rem; font-weight: 600; }
         .spot-sub { font-size: 0.75rem; color: var(--text-sub); }
 
-        /* 壁紙ピッカー */
-        .wp-swatches {
-            display: grid;
-            grid-template-columns: repeat(5, 1fr);
-            gap: 10px;
-        }
-
+        .wp-swatches { display: grid; grid-template-columns: repeat(6, 1fr); gap: 8px; }
         .wp-swatch {
-            height: 54px;
+            position: static;
+            height: 46px;
             border-radius: 12px;
             border: 2px solid rgba(255, 255, 255, 0.25);
             cursor: pointer;
         }
+        .wp-swatch.active { border-color: var(--accent); box-shadow: 0 0 0 2px var(--accent); }
 
-        .wp-swatch.active {
-            border-color: var(--accent);
-            box-shadow: 0 0 0 2px var(--accent);
-        }
-
-        /* レスポンシブ */
         @media (max-width: 900px) {
-            .app-grid { grid-template-columns: repeat(5, 1fr); }
+            .app-grid { grid-template-columns: repeat(min(var(--grid-cols), 5), 1fr); }
         }
 
         @media (max-width: 680px) {
@@ -778,6 +768,7 @@
             .page { padding: 12px 18px 8px; }
             .app-grid { grid-template-columns: repeat(4, 1fr); gap: 18px 10px; }
             .widgets-grid { grid-template-columns: 1fr; }
+            .widget.wide { grid-column: span 1; }
             .dock { gap: 12px; padding: 9px 14px; border-radius: 26px; }
             .dock .app-icon-wrap { width: 54px; height: 54px; }
         }
@@ -788,39 +779,30 @@
     <div class="wallpaper wp-1" id="wallpaper"></div>
 
     <div class="os-shell" id="osShell">
-        <!-- 上部ステータスバー -->
-        <header class="status-bar">
-            <div class="status-left">
-                <span id="statusTime">00:00</span>
-                <span class="status-date" id="statusDate">---</span>
-            </div>
-            <div class="status-actions">
-                <button class="pill-btn" onclick="openWallpaperModal()" title="壁紙変更">
-                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="3"/><circle cx="8.5" cy="8.5" r="1.5"/><path d="M21 15l-5-5L5 21"/></svg>
-                    <span>壁紙</span>
-                </button>
-                <button class="pill-btn" onclick="openAddModal()" title="アプリを追加">
-                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M12 5v14M5 12h14"/></svg>
-                    <span>追加</span>
-                </button>
-                <button class="pill-btn" id="editToggleBtn" onclick="toggleEditMode()">
-                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20h9"/><path d="M16.5 3.5a2.12 2.12 0 0 1 3 3L7 19l-4 1 1-4Z"/></svg>
-                    <span id="editBtnText">編集</span>
-                </button>
-            </div>
+        <header class="top-controls">
+            <button class="pill-btn" onclick="openCustomizeModal()">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9c.26.604.852.997 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
+                <span>カスタマイズ</span>
+            </button>
+            <button class="pill-btn" onclick="openAddModal()">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M12 5v14M5 12h14"/></svg>
+                <span>追加</span>
+            </button>
+            <button class="pill-btn" id="editToggleBtn" onclick="toggleEditMode()">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20h9"/><path d="M16.5 3.5a2.12 2.12 0 0 1 3 3L7 19l-4 1 1-4Z"/></svg>
+                <span id="editBtnText">編集</span>
+            </button>
         </header>
 
-        <!-- 編集モード中のページ管理 -->
         <div class="edit-toolbar">
-            <button class="pill-btn" onclick="addPage()">＋ ページを追加</button>
-            <button class="pill-btn" id="removePageBtn" onclick="removeCurrentPage()">この空ページを削除</button>
-            <button class="pill-btn" onclick="resetDefaults()">初期設定に戻す</button>
+            <button class="pill-btn" onclick="addPage()">＋ ページ追加</button>
+            <button class="pill-btn" onclick="openWidgetPickerModal()">＋ ウィジェット追加</button>
+            <button class="pill-btn" id="removePageBtn" onclick="removeCurrentPage()">空ページ削除</button>
+            <button class="pill-btn" onclick="resetDefaults()">初期化</button>
         </div>
 
-        <!-- スワイプ可能なホーム画面ページ -->
         <main class="pages-viewport" id="pagesViewport"></main>
 
-        <!-- ページドット・検索・Dock -->
         <footer class="bottom-area">
             <div class="page-dots-bar">
                 <div class="page-dots" id="pageDots"></div>
@@ -842,7 +824,7 @@
                 <input type="text" id="fName" placeholder="例：Google ドライブ">
             </div>
             <div class="field">
-                <label>URL（アプリを起動する場合は https://... 推奨）</label>
+                <label>URL（アプリを開く場合は https://... 推奨）</label>
                 <input type="text" id="fUrl" placeholder="https://drive.google.com/">
             </div>
             <div class="row-2">
@@ -892,30 +874,118 @@
         </div>
     </div>
 
-    <!-- 壁紙モーダル -->
-    <div class="modal-backdrop" id="wpModal" onclick="if(event.target===this) closeWallpaperModal()">
+    <!-- カスタマイズモーダル -->
+    <div class="modal-backdrop" id="customModal" onclick="if(event.target===this) closeCustomizeModal()">
         <div class="sheet">
-            <h3>壁紙を変更</h3>
-            <div class="wp-swatches" id="wpSwatches">
-                <div class="wp-swatch wallpaper wp-1" data-wp="wp-1" onclick="setWallpaperPreset('wp-1')"></div>
-                <div class="wp-swatch wallpaper wp-2" data-wp="wp-2" onclick="setWallpaperPreset('wp-2')"></div>
-                <div class="wp-swatch wallpaper wp-3" data-wp="wp-3" onclick="setWallpaperPreset('wp-3')"></div>
-                <div class="wp-swatch wallpaper wp-4" data-wp="wp-4" onclick="setWallpaperPreset('wp-4')"></div>
-                <div class="wp-swatch wallpaper wp-5" data-wp="wp-5" onclick="setWallpaperPreset('wp-5')"></div>
+            <h3>ホーム画面をカスタマイズ</h3>
+            <div class="field">
+                <label>アイコンスタイル</label>
+                <div class="theme-grid" id="themeGrid">
+                    <button type="button" class="theme-opt" data-theme="standard" onclick="setIconTheme('standard')">
+                        <strong>標準（ライト）</strong>
+                        <span>オリジナルの明るいデザイン</span>
+                    </button>
+                    <button type="button" class="theme-opt" data-theme="dark" onclick="setIconTheme('dark')">
+                        <strong>ダーク（黒統一）</strong>
+                        <span>背景を黒に統一して引き締め</span>
+                    </button>
+                    <button type="button" class="theme-opt" data-theme="glass" onclick="setIconTheme('glass')">
+                        <strong>クリアガラス (iOS 26風)</strong>
+                        <span>背景が透けるモノクロ液体ガラス</span>
+                    </button>
+                    <button type="button" class="theme-opt" data-theme="glass-color" onclick="setIconTheme('glass-color')">
+                        <strong>カラーガラス</strong>
+                        <span>透けるガラス＋カラーロゴ</span>
+                    </button>
+                </div>
+            </div>
+            <div class="row-2">
+                <div class="field">
+                    <label>アイコンの列数（横）</label>
+                    <select id="fGridCols" onchange="setGridCols(this.value)">
+                        <option value="5">5列（ゆったり）</option>
+                        <option value="6">6列（標準iPad）</option>
+                        <option value="7">7列（高密度）</option>
+                    </select>
+                </div>
+                <div class="field">
+                    <label>アイコンの大きさ</label>
+                    <select id="fIconSize" onchange="setIconSize(this.value)">
+                        <option value="64">標準 (64px)</option>
+                        <option value="72">大きめ (72px)</option>
+                        <option value="80">特大 (80px)</option>
+                    </select>
+                </div>
+            </div>
+            <label class="check-line">
+                <input type="checkbox" id="fHideLabels" onchange="setHideLabels(this.checked)">
+                <span>アイコン下のアプリ名を非表示にする</span>
+            </label>
+            <div class="field">
+                <label>壁紙プリセット</label>
+                <div class="wp-swatches" id="wpSwatches">
+                    <div class="wp-swatch wallpaper wp-1" data-wp="wp-1" onclick="setWallpaperPreset('wp-1')"></div>
+                    <div class="wp-swatch wallpaper wp-2" data-wp="wp-2" onclick="setWallpaperPreset('wp-2')"></div>
+                    <div class="wp-swatch wallpaper wp-3" data-wp="wp-3" onclick="setWallpaperPreset('wp-3')"></div>
+                    <div class="wp-swatch wallpaper wp-4" data-wp="wp-4" onclick="setWallpaperPreset('wp-4')"></div>
+                    <div class="wp-swatch wallpaper wp-5" data-wp="wp-5" onclick="setWallpaperPreset('wp-5')"></div>
+                    <div class="wp-swatch wallpaper wp-6" data-wp="wp-6" onclick="setWallpaperPreset('wp-6')"></div>
+                </div>
             </div>
             <div class="field">
-                <label>カスタム画像のURL</label>
+                <label>カスタム壁紙（URL または 写真を選択）</label>
                 <div style="display:flex; gap:8px;">
                     <input type="text" id="wpCustomUrl" style="flex:1;" placeholder="https://...">
                     <button type="button" class="w-btn primary" onclick="setWallpaperUrl()">適用</button>
                 </div>
-            </div>
-            <div class="field">
-                <label>iPad内の写真から選ぶ</label>
-                <input type="file" id="wpFileInput" accept="image/*" onchange="handleWallpaperFile(event)">
+                <input type="file" id="wpFileInput" accept="image/*" style="margin-top:4px;" onchange="handleWallpaperFile(event)">
             </div>
             <div class="sheet-actions">
-                <button type="button" class="w-btn primary" onclick="closeWallpaperModal()">閉じる</button>
+                <button type="button" class="w-btn primary" onclick="closeCustomizeModal()">完了</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- ウィジェット追加モーダル -->
+    <div class="modal-backdrop" id="widgetPickerModal" onclick="if(event.target===this) closeWidgetPickerModal()">
+        <div class="sheet">
+            <h3>ウィジェットを追加</h3>
+            <div class="widget-picker-grid">
+                <button type="button" class="wpick-btn" onclick="addWidget('analog')">
+                    <strong>アナログ時計</strong>
+                    <span>動く針の文字盤＋日付</span>
+                </button>
+                <button type="button" class="wpick-btn" onclick="addWidget('clock')">
+                    <strong>デジタル時計</strong>
+                    <span>秒まで見える大きい時計</span>
+                </button>
+                <button type="button" class="wpick-btn" onclick="addWidget('timer')">
+                    <strong>集中タイマー</strong>
+                    <span>裏に回っても止まらない</span>
+                </button>
+                <button type="button" class="wpick-btn" onclick="addWidget('memo')">
+                    <strong>メモパッド</strong>
+                    <span>自動保存メモ（複数可）</span>
+                </button>
+                <button type="button" class="wpick-btn" onclick="addWidget('todo')">
+                    <strong>ToDoリスト</strong>
+                    <span>チェック式タスク管理</span>
+                </button>
+                <button type="button" class="wpick-btn" onclick="addWidget('countdown')">
+                    <strong>カウントダウン</strong>
+                    <span>テストや予定までの日数</span>
+                </button>
+                <button type="button" class="wpick-btn" onclick="addWidget('schedule')">
+                    <strong>今日の時間割</strong>
+                    <span>1限〜6限を自由に記入</span>
+                </button>
+                <button type="button" class="wpick-btn" onclick="addWidget('calc')">
+                    <strong>ミニ電卓</strong>
+                    <span>サッと使えるシンプル電卓</span>
+                </button>
+            </div>
+            <div class="sheet-actions">
+                <button type="button" class="w-btn" onclick="closeWidgetPickerModal()">閉じる</button>
             </div>
         </div>
     </div>
@@ -933,33 +1003,37 @@
 
     <script>
         /* =========================================================
-           1. ブランド公式デザインのSVGアイコンライブラリ（絵文字ゼロ）
+           1. ブランド公式デザインSVGアイコン
         ========================================================= */
         const BRAND_SVGS = {
-            google: `<svg viewBox="0 0 100 100"><rect width="100" height="100" fill="#ffffff"/><path d="M77 51c0-2.1-.2-4.1-.5-6H50v11.5h15.2c-.7 3.5-2.7 6.5-5.7 8.5v7.1h9.2C74.1 67.1 77 59.7 77 51z" fill="#4285F4"/><path d="M50 78.5c7.6 0 14-2.5 18.7-6.8l-9.2-7.1c-2.5 1.7-5.8 2.7-9.5 2.7-7.3 0-13.5-4.9-15.7-11.6h-9.5v7.3C29.5 72.3 39 78.5 50 78.5z" fill="#34A853"/><path d="M34.3 55.7c-.6-1.7-.9-3.6-.9-5.7s.3-4 .9-5.7V37h-9.5c-2 3.9-3.1 8.3-3.1 13s1.1 9.1 3.1 13l9.5-7.3z" fill="#FBBC05"/><path d="M50 32.7c4.1 0 7.9 1.4 10.8 4.2l8.1-8.1C64 24.3 57.6 21.5 50 21.5c-11 0-20.5 6.2-25.2 15.5l9.5 7.3C36.5 37.6 42.7 32.7 50 32.7z" fill="#EA4335"/></svg>`,
+            google: `<svg viewBox="0 0 100 100"><rect class="svg-bg" width="100" height="100" fill="#ffffff"/><path d="M77 51c0-2.1-.2-4.1-.5-6H50v11.5h15.2c-.7 3.5-2.7 6.5-5.7 8.5v7.1h9.2C74.1 67.1 77 59.7 77 51z" fill="#4285F4"/><path d="M50 78.5c7.6 0 14-2.5 18.7-6.8l-9.2-7.1c-2.5 1.7-5.8 2.7-9.5 2.7-7.3 0-13.5-4.9-15.7-11.6h-9.5v7.3C29.5 72.3 39 78.5 50 78.5z" fill="#34A853"/><path d="M34.3 55.7c-.6-1.7-.9-3.6-.9-5.7s.3-4 .9-5.7V37h-9.5c-2 3.9-3.1 8.3-3.1 13s1.1 9.1 3.1 13l9.5-7.3z" fill="#FBBC05"/><path d="M50 32.7c4.1 0 7.9 1.4 10.8 4.2l8.1-8.1C64 24.3 57.6 21.5 50 21.5c-11 0-20.5 6.2-25.2 15.5l9.5 7.3C36.5 37.6 42.7 32.7 50 32.7z" fill="#EA4335"/></svg>`,
 
-            drive: `<svg viewBox="0 0 100 100"><rect width="100" height="100" fill="#ffffff"/><path d="M39.5 23h21l19 33H58.5z" fill="#FFBA00"/><path d="M20.5 56l19-33L50 41.2 31 74.2z" fill="#00AC47"/><path d="M31 74.2L41.5 56h38l-10.5 18.2z" fill="#0066DA"/><path d="M39.5 23l10.5 18.2L60.5 23z" fill="#00832D" opacity="0.25"/><path d="M69 74.2L79.5 56H58.5z" fill="#EA4335" opacity="0.85"/></svg>`,
+            drive: `<svg viewBox="0 0 100 100"><rect class="svg-bg" width="100" height="100" fill="#ffffff"/><path d="M39.5 23h21l19 33H58.5z" fill="#FFBA00"/><path d="M20.5 56l19-33L50 41.2 31 74.2z" fill="#00AC47"/><path d="M31 74.2L41.5 56h38l-10.5 18.2z" fill="#0066DA"/><path d="M39.5 23l10.5 18.2L60.5 23z" fill="#00832D" opacity="0.25"/><path d="M69 74.2L79.5 56H58.5z" fill="#EA4335" opacity="0.85"/></svg>`,
 
-            classroom: `<svg viewBox="0 0 100 100"><rect width="100" height="100" fill="#FBBC04"/><rect x="12" y="18" width="76" height="64" rx="8" fill="#1E8E3E"/><circle cx="50" cy="43" r="7.5" fill="#ffffff"/><path d="M35.5 65c0-7.5 6.5-12 14.5-12s14.5 4.5 14.5 12v3h-29v-3z" fill="#ffffff"/><circle cx="31" cy="48" r="5" fill="#A8DAB5"/><path d="M21 65c0-5 4.2-8.5 10-8.5 2.5 0 4.8.7 6.5 1.9-3.2 2-5 5-5 8.6v1H21v-3z" fill="#A8DAB5"/><circle cx="69" cy="48" r="5" fill="#A8DAB5"/><path d="M79 65c0-5-4.2-8.5-10-8.5-2.5 0-4.8.7-6.5 1.9 3.2 2 5 5 5 8.6v1H79v-3z" fill="#A8DAB5"/><rect x="58" y="75" width="16" height="4" rx="1.5" fill="#ffffff"/></svg>`,
+            classroom: `<svg viewBox="0 0 100 100"><rect class="svg-bg" width="100" height="100" fill="#FBBC04"/><rect x="12" y="18" width="76" height="64" rx="8" fill="#1E8E3E"/><circle cx="50" cy="43" r="7.5" fill="#ffffff"/><path d="M35.5 65c0-7.5 6.5-12 14.5-12s14.5 4.5 14.5 12v3h-29v-3z" fill="#ffffff"/><circle cx="31" cy="48" r="5" fill="#A8DAB5"/><path d="M21 65c0-5 4.2-8.5 10-8.5 2.5 0 4.8.7 6.5 1.9-3.2 2-5 5-5 8.6v1H21v-3z" fill="#A8DAB5"/><circle cx="69" cy="48" r="5" fill="#A8DAB5"/><path d="M79 65c0-5-4.2-8.5-10-8.5-2.5 0-4.8.7-6.5 1.9 3.2 2 5 5 5 8.6v1H79v-3z" fill="#A8DAB5"/><rect x="58" y="75" width="16" height="4" rx="1.5" fill="#ffffff"/></svg>`,
 
-            docs: `<svg viewBox="0 0 100 100"><rect width="100" height="100" fill="#ffffff"/><path d="M27 18h31l15 15v49a4 4 0 0 1-4 4H27a4 4 0 0 1-4-4V22a4 4 0 0 1 4-4z" fill="#4285F4"/><path d="M58 18v15h15z" fill="#A1C2FA"/><rect x="33" y="45" width="34" height="5" rx="2" fill="#ffffff"/><rect x="33" y="56" width="34" height="5" rx="2" fill="#ffffff"/><rect x="33" y="67" width="22" height="5" rx="2" fill="#ffffff"/></svg>`,
+            docs: `<svg viewBox="0 0 100 100"><rect class="svg-bg" width="100" height="100" fill="#ffffff"/><path d="M27 18h31l15 15v49a4 4 0 0 1-4 4H27a4 4 0 0 1-4-4V22a4 4 0 0 1 4-4z" fill="#4285F4"/><path d="M58 18v15h15z" fill="#A1C2FA"/><rect x="33" y="45" width="34" height="5" rx="2" fill="#ffffff"/><rect x="33" y="56" width="34" height="5" rx="2" fill="#ffffff"/><rect x="33" y="67" width="22" height="5" rx="2" fill="#ffffff"/></svg>`,
 
-            sheets: `<svg viewBox="0 0 100 100"><rect width="100" height="100" fill="#ffffff"/><path d="M27 18h31l15 15v49a4 4 0 0 1-4 4H27a4 4 0 0 1-4-4V22a4 4 0 0 1 4-4z" fill="#0F9D58"/><path d="M58 18v15h15z" fill="#87CEAC"/><rect x="33" y="44" width="34" height="27" rx="2" fill="none" stroke="#ffffff" stroke-width="4"/><line x1="33" y1="57" x2="67" y2="57" stroke="#ffffff" stroke-width="4"/><line x1="50" y1="44" x2="50" y2="71" stroke="#ffffff" stroke-width="4"/></svg>`,
+            sheets: `<svg viewBox="0 0 100 100"><rect class="svg-bg" width="100" height="100" fill="#ffffff"/><path d="M27 18h31l15 15v49a4 4 0 0 1-4 4H27a4 4 0 0 1-4-4V22a4 4 0 0 1 4-4z" fill="#0F9D58"/><path d="M58 18v15h15z" fill="#87CEAC"/><rect x="33" y="44" width="34" height="27" rx="2" fill="none" stroke="#ffffff" stroke-width="4"/><line x1="33" y1="57" x2="67" y2="57" stroke="#ffffff" stroke-width="4"/><line x1="50" y1="44" x2="50" y2="71" stroke="#ffffff" stroke-width="4"/></svg>`,
 
-            slides: `<svg viewBox="0 0 100 100"><rect width="100" height="100" fill="#ffffff"/><path d="M27 18h31l15 15v49a4 4 0 0 1-4 4H27a4 4 0 0 1-4-4V22a4 4 0 0 1 4-4z" fill="#F4B400"/><path d="M58 18v15h15z" fill="#FAD165"/><rect x="32" y="44" width="36" height="26" rx="2" fill="#ffffff"/><rect x="37" y="49" width="26" height="16" rx="1" fill="#F4B400"/></svg>`,
+            slides: `<svg viewBox="0 0 100 100"><rect class="svg-bg" width="100" height="100" fill="#ffffff"/><path d="M27 18h31l15 15v49a4 4 0 0 1-4 4H27a4 4 0 0 1-4-4V22a4 4 0 0 1 4-4z" fill="#F4B400"/><path d="M58 18v15h15z" fill="#FAD165"/><rect x="32" y="44" width="36" height="26" rx="2" fill="#ffffff"/><rect x="37" y="49" width="26" height="16" rx="1" fill="#F4B400"/></svg>`,
 
-            maps: `<svg viewBox="0 0 100 100"><rect width="100" height="100" fill="#ffffff"/><path d="M50 16c-14.4 0-26 11.6-26 26 0 18.6 26 42 26 42s26-23.4 26-42c0-14.4-11.6-26-26-26z" fill="#34A853"/><path d="M50 16c-14.4 0-26 11.6-26 26 0 5.9 2.6 12.1 6.7 18.1L50 38V16z" fill="#EA4335"/><path d="M50 16v22l19.3 22.1C73.4 54.1 76 47.9 76 42c0-14.4-11.6-26-26-26z" fill="#4285F4"/><path d="M30.7 60.1C37.1 69.5 50 84 50 84l19.3-23.9L50 38z" fill="#FBBC05"/><circle cx="50" cy="41" r="10.5" fill="#ffffff"/></svg>`,
+            maps: `<svg viewBox="0 0 100 100"><rect class="svg-bg" width="100" height="100" fill="#ffffff"/><path d="M50 16c-14.4 0-26 11.6-26 26 0 18.6 26 42 26 42s26-23.4 26-42c0-14.4-11.6-26-26-26z" fill="#34A853"/><path d="M50 16c-14.4 0-26 11.6-26 26 0 5.9 2.6 12.1 6.7 18.1L50 38V16z" fill="#EA4335"/><path d="M50 16v22l19.3 22.1C73.4 54.1 76 47.9 76 42c0-14.4-11.6-26-26-26z" fill="#4285F4"/><path d="M30.7 60.1C37.1 69.5 50 84 50 84l19.3-23.9L50 38z" fill="#FBBC05"/><circle cx="50" cy="41" r="10.5" fill="#ffffff"/></svg>`,
 
-            youtube: `<svg viewBox="0 0 100 100"><rect width="100" height="100" fill="#ffffff"/><rect x="14" y="25" width="72" height="50" rx="14" fill="#FF0000"/><polygon points="43,39 64,50 43,61" fill="#ffffff"/></svg>`,
+            youtube: `<svg viewBox="0 0 100 100"><rect class="svg-bg" width="100" height="100" fill="#ffffff"/><rect x="14" y="25" width="72" height="50" rx="14" fill="#FF0000"/><polygon points="43,39 64,50 43,61" fill="#ffffff"/></svg>`,
 
-            gmail: `<svg viewBox="0 0 100 100"><rect width="100" height="100" fill="#ffffff"/><path d="M22 72V38l28 21 28-21v34H66V52L50 64 34 52v20z" fill="#EA4335"/><path d="M22 38l-4-3c-2.5 2-4 5-4 8.5V68a4 4 0 0 0 4 4h4V38z" fill="#4285F4"/><path d="M78 38l4-3c2.5 2 4 5 4 8.5V68a4 4 0 0 1-4 4h-4V38z" fill="#34A853"/><path d="M22 38l28 21 28-21 4-3c-2-3.5-6-5.5-10-3.5L50 48 28 31.5c-4-2-8 0-10 3.5l4 3z" fill="#C5221F"/><path d="M78 38l4-3c-2-3.5-6-5.5-10-3.5L50 48v11z" fill="#FBBC05"/></svg>`,
+            gmail: `<svg viewBox="0 0 100 100"><rect class="svg-bg" width="100" height="100" fill="#ffffff"/><path d="M22 72V38l28 21 28-21v34H66V52L50 64 34 52v20z" fill="#EA4335"/><path d="M22 38l-4-3c-2.5 2-4 5-4 8.5V68a4 4 0 0 0 4 4h4V38z" fill="#4285F4"/><path d="M78 38l4-3c2.5 2 4 5 4 8.5V68a4 4 0 0 1-4 4h-4V38z" fill="#34A853"/><path d="M22 38l28 21 28-21 4-3c-2-3.5-6-5.5-10-3.5L50 48 28 31.5c-4-2-8 0-10 3.5l4 3z" fill="#C5221F"/><path d="M78 38l4-3c-2-3.5-6-5.5-10-3.5L50 48v11z" fill="#FBBC05"/></svg>`,
 
-            meet: `<svg viewBox="0 0 100 100"><rect width="100" height="100" fill="#ffffff"/><path d="M20 35a7 7 0 0 1 7-7h34a7 7 0 0 1 7 7v30a7 7 0 0 1-7 7H27a7 7 0 0 1-7-7V35z" fill="#00832D"/><path d="M20 35a7 7 0 0 1 7-7h19v22H20V35z" fill="#0066DA"/><path d="M20 50h26v22H27a7 7 0 0 1-7-7V50z" fill="#FFBA00"/><path d="M68 41l15-11a3 3 0 0 1 5 2.3v35.4a3 3 0 0 1-5 2.3L68 59V41z" fill="#00AC47"/><path d="M46 28h15a7 7 0 0 1 7 7v15H46V28z" fill="#EA4335"/></svg>`,
+            meet: `<svg viewBox="0 0 100 100"><rect class="svg-bg" width="100" height="100" fill="#ffffff"/><path d="M20 35a7 7 0 0 1 7-7h34a7 7 0 0 1 7 7v30a7 7 0 0 1-7 7H27a7 7 0 0 1-7-7V35z" fill="#00832D"/><path d="M20 35a7 7 0 0 1 7-7h19v22H20V35z" fill="#0066DA"/><path d="M20 50h26v22H27a7 7 0 0 1-7-7V50z" fill="#FFBA00"/><path d="M68 41l15-11a3 3 0 0 1 5 2.3v35.4a3 3 0 0 1-5 2.3L68 59V41z" fill="#00AC47"/><path d="M46 28h15a7 7 0 0 1 7 7v15H46V28z" fill="#EA4335"/></svg>`,
 
-            gemini: `<svg viewBox="0 0 100 100"><defs><linearGradient id="gemG" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" stop-color="#1A73E8"/><stop offset="50%" stop-color="#60A5FA"/><stop offset="100%" stop-color="#A855F7"/></linearGradient></defs><rect width="100" height="100" fill="#0f172a"/><path d="M50 14C50 38 62 50 86 50 62 50 50 62 50 86 50 62 38 50 14 50 38 50 50 38 50 14Z" fill="url(#gemG)"/></svg>`,
+            gemini: `<svg viewBox="0 0 100 100"><defs><linearGradient id="gemG" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" stop-color="#1A73E8"/><stop offset="50%" stop-color="#60A5FA"/><stop offset="100%" stop-color="#A855F7"/></linearGradient></defs><rect class="svg-bg" width="100" height="100" fill="#0f172a"/><path d="M50 14C50 38 62 50 86 50 62 50 50 62 50 86 50 62 38 50 14 50 38 50 50 38 50 14Z" fill="url(#gemG)"/></svg>`,
 
-            github: `<svg viewBox="0 0 100 100"><rect width="100" height="100" fill="#161b22"/><path fill="#ffffff" fill-rule="evenodd" clip-rule="evenodd" d="M50 18c-17.7 0-32 14.3-32 32 0 14.1 9.2 26.1 21.9 30.3 1.6.3 2.2-.7 2.2-1.5v-5.4c-8.9 1.9-10.8-4.3-10.8-4.3-1.5-3.7-3.6-4.7-3.6-4.7-2.9-2 .2-1.9.2-1.9 3.2.2 4.9 3.3 4.9 3.3 2.8 4.9 7.5 3.5 9.3 2.7.3-2.1 1.1-3.5 2-4.3-7.1-.8-14.6-3.6-14.6-15.8 0-3.5 1.2-6.3 3.3-8.6-.3-.8-1.4-4.1.3-8.5 0 0 2.7-.9 8.8 3.3 2.6-.7 5.3-1.1 8-1.1s5.4.4 8 1.1c6.1-4.1 8.8-3.3 8.8-3.3 1.7 4.4.6 7.7.3 8.5 2.1 2.2 3.3 5.1 3.3 8.6 0 12.3-7.5 15-14.6 15.8 1.1 1 2.2 2.9 2.2 5.9v8.8c0 .9.6 1.8 2.2 1.5C72.8 76.1 82 64.1 82 50c0-17.7-14.3-32-32-32z"/></svg>`
+            github: `<svg viewBox="0 0 100 100"><rect class="svg-bg" width="100" height="100" fill="#161b22"/><path fill="#ffffff" fill-rule="evenodd" clip-rule="evenodd" d="M50 18c-17.7 0-32 14.3-32 32 0 14.1 9.2 26.1 21.9 30.3 1.6.3 2.2-.7 2.2-1.5v-5.4c-8.9 1.9-10.8-4.3-10.8-4.3-1.5-3.7-3.6-4.7-3.6-4.7-2.9-2 .2-1.9.2-1.9 3.2.2 4.9 3.3 4.9 3.3 2.8 4.9 7.5 3.5 9.3 2.7.3-2.1 1.1-3.5 2-4.3-7.1-.8-14.6-3.6-14.6-15.8 0-3.5 1.2-6.3 3.3-8.6-.3-.8-1.4-4.1.3-8.5 0 0 2.7-.9 8.8 3.3 2.6-.7 5.3-1.1 8-1.1s5.4.4 8 1.1c6.1-4.1 8.8-3.3 8.8-3.3 1.7 4.4.6 7.7.3 8.5 2.1 2.2 3.3 5.1 3.3 8.6 0 12.3-7.5 15-14.6 15.8 1.1 1 2.2 2.9 2.2 5.9v8.8c0 .9.6 1.8 2.2 1.5C72.8 76.1 82 64.1 82 50c0-17.7-14.3-32-32-32z"/></svg>`
         };
+
+        function escapeXml(str) {
+            return String(str).replace(/[<>&'"]/g, c => ({ '<':'&lt;', '>':'&gt;', '&':'&amp;', "'":'&apos;', '"':'&quot;' }[c]));
+        }
 
         function makeMonogramSvg(name, url) {
             const colors = ['#0a84ff', '#5e5ce6', '#bf5af2', '#ff375f', '#ff9f0a', '#30d158', '#64d2ff', '#007aff'];
@@ -968,17 +1042,11 @@
             for (let i = 0; i < seed.length; i++) hash = seed.charCodeAt(i) + ((hash << 5) - hash);
             const bg = colors[Math.abs(hash) % colors.length];
             const char = (name.trim()[0] || 'A').toUpperCase();
-            return `<svg viewBox="0 0 100 100"><defs><linearGradient id="mg${Math.abs(hash)}" x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stop-color="${bg}"/><stop offset="100%" stop-color="#0f172a" stop-opacity="0.35"/></linearGradient></defs><rect width="100" height="100" fill="${bg}"/><rect width="100" height="100" fill="url(#mg${Math.abs(hash)})" opacity="0.5"/><text x="50" y="64" text-anchor="middle" fill="#ffffff" font-size="48" font-weight="700" font-family="-apple-system, sans-serif">${escapeXml(char)}</text></svg>`;
-        }
-
-        function escapeXml(str) {
-            return String(str).replace(/[<>&'"]/g, c => ({ '<':'&lt;', '>':'&gt;', '&':'&amp;', "'":'&apos;', '"':'&quot;' }[c]));
+            return `<svg viewBox="0 0 100 100"><rect class="svg-bg" width="100" height="100" fill="${bg}"/><text x="50" y="64" text-anchor="middle" fill="#ffffff" font-size="48" font-weight="700" font-family="-apple-system, sans-serif">${escapeXml(char)}</text></svg>`;
         }
 
         function getDomainFromUrl(url) {
-            try {
-                if (/^https?:/i.test(url)) return new URL(url).hostname;
-            } catch (e) {}
+            try { if (/^https?:/i.test(url)) return new URL(url).hostname; } catch (e) {}
             return '';
         }
 
@@ -993,21 +1061,15 @@
                     return wrap;
                 }
             }
-
             if (app.iconType === 'custom' && app.iconUrl) {
                 const img = document.createElement('img');
                 img.className = 'favicon-img';
-                img.style.width = '100%';
-                img.style.height = '100%';
-                img.style.borderRadius = '0';
-                img.style.objectFit = 'cover';
+                img.style.cssText = 'width:100%;height:100%;border-radius:0;object-fit:cover;';
                 img.src = app.iconUrl;
                 img.onerror = () => { wrap.innerHTML = makeMonogramSvg(app.name, app.url); };
                 wrap.appendChild(img);
                 return wrap;
             }
-
-            // URLから高解像度ファビコンを自動取得（失敗時はクリーンなSVGモノグラム）
             const domain = getDomainFromUrl(app.url);
             if (domain) {
                 const img = document.createElement('img');
@@ -1018,19 +1080,32 @@
                 wrap.appendChild(img);
                 return wrap;
             }
-
             wrap.innerHTML = makeMonogramSvg(app.name, app.url);
             return wrap;
         }
 
         /* =========================================================
-           2. 状態管理（アプリ配列・ページ・Dock・壁紙）
+           2. 状態管理（v1からの自動引き継ぎ対応）
         ========================================================= */
-        const STORAGE_KEY = 'ipados_launcher_state_v1';
+        const STORAGE_KEY = 'ipados_launcher_state_v2';
+        const OLD_STORAGE_KEY = 'ipados_launcher_state_v1';
+
+        const DEFAULT_WIDGETS = [
+            { id: 'w_analog', type: 'analog', title: 'アナログ時計', wide: false },
+            { id: 'w_timer', type: 'timer', title: '集中タイマー', wide: false },
+            { id: 'w_memo', type: 'memo', title: 'メモ', wide: false, storageKey: 'ipad_dashboard_memo' },
+            { id: 'w_todo', type: 'todo', title: 'ToDo', wide: false },
+            { id: 'w_countdown', type: 'countdown', title: 'カウントダウン', wide: false, label: '目標日まで', targetDate: '' },
+            { id: 'w_schedule', type: 'schedule', title: '今日の時間割', wide: true }
+        ];
 
         const DEFAULT_STATE = {
             wallpaper: 'wp-1',
             customWallpaper: '',
+            iconTheme: 'standard',
+            gridCols: 6,
+            iconSize: 72,
+            hideLabels: false,
             dock: [
                 { name: 'ロイロノート', url: 'https://loilonote.app', iconType: 'auto', newTab: false },
                 { name: 'Google', url: 'https://www.google.com/', iconType: 'svg:google', newTab: true },
@@ -1063,13 +1138,25 @@
                     { name: 'Google カレンダー', url: 'https://calendar.google.com/', iconType: 'auto', newTab: false },
                     { name: 'Google フォーム', url: 'https://docs.google.com/forms/', iconType: 'auto', newTab: true }
                 ]
-            ]
+            ],
+            widgets: structuredClone(DEFAULT_WIDGETS)
         };
 
-        let state = JSON.parse(localStorage.getItem(STORAGE_KEY) || 'null') || structuredClone(DEFAULT_STATE);
+        function loadInitialState() {
+            const savedV2 = localStorage.getItem(STORAGE_KEY);
+            if (savedV2) return JSON.parse(savedV2);
+            const savedV1 = localStorage.getItem(OLD_STORAGE_KEY);
+            if (savedV1) {
+                const v1 = JSON.parse(savedV1);
+                return { ...structuredClone(DEFAULT_STATE), ...v1 };
+            }
+            return structuredClone(DEFAULT_STATE);
+        }
+
+        let state = loadInitialState();
         let isEditMode = false;
         let currentPageIdx = 0;
-        let editingRef = null; // { loc: 'dock' | number, index: number } or null
+        let editingRef = null;
 
         function saveState() {
             localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
@@ -1080,47 +1167,91 @@
         }
 
         /* =========================================================
-           3. ホーム画面・Dock・ウィジェットページの描画
+           3. 外観・テーマ適用
+        ========================================================= */
+        function applyAppearance() {
+            const shell = document.getElementById('osShell');
+            shell.classList.remove('theme-standard', 'theme-dark', 'theme-glass', 'theme-glass-color', 'hide-labels');
+            shell.classList.add(`theme-${state.iconTheme || 'standard'}`);
+            if (state.hideLabels) shell.classList.add('hide-labels');
+
+            document.documentElement.style.setProperty('--grid-cols', state.gridCols || 6);
+            document.documentElement.style.setProperty('--icon-size', `${state.iconSize || 72}px`);
+
+            const wpEl = document.getElementById('wallpaper');
+            wpEl.className = 'wallpaper';
+            wpEl.style.backgroundImage = '';
+            if (state.customWallpaper) {
+                wpEl.style.backgroundImage = `url("${state.customWallpaper}")`;
+            } else {
+                wpEl.classList.add(state.wallpaper || 'wp-1');
+            }
+
+            document.querySelectorAll('.theme-opt').forEach(b => {
+                b.classList.toggle('active', b.dataset.theme === (state.iconTheme || 'standard'));
+            });
+            document.querySelectorAll('.wp-swatch').forEach(s => {
+                s.classList.toggle('active', !state.customWallpaper && s.dataset.wp === state.wallpaper);
+            });
+            document.getElementById('fGridCols').value = String(state.gridCols || 6);
+            document.getElementById('fIconSize').value = String(state.iconSize || 72);
+            document.getElementById('fHideLabels').checked = !!state.hideLabels;
+        }
+
+        function setIconTheme(theme) { state.iconTheme = theme; saveState(); applyAppearance(); }
+        function setGridCols(cols) { state.gridCols = Number(cols); saveState(); applyAppearance(); }
+        function setIconSize(size) { state.iconSize = Number(size); saveState(); applyAppearance(); }
+        function setHideLabels(hide) { state.hideLabels = hide; saveState(); applyAppearance(); }
+
+        function openCustomizeModal() { applyAppearance(); document.getElementById('customModal').classList.add('open'); }
+        function closeCustomizeModal() { document.getElementById('customModal').classList.remove('open'); }
+
+        function setWallpaperPreset(wp) { state.wallpaper = wp; state.customWallpaper = ''; saveState(); applyAppearance(); }
+        function setWallpaperUrl() {
+            const url = document.getElementById('wpCustomUrl').value.trim();
+            if (!url) return;
+            state.customWallpaper = url; saveState(); applyAppearance();
+        }
+        function handleWallpaperFile(e) {
+            const file = e.target.files[0];
+            if (!file) return;
+            const reader = new FileReader();
+            reader.onload = ev => {
+                try { state.customWallpaper = ev.target.result; saveState(); applyAppearance(); }
+                catch (err) { alert('画像サイズが大きすぎるため保存できませんでした。'); }
+            };
+            reader.readAsDataURL(file);
+        }
+
+        /* =========================================================
+           4. ホーム画面・Dock・ウィジェット描画
         ========================================================= */
         function createAppSlot(app, loc, idx) {
             const slot = document.createElement('a');
             slot.className = 'app-slot';
             slot.href = isSafeUrl(app.url) ? app.url : '#';
-            if (app.newTab) {
-                slot.target = '_blank';
-                slot.rel = 'noopener';
-            }
+            if (app.newTab) { slot.target = '_blank'; slot.rel = 'noopener'; }
 
-            // 削除バッジ
             const delBtn = document.createElement('button');
             delBtn.type = 'button';
             delBtn.className = 'badge-delete';
             delBtn.innerHTML = `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round"><path d="M5 12h14"/></svg>`;
             delBtn.addEventListener('click', e => {
-                e.preventDefault();
-                e.stopPropagation();
-                deleteApp(loc, idx);
+                e.preventDefault(); e.stopPropagation(); deleteApp(loc, idx);
             });
 
-            // 長押しでiPad風の編集モードへ
-            let pressTimer = null;
-            let moved = false;
+            let pressTimer = null, moved = false;
             slot.addEventListener('pointerdown', () => {
                 moved = false;
                 if (isEditMode) return;
-                pressTimer = setTimeout(() => {
-                    if (!moved) toggleEditMode(true);
-                }, 520);
+                pressTimer = setTimeout(() => { if (!moved) toggleEditMode(true); }, 520);
             });
             slot.addEventListener('pointermove', () => { moved = true; clearTimeout(pressTimer); });
             slot.addEventListener('pointerup', () => clearTimeout(pressTimer));
             slot.addEventListener('pointercancel', () => clearTimeout(pressTimer));
 
             slot.addEventListener('click', e => {
-                if (isEditMode) {
-                    e.preventDefault();
-                    openEditModal(loc, idx);
-                }
+                if (isEditMode) { e.preventDefault(); openEditModal(loc, idx); }
             });
 
             const iconEl = renderIconElement(app);
@@ -1137,7 +1268,6 @@
             const prevScroll = viewport.scrollLeft;
             viewport.innerHTML = '';
 
-            // アプリアイコンページを描画
             state.pages.forEach((apps, pIdx) => {
                 const page = document.createElement('section');
                 page.className = 'page';
@@ -1148,52 +1278,24 @@
                 viewport.appendChild(page);
             });
 
-            // 最終ページ：iPadOSウィジェットページ（時計・タイマー・メモ・ToDo）
             const widgetPage = document.createElement('section');
             widgetPage.className = 'page';
             widgetPage.innerHTML = `
-                <div class="widgets-grid">
-                    <div class="widget">
-                        <div class="widget-title"><span>Clock</span><span>JST</span></div>
-                        <div class="widget-clock-big" id="wClock">00:00:00</div>
-                        <div class="widget-clock-sub" id="wDate">---</div>
-                    </div>
-                    <div class="widget">
-                        <div class="widget-title"><span>Focus Timer</span><span id="wTimerStatus">Ready</span></div>
-                        <div class="timer-row">
-                            <div class="timer-num" id="wTimer">25:00</div>
-                            <button class="w-btn primary" id="wStartBtn" onclick="toggleTimer()">開始</button>
-                        </div>
-                        <div class="timer-btns">
-                            <button class="w-btn" onclick="setTimer(25)">25分</button>
-                            <button class="w-btn" onclick="setTimer(10)">10分</button>
-                            <button class="w-btn" onclick="setTimer(5)">5分</button>
-                            <button class="w-btn" onclick="addMinute()">+1分</button>
-                            <button class="w-btn" onclick="resetTimer()">リセット</button>
-                        </div>
-                    </div>
-                    <div class="widget">
-                        <div class="widget-title"><span>Notes (自動保存)</span><span id="wMemoStatus"></span></div>
-                        <textarea class="w-textarea" id="wMemo" placeholder="メモを入力..."></textarea>
-                    </div>
-                    <div class="widget">
-                        <div class="widget-title"><span>ToDo</span><button class="w-btn" style="padding:3px 8px; font-size:0.7rem;" onclick="clearDoneTodos()">完了削除</button></div>
-                        <form class="todo-add-row" onsubmit="addTodo(event)">
-                            <input type="text" class="w-input" id="wTodoInput" placeholder="タスクを追加..." autocomplete="off">
-                            <button type="submit" class="w-btn primary">追加</button>
-                        </form>
-                        <div class="todo-scroll" id="wTodoList"></div>
-                    </div>
+                <div class="widgets-header">
+                    <h2>WIDGETS</h2>
+                    <button type="button" class="pill-btn" onclick="openWidgetPickerModal()">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M12 5v14M5 12h14"/></svg>
+                        <span>ウィジェット追加</span>
+                    </button>
                 </div>
+                <div class="widgets-grid" id="widgetsGrid"></div>
             `;
             viewport.appendChild(widgetPage);
 
-            // Dockを描画
             const dock = document.getElementById('dock');
             dock.innerHTML = '';
             state.dock.forEach((app, idx) => dock.appendChild(createAppSlot(app, 'dock', idx)));
 
-            // ページドットを描画
             const totalPages = state.pages.length + 1;
             const dotsEl = document.getElementById('pageDots');
             dotsEl.innerHTML = '';
@@ -1206,8 +1308,7 @@
             }
 
             viewport.scrollLeft = prevScroll;
-            initWidgets();
-            updateClock();
+            renderWidgets();
             updateRemovePageButton();
         }
 
@@ -1222,9 +1323,7 @@
             const idx = Math.round(viewport.scrollLeft / w);
             if (idx !== currentPageIdx) {
                 currentPageIdx = idx;
-                document.querySelectorAll('#pageDots .dot').forEach((d, i) => {
-                    d.classList.toggle('active', i === idx);
-                });
+                document.querySelectorAll('#pageDots .dot').forEach((d, i) => d.classList.toggle('active', i === idx));
                 updateRemovePageButton();
             }
         });
@@ -1237,7 +1336,214 @@
         }
 
         /* =========================================================
-           4. 編集モード・追加・移動・削除
+           5. モジュラーウィジェットシステム
+        ========================================================= */
+        function renderWidgets() {
+            const grid = document.getElementById('widgetsGrid');
+            if (!grid) return;
+            grid.innerHTML = '';
+
+            state.widgets.forEach((w, idx) => {
+                const card = document.createElement('div');
+                card.className = 'widget' + (w.wide ? ' wide' : '');
+
+                const header = document.createElement('div');
+                header.className = 'widget-title';
+
+                const titleSpan = document.createElement('span');
+                titleSpan.textContent = w.title;
+
+                const editBar = document.createElement('div');
+                editBar.className = 'widget-edit-bar';
+                editBar.innerHTML = `
+                    <button type="button" class="w-mini-btn" onclick="moveWidget(${idx},-1)">◀</button>
+                    <button type="button" class="w-mini-btn" onclick="moveWidget(${idx},1)">▶</button>
+                    <button type="button" class="w-mini-btn" onclick="toggleWidgetWide(${idx})">${w.wide ? '標準幅' : '横長'}</button>
+                    <button type="button" class="w-mini-btn danger" onclick="deleteWidget(${idx})">削除</button>
+                `;
+                header.append(titleSpan, editBar);
+                card.appendChild(header);
+
+                const body = document.createElement('div');
+                body.style.cssText = 'display:flex;flex-direction:column;flex:1;';
+
+                if (w.type === 'clock') {
+                    body.innerHTML = `<div class="widget-clock-big js-clock-time">00:00:00</div><div class="widget-clock-sub js-clock-date">---</div>`;
+                } else if (w.type === 'analog') {
+                    body.innerHTML = `
+                        <div class="analog-wrap">
+                            <div class="analog-face">
+                                <svg viewBox="0 0 100 100">
+                                    <circle cx="50" cy="50" r="46" fill="none" stroke="rgba(255,255,255,0.18)" stroke-width="1"/>
+                                    ${[0,30,60,90,120,150,180,210,240,270,300,330].map(a => `<line x1="50" y1="6" x2="50" y2="${a%90===0?13:10}" stroke="rgba(255,255,255,${a%90===0?0.85:0.4})" stroke-width="${a%90===0?2:1.2}" transform="rotate(${a} 50 50)"/>`).join('')}
+                                    <line class="js-hand-h" x1="50" y1="50" x2="50" y2="24" stroke="#ffffff" stroke-width="3.6" stroke-linecap="round"/>
+                                    <line class="js-hand-m" x1="50" y1="50" x2="50" y2="15" stroke="#ffffff" stroke-width="2.4" stroke-linecap="round"/>
+                                    <line class="js-hand-s" x1="50" y1="56" x2="50" y2="13" stroke="#ff9f0a" stroke-width="1.4" stroke-linecap="round"/>
+                                    <circle cx="50" cy="50" r="3" fill="#ff9f0a"/>
+                                </svg>
+                            </div>
+                            <div>
+                                <div class="js-clock-time" style="font-size:1.75rem;font-weight:700;font-variant-numeric:tabular-nums;">00:00</div>
+                                <div class="widget-clock-sub js-clock-date">---</div>
+                            </div>
+                        </div>`;
+                } else if (w.type === 'timer') {
+                    body.innerHTML = `
+                        <div class="timer-row">
+                            <div class="timer-num js-timer-num">25:00</div>
+                            <button type="button" class="w-btn primary js-timer-btn" onclick="toggleTimer()">開始</button>
+                        </div>
+                        <div class="timer-btns">
+                            <button type="button" class="w-btn" onclick="setTimer(25)">25分</button>
+                            <button type="button" class="w-btn" onclick="setTimer(10)">10分</button>
+                            <button type="button" class="w-btn" onclick="setTimer(5)">5分</button>
+                            <button type="button" class="w-btn" onclick="addMinute()">+1分</button>
+                            <button type="button" class="w-btn" onclick="resetTimer()">リセット</button>
+                        </div>`;
+                } else if (w.type === 'memo') {
+                    const key = w.storageKey || `ipad_widget_memo_${w.id}`;
+                    const ta = document.createElement('textarea');
+                    ta.className = 'w-textarea';
+                    ta.placeholder = 'メモを入力（自動保存）...';
+                    ta.value = localStorage.getItem(key) || '';
+                    ta.oninput = () => localStorage.setItem(key, ta.value);
+                    body.appendChild(ta);
+                } else if (w.type === 'todo') {
+                    body.innerHTML = `
+                        <form class="todo-add-row" onsubmit="addTodo(event, this)">
+                            <input type="text" class="w-input" placeholder="タスクを追加..." autocomplete="off">
+                            <button type="submit" class="w-btn primary">追加</button>
+                        </form>
+                        <div class="todo-scroll js-todo-list"></div>`;
+                } else if (w.type === 'countdown') {
+                    const days = calcCountdownDays(w.targetDate);
+                    body.innerHTML = `
+                        <div class="cd-body">
+                            <div>
+                                <div style="font-size:0.88rem;color:var(--text-sub);" class="js-cd-label">${escapeXml(w.label || '目標日まで')}</div>
+                                <div><span class="cd-days js-cd-days">${days}</span><span class="cd-unit">${days === '--' ? '' : (days >= 0 ? '日後' : '日経過')}</span></div>
+                            </div>
+                        </div>
+                        <div class="cd-inputs">
+                            <input type="text" class="w-input" value="${escapeXml(w.label || '')}" placeholder="イベント名" oninput="updateCountdown(${idx}, 'label', this.value)">
+                            <input type="date" class="w-input" value="${escapeXml(w.targetDate || '')}" onchange="updateCountdown(${idx}, 'targetDate', this.value)">
+                        </div>`;
+                } else if (w.type === 'schedule') {
+                    const schKey = `ipad_widget_sch_${w.id}`;
+                    const items = JSON.parse(localStorage.getItem(schKey) || '["","","","","",""]');
+                    const list = document.createElement('div');
+                    list.className = 'schedule-list';
+                    for (let p = 0; p < 6; p++) {
+                        const row = document.createElement('div');
+                        row.className = 'sch-row';
+                        row.innerHTML = `<span class="sch-num">${p + 1}</span>`;
+                        const inp = document.createElement('input');
+                        inp.className = 'sch-input';
+                        inp.placeholder = `${p + 1}限`;
+                        inp.value = items[p] || '';
+                        inp.oninput = () => {
+                            items[p] = inp.value;
+                            localStorage.setItem(schKey, JSON.stringify(items));
+                        };
+                        row.appendChild(inp);
+                        list.appendChild(row);
+                    }
+                    body.appendChild(list);
+                } else if (w.type === 'calc') {
+                    const keys = ['7','8','9','/','4','5','6','*','1','2','3','-','0','.','C','+','(',')','DEL','='];
+                    const disp = document.createElement('div');
+                    disp.className = 'calc-disp';
+                    disp.textContent = '0';
+                    const cgrid = document.createElement('div');
+                    cgrid.className = 'calc-grid';
+                    let expr = '';
+                    keys.forEach(k => {
+                        const b = document.createElement('button');
+                        b.type = 'button';
+                        b.className = 'calc-btn' + (['+','-','*','/'].includes(k) ? ' op' : '') + (k === '=' ? ' eq' : '');
+                        b.textContent = k === '*' ? '×' : (k === '/' ? '÷' : k);
+                        b.onclick = () => {
+                            if (k === 'C') { expr = ''; disp.textContent = '0'; }
+                            else if (k === 'DEL') { expr = expr.slice(0, -1); disp.textContent = expr || '0'; }
+                            else if (k === '=') {
+                                try {
+                                    if (/^[0-9+\-*/().\s]+$/.test(expr)) {
+                                        const val = Function(`"use strict"; return (${expr})`)();
+                                        expr = Number.isFinite(val) ? String(Math.round(val * 1e8) / 1e8) : '';
+                                        disp.textContent = expr || 'Error';
+                                    }
+                                } catch (e) { disp.textContent = 'Error'; expr = ''; }
+                            } else {
+                                expr += k;
+                                disp.textContent = expr;
+                            }
+                        };
+                        cgrid.appendChild(b);
+                    });
+                    body.append(disp, cgrid);
+                }
+
+                card.appendChild(body);
+                grid.appendChild(card);
+            });
+
+            updateClocks();
+            renderTimerDisplay();
+            renderTodos();
+        }
+
+        function openWidgetPickerModal() { document.getElementById('widgetPickerModal').classList.add('open'); }
+        function closeWidgetPickerModal() { document.getElementById('widgetPickerModal').classList.remove('open'); }
+
+        function addWidget(type) {
+            const titles = {
+                analog: 'アナログ時計', clock: 'デジタル時計', timer: '集中タイマー',
+                memo: 'メモ', todo: 'ToDo', countdown: 'カウントダウン',
+                schedule: '今日の時間割', calc: 'ミニ電卓'
+            };
+            const id = 'w_' + Date.now();
+            const newW = { id, type, title: titles[type] || 'Widget', wide: type === 'schedule' };
+            if (type === 'countdown') { newW.label = '予定まで'; newW.targetDate = ''; }
+            state.widgets.push(newW);
+            saveState();
+            renderWidgets();
+            closeWidgetPickerModal();
+            goToPage(state.pages.length);
+        }
+
+        function moveWidget(idx, dir) {
+            const target = idx + dir;
+            if (target < 0 || target >= state.widgets.length) return;
+            [state.widgets[idx], state.widgets[target]] = [state.widgets[target], state.widgets[idx]];
+            saveState(); renderWidgets();
+        }
+
+        function toggleWidgetWide(idx) {
+            state.widgets[idx].wide = !state.widgets[idx].wide;
+            saveState(); renderWidgets();
+        }
+
+        function deleteWidget(idx) {
+            state.widgets.splice(idx, 1);
+            saveState(); renderWidgets();
+        }
+
+        function calcCountdownDays(dateStr) {
+            if (!dateStr) return '--';
+            const today = new Date(); today.setHours(0, 0, 0, 0);
+            const target = new Date(dateStr + 'T00:00:00');
+            if (isNaN(target)) return '--';
+            return Math.round((target - today) / 86400000);
+        }
+
+        function updateCountdown(idx, field, val) {
+            state.widgets[idx][field] = val;
+            saveState();
+            renderWidgets();
+        }
+
+        /* =========================================================
+           6. 編集モード・アプリ追加・移動・削除
         ========================================================= */
         function toggleEditMode(force) {
             isEditMode = typeof force === 'boolean' ? force : !isEditMode;
@@ -1247,10 +1553,7 @@
         }
 
         function addPage() {
-            state.pages.push([]);
-            saveState();
-            renderAll();
-            goToPage(state.pages.length - 1);
+            state.pages.push([]); saveState(); renderAll(); goToPage(state.pages.length - 1);
         }
 
         function removeCurrentPage() {
@@ -1271,9 +1574,10 @@
         }
 
         function resetDefaults() {
-            if (!confirm('配置やアイコンを初期状態に戻しますか？')) return;
+            if (!confirm('初期状態に戻しますか？')) return;
             state = structuredClone(DEFAULT_STATE);
             saveState();
+            applyAppearance();
             renderAll();
             goToPage(0);
         }
@@ -1328,9 +1632,7 @@
             document.getElementById('appModal').classList.add('open');
         }
 
-        function closeAppModal() {
-            document.getElementById('appModal').classList.remove('open');
-        }
+        function closeAppModal() { document.getElementById('appModal').classList.remove('open'); }
 
         function shiftEditingApp(dir) {
             if (!editingRef) return;
@@ -1379,58 +1681,7 @@
         }
 
         /* =========================================================
-           5. 壁紙管理
-        ========================================================= */
-        function applyWallpaper() {
-            const el = document.getElementById('wallpaper');
-            el.className = 'wallpaper';
-            el.style.backgroundImage = '';
-            if (state.customWallpaper) {
-                el.style.backgroundImage = `url("${state.customWallpaper}")`;
-            } else {
-                el.classList.add(state.wallpaper || 'wp-1');
-            }
-            document.querySelectorAll('.wp-swatch').forEach(s => {
-                s.classList.toggle('active', !state.customWallpaper && s.dataset.wp === state.wallpaper);
-            });
-        }
-
-        function openWallpaperModal() { document.getElementById('wpModal').classList.add('open'); }
-        function closeWallpaperModal() { document.getElementById('wpModal').classList.remove('open'); }
-
-        function setWallpaperPreset(wp) {
-            state.wallpaper = wp;
-            state.customWallpaper = '';
-            saveState();
-            applyWallpaper();
-        }
-
-        function setWallpaperUrl() {
-            const url = document.getElementById('wpCustomUrl').value.trim();
-            if (!url) return;
-            state.customWallpaper = url;
-            saveState();
-            applyWallpaper();
-        }
-
-        function handleWallpaperFile(e) {
-            const file = e.target.files[0];
-            if (!file) return;
-            const reader = new FileReader();
-            reader.onload = ev => {
-                try {
-                    state.customWallpaper = ev.target.result;
-                    saveState();
-                    applyWallpaper();
-                } catch (err) {
-                    alert('画像サイズが大きすぎるため保存できませんでした。小さい画像かURLをお試しください。');
-                }
-            };
-            reader.readAsDataURL(file);
-        }
-
-        /* =========================================================
-           6. Spotlight検索（アプリ絞り込み＋Web検索）
+           7. Spotlight検索
         ========================================================= */
         function openSpotlight() {
             document.getElementById('spotlightModal').classList.add('open');
@@ -1440,9 +1691,7 @@
             setTimeout(() => inp.focus(), 50);
         }
 
-        function closeSpotlight() {
-            document.getElementById('spotlightModal').classList.remove('open');
-        }
+        function closeSpotlight() { document.getElementById('spotlightModal').classList.remove('open'); }
 
         function getAllAppsUnique() {
             const map = new Map();
@@ -1457,7 +1706,6 @@
             box.innerHTML = '';
             const q = query.trim().toLowerCase();
 
-            // 登録済みアプリのマッチ
             const matches = getAllAppsUnique().filter(a =>
                 !q || a.name.toLowerCase().includes(q) || a.url.toLowerCase().includes(q)
             ).slice(0, 6);
@@ -1486,7 +1734,6 @@
                 box.appendChild(a);
             });
 
-            // Web / アプリ検索アクション
             if (q) {
                 const engines = [
                     { label: `Google で「${query}」を検索`, sub: 'Webブラウザで開く', url: `https://www.google.com/search?q=${encodeURIComponent(query)}`, icon: 'svg:google', newTab: true },
@@ -1533,7 +1780,6 @@
             }
         });
 
-        // キーボードショートカット（Cmd+K / スラッシュでSpotlight、左右キーでページ切替）
         document.addEventListener('keydown', e => {
             if ((e.metaKey || e.ctrlKey) && e.key.toLowerCase() === 'k') {
                 e.preventDefault();
@@ -1541,28 +1787,36 @@
             } else if (e.key === 'Escape') {
                 closeSpotlight();
                 closeAppModal();
-                closeWallpaperModal();
+                closeCustomizeModal();
+                closeWidgetPickerModal();
             }
         });
 
         /* =========================================================
-           7. 時計・バックグラウンド対応タイマー・メモ・ToDo
+           8. 時計・タイマー・ToDo機能
         ========================================================= */
-        function updateClock() {
+        function updateClocks() {
             const now = new Date();
-            const hh = String(now.getHours()).padStart(2, '0');
-            const mm = String(now.getMinutes()).padStart(2, '0');
-            const ss = String(now.getSeconds()).padStart(2, '0');
-            document.getElementById('statusTime').textContent = `${hh}:${mm}`;
-            const dateStr = now.toLocaleDateString('ja-JP', { month: 'short', day: 'numeric', weekday: 'short' });
-            document.getElementById('statusDate').textContent = dateStr;
+            const h = now.getHours();
+            const m = now.getMinutes();
+            const s = now.getSeconds();
+            const hh = String(h).padStart(2, '0');
+            const mm = String(m).padStart(2, '0');
+            const ss = String(s).padStart(2, '0');
 
-            const wc = document.getElementById('wClock');
-            const wd = document.getElementById('wDate');
-            if (wc) wc.textContent = `${hh}:${mm}:${ss}`;
-            if (wd) wd.textContent = now.toLocaleDateString('ja-JP', { year: 'numeric', month: 'long', day: 'numeric', weekday: 'long' });
+            const dateStr = now.toLocaleDateString('ja-JP', { year: 'numeric', month: 'long', day: 'numeric', weekday: 'short' });
+
+            document.querySelectorAll('.js-clock-time').forEach(el => el.textContent = `${hh}:${mm}:${ss}`);
+            document.querySelectorAll('.js-clock-date').forEach(el => el.textContent = dateStr);
+
+            const hDeg = (h % 12 + m / 60) * 30;
+            const mDeg = (m + s / 60) * 6;
+            const sDeg = s * 6;
+            document.querySelectorAll('.js-hand-h').forEach(el => el.setAttribute('transform', `rotate(${hDeg} 50 50)`));
+            document.querySelectorAll('.js-hand-m').forEach(el => el.setAttribute('transform', `rotate(${mDeg} 50 50)`));
+            document.querySelectorAll('.js-hand-s').forEach(el => el.setAttribute('transform', `rotate(${sDeg} 50 50)`));
         }
-        setInterval(updateClock, 1000);
+        setInterval(updateClocks, 1000);
 
         let durationSec = 25 * 60;
         let remainingSec = durationSec;
@@ -1570,15 +1824,10 @@
         let timerInterval = null;
 
         function renderTimerDisplay() {
-            const el = document.getElementById('wTimer');
-            const btn = document.getElementById('wStartBtn');
-            const st = document.getElementById('wTimerStatus');
-            if (!el) return;
             const m = String(Math.floor(remainingSec / 60)).padStart(2, '0');
             const s = String(remainingSec % 60).padStart(2, '0');
-            el.textContent = `${m}:${s}`;
-            if (btn) btn.textContent = timerInterval ? '停止' : '開始';
-            if (st) st.textContent = timerInterval ? '計測中' : (remainingSec === 0 ? '終了' : 'Ready');
+            document.querySelectorAll('.js-timer-num').forEach(el => el.textContent = `${m}:${s}`);
+            document.querySelectorAll('.js-timer-btn').forEach(btn => btn.textContent = timerInterval ? '停止' : '開始');
         }
 
         function tickTimer() {
@@ -1627,72 +1876,56 @@
             if (!document.hidden && endTime) tickTimer();
         });
 
+        // ToDo機能
         let todos = JSON.parse(localStorage.getItem('ipad_dashboard_todos') || '[]');
 
+        function saveTodos() {
+            localStorage.setItem('ipad_dashboard_todos', JSON.stringify(todos));
+            renderTodos();
+        }
+
         function renderTodos() {
-            const list = document.getElementById('wTodoList');
-            if (!list) return;
-            list.innerHTML = '';
-            todos.forEach((t, i) => {
-                const row = document.createElement('div');
-                row.className = 'todo-row' + (t.done ? ' done' : '');
+            document.querySelectorAll('.js-todo-list').forEach(list => {
+                list.innerHTML = '';
+                todos.forEach((t, i) => {
+                    const row = document.createElement('div');
+                    row.className = 'todo-row' + (t.done ? ' done' : '');
 
-                const chk = document.createElement('button');
-                chk.type = 'button';
-                chk.className = 'todo-check';
-                if (t.done) chk.innerHTML = `<svg viewBox="0 0 24 24" width="12" height="12" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round"><path d="M5 13l4 4L19 7"/></svg>`;
-                chk.onclick = () => {
-                    todos[i].done = !todos[i].done;
-                    localStorage.setItem('ipad_dashboard_todos', JSON.stringify(todos));
-                    renderTodos();
-                };
+                    const chk = document.createElement('button');
+                    chk.type = 'button';
+                    chk.className = 'todo-check';
+                    if (t.done) chk.innerHTML = `<svg viewBox="0 0 24 24" width="12" height="12" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round"><path d="M5 13l4 4L19 7"/></svg>`;
+                    chk.onclick = () => {
+                        todos[i].done = !todos[i].done;
+                        saveTodos();
+                    };
 
-                const span = document.createElement('span');
-                span.textContent = t.text;
+                    const span = document.createElement('span');
+                    span.textContent = t.text;
 
-                row.append(chk, span);
-                list.appendChild(row);
+                    row.append(chk, span);
+                    list.appendChild(row);
+                });
             });
         }
 
-        function addTodo(e) {
+        function addTodo(e, form) {
             e.preventDefault();
-            const inp = document.getElementById('wTodoInput');
+            const inp = form.querySelector('input');
             const text = inp.value.trim();
             if (!text) return;
             todos.unshift({ text, done: false });
-            localStorage.setItem('ipad_dashboard_todos', JSON.stringify(todos));
             inp.value = '';
-            renderTodos();
+            saveTodos();
         }
 
         function clearDoneTodos() {
             todos = todos.filter(t => !t.done);
-            localStorage.setItem('ipad_dashboard_todos', JSON.stringify(todos));
-            renderTodos();
+            saveTodos();
         }
 
-        function initWidgets() {
-            renderTimerDisplay();
-            const memo = document.getElementById('wMemo');
-            if (memo) {
-                memo.value = localStorage.getItem('ipad_dashboard_memo') || '';
-                let t;
-                memo.oninput = () => {
-                    localStorage.setItem('ipad_dashboard_memo', memo.value);
-                    const st = document.getElementById('wMemoStatus');
-                    if (st) {
-                        st.textContent = '保存済み';
-                        clearTimeout(t);
-                        t = setTimeout(() => { st.textContent = ''; }, 1000);
-                    }
-                };
-            }
-            renderTodos();
-        }
-
-        // 初期起動
-        applyWallpaper();
+        // 初期化実行
+        applyAppearance();
         renderAll();
     </script>
 </body>
