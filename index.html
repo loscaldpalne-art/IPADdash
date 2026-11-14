@@ -1,0 +1,384 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>iPad Dashboard</title>
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <style>
+        :root {
+            --bg-color: #090d16;
+            --card-bg: rgba(22, 31, 48, 0.75);
+            --border-color: rgba(255, 255, 255, 0.08);
+            --accent: #38bdf8;
+            --accent-hover: #0284c7;
+            --text-main: #f1f5f9;
+            --text-muted: #94a3b8;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: -apple-system, BlinkMacSystemFont, "SF Pro Display", "Segoe UI", Roboto, sans-serif;
+        }
+
+        body {
+            background: radial-gradient(circle at top right, #1e293b, var(--bg-color) 60%);
+            color: var(--text-main);
+            min-height: 100vh;
+            padding: 28px;
+            display: grid;
+            grid-template-columns: 1.2fr 1fr;
+            grid-template-rows: auto 1fr;
+            gap: 20px;
+        }
+
+        .card {
+            background: var(--card-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 20px;
+            padding: 24px;
+            backdrop-filter: blur(12px);
+            display: flex;
+            flex-direction: column;
+        }
+
+        /* ヘッダー（時計・検索） */
+        .top-bar {
+            grid-column: 1 / -1;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 24px;
+            padding: 20px 28px;
+        }
+
+        .clock-box .time {
+            font-size: 4.2rem;
+            font-weight: 800;
+            letter-spacing: -2px;
+            line-height: 1;
+            color: var(--accent);
+            font-variant-numeric: tabular-nums;
+        }
+
+        .clock-box .date {
+            font-size: 1.15rem;
+            color: var(--text-muted);
+            margin-top: 6px;
+        }
+
+        .search-form {
+            flex: 1;
+            max-width: 480px;
+            display: flex;
+            gap: 10px;
+        }
+
+        .search-input {
+            width: 100%;
+            background: rgba(15, 23, 42, 0.8);
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            padding: 14px 18px;
+            color: var(--text-main);
+            font-size: 1rem;
+            outline: none;
+            transition: border-color 0.2s;
+        }
+
+        .search-input:focus {
+            border-color: var(--accent);
+        }
+
+        .btn {
+            background: var(--accent);
+            color: #0f172a;
+            border: none;
+            border-radius: 12px;
+            padding: 0 20px;
+            font-weight: 700;
+            font-size: 0.95rem;
+            cursor: pointer;
+            transition: opacity 0.2s, transform 0.1s;
+        }
+
+        .btn:active {
+            transform: scale(0.96);
+        }
+
+        /* 左カラム：タイマー＆ランチャー */
+        .left-col {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+
+        .section-title {
+            font-size: 0.85rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            color: var(--text-muted);
+            margin-bottom: 14px;
+            font-weight: 600;
+        }
+
+        .timer-display {
+            font-size: 3.5rem;
+            font-weight: 700;
+            text-align: center;
+            margin: 10px 0 18px;
+            font-variant-numeric: tabular-nums;
+        }
+
+        .timer-controls {
+            display: flex;
+            justify-content: center;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+
+        .btn-sub {
+            background: rgba(255, 255, 255, 0.08);
+            color: var(--text-main);
+            border: 1px solid var(--border-color);
+            border-radius: 10px;
+            padding: 10px 16px;
+            font-size: 0.9rem;
+            font-weight: 600;
+            cursor: pointer;
+        }
+
+        .btn-sub:active {
+            background: rgba(255, 255, 255, 0.16);
+        }
+
+        .links-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 12px;
+            flex: 1;
+        }
+
+        .link-item {
+            background: rgba(15, 23, 42, 0.6);
+            border: 1px solid var(--border-color);
+            border-radius: 14px;
+            padding: 16px;
+            text-decoration: none;
+            color: var(--text-main);
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            transition: border-color 0.2s, transform 0.1s;
+        }
+
+        .link-item:active {
+            transform: scale(0.97);
+            border-color: var(--accent);
+        }
+
+        .link-item span.title {
+            font-weight: 700;
+            font-size: 1.05rem;
+        }
+
+        .link-item span.desc {
+            font-size: 0.8rem;
+            color: var(--text-muted);
+            margin-top: 4px;
+        }
+
+        /* 右カラム：自動保存メモ帳 */
+        .memo-area {
+            width: 100%;
+            flex: 1;
+            background: rgba(15, 23, 42, 0.6);
+            border: 1px solid var(--border-color);
+            border-radius: 14px;
+            padding: 16px;
+            color: var(--text-main);
+            font-size: 1rem;
+            line-height: 1.6;
+            resize: none;
+            outline: none;
+        }
+
+        .memo-area:focus {
+            border-color: var(--accent);
+        }
+
+        .memo-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 14px;
+        }
+
+        .save-status {
+            font-size: 0.8rem;
+            color: #4ade80;
+            opacity: 0;
+            transition: opacity 0.3s;
+        }
+
+        @media (max-width: 768px) {
+            body {
+                grid-template-columns: 1fr;
+            }
+            .top-bar {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+            .search-form {
+                width: 100%;
+                max-width: none;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- 上部：時計＆検索 -->
+    <div class="card top-bar">
+        <div class="clock-box">
+            <div class="time" id="clock">00:00:00</div>
+            <div class="date" id="date">Loading...</div>
+        </div>
+        <form class="search-form" action="https://www.google.com/search" method="GET" target="_blank">
+            <input type="text" name="q" class="search-input" placeholder="Googleで検索..." autocomplete="off">
+            <button type="submit" class="btn">検索</button>
+        </form>
+    </div>
+
+    <!-- 左側：タイマー＆クイックリンク -->
+    <div class="left-col">
+        <div class="card">
+            <div class="section-title">Focus Timer</div>
+            <div class="timer-display" id="timer">25:00</div>
+            <div class="timer-controls">
+                <button class="btn" id="startBtn" onclick="toggleTimer()">スタート</button>
+                <button class="btn-sub" onclick="setTimer(25)">25分</button>
+                <button class="btn-sub" onclick="setTimer(5)">5分</button>
+                <button class="btn-sub" onclick="resetTimer()">リセット</button>
+            </div>
+        </div>
+
+        <div class="card" style="flex: 1;">
+            <div class="section-title">Quick Launch (Web)</div>
+            <div class="links-grid">
+                <a href="https://github.com" target="_blank" class="link-item">
+                    <span class="title">GitHub</span>
+                    <span class="desc">コード・リポジトリ</span>
+                </a>
+                <a href="https://gemini.google.com" target="_blank" class="link-item">
+                    <span class="title">Gemini</span>
+                    <span class="desc">AIアシスタント</span>
+                </a>
+                <a href="https://loilonote.app" target="_blank" class="link-item">
+                    <span class="title">ロイロノート (Web)</span>
+                    <span class="desc">ブラウザ版を開く</span>
+                </a>
+                <!-- URLスキーム動作確認用（ダメなら好きなURLに書き換えてOK） -->
+                <a href="comgooglemaps://" class="link-item">
+                    <span class="title">Googleマップ (テスト)</span>
+                    <span class="desc">アプリ起動スキーム</span>
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <!-- 右側：自動保存メモ -->
+    <div class="card">
+        <div class="memo-header">
+            <div class="section-title" style="margin-bottom: 0;">Quick Scratchpad (自動保存)</div>
+            <span class="save-status" id="saveStatus">保存しました</span>
+        </div>
+        <textarea class="memo-area" id="memo" placeholder="ここに書いた内容は自動でブラウザに保存されます..."></textarea>
+    </div>
+
+    <script>
+        // 時計の更新
+        function updateClock() {
+            const now = new Date();
+            const h = String(now.getHours()).padStart(2, '0');
+            const m = String(now.getMinutes()).padStart(2, '0');
+            const s = String(now.getSeconds()).padStart(2, '0');
+            document.getElementById('clock').textContent = `${h}:${m}:${s}`;
+
+            const options = { year: 'numeric', month: 'long', day: 'numeric', weekday: 'short' };
+            document.getElementById('date').textContent = now.toLocaleDateString('ja-JP', options);
+        }
+        setInterval(updateClock, 1000);
+        updateClock();
+
+        // タイマー機能
+        let defaultSeconds = 25 * 60;
+        let remainingSeconds = defaultSeconds;
+        let timerInterval = null;
+
+        function updateTimerDisplay() {
+            const m = String(Math.floor(remainingSeconds / 60)).padStart(2, '0');
+            const s = String(remainingSeconds % 60).padStart(2, '0');
+            document.getElementById('timer').textContent = `${m}:${s}`;
+        }
+
+        function toggleTimer() {
+            const btn = document.getElementById('startBtn');
+            if (timerInterval) {
+                clearInterval(timerInterval);
+                timerInterval = null;
+                btn.textContent = 'スタート';
+            } else {
+                btn.textContent = '一時停止';
+                timerInterval = setInterval(() => {
+                    if (remainingSeconds > 0) {
+                        remainingSeconds--;
+                        updateTimerDisplay();
+                    } else {
+                        clearInterval(timerInterval);
+                        timerInterval = null;
+                        btn.textContent = 'スタート';
+                        alert('タイマー終了！');
+                    }
+                }, 1000);
+            }
+        }
+
+        function setTimer(minutes) {
+            clearInterval(timerInterval);
+            timerInterval = null;
+            document.getElementById('startBtn').textContent = 'スタート';
+            defaultSeconds = minutes * 60;
+            remainingSeconds = defaultSeconds;
+            updateTimerDisplay();
+        }
+
+        function resetTimer() {
+            clearInterval(timerInterval);
+            timerInterval = null;
+            document.getElementById('startBtn').textContent = 'スタート';
+            remainingSeconds = defaultSeconds;
+            updateTimerDisplay();
+        }
+
+        // メモ帳の自動保存（LocalStorage）
+        const memoEl = document.getElementById('memo');
+        const statusEl = document.getElementById('saveStatus');
+        let saveTimeout;
+
+        memoEl.value = localStorage.getItem('ipad_dashboard_memo') || '';
+
+        memoEl.addEventListener('input', () => {
+            localStorage.setItem('ipad_dashboard_memo', memoEl.value);
+            statusEl.style.opacity = '1';
+            clearTimeout(saveTimeout);
+            saveTimeout = setTimeout(() => {
+                statusEl.style.opacity = '0';
+            }, 1500);
+        });
+    </script>
+</body>
+</html>
