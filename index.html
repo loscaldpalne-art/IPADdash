@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="ja">
 <head>
@@ -8,66 +9,81 @@
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
     <style>
         /* =========================================================
-           テーマ定義（全体色統一・直角・ミニマル）
+           テーマ定義（色統一・浮遊感・カクカク建築グリッド）
         ========================================================= */
         :root, [data-theme="obsidian"] {
-            --bg: #0b0b0d;
-            --surface: #131317;
-            --surface-alt: #1b1b21;
-            --border: #2a2a33;
-            --border-strong: #4a4a58;
+            --bg: #09090b;
+            --surface: #141418;
+            --surface-alt: #1d1d24;
+            --border: #2c2c36;
+            --border-strong: #525263;
+            --top-edge: rgba(255, 255, 255, 0.12);
+            --shadow-rest: 0 4px 10px rgba(0, 0, 0, 0.45), 0 12px 24px rgba(0, 0, 0, 0.35);
+            --shadow-lift: 0 10px 20px rgba(0, 0, 0, 0.55), 0 20px 36px rgba(0, 0, 0, 0.45);
             --fg: #f4f4f6;
-            --muted: #8a8a98;
+            --muted: #8b8b9b;
             --accent: #ffffff;
-            --accent-fg: #0b0b0d;
+            --accent-fg: #09090b;
             --danger: #ef4444;
         }
         [data-theme="paper"] {
-            --bg: #eaeae6;
-            --surface: #f4f4f0;
-            --surface-alt: #e1e1dc;
-            --border: #c8c8c0;
-            --border-strong: #888880;
+            --bg: #e4e4df;
+            --surface: #f4f4ef;
+            --surface-alt: #e9e9e3;
+            --border: #c5c5bc;
+            --border-strong: #7a7a72;
+            --top-edge: rgba(255, 255, 255, 0.85);
+            --shadow-rest: 0 4px 10px rgba(0, 0, 0, 0.08), 0 10px 20px rgba(0, 0, 0, 0.06);
+            --shadow-lift: 0 10px 18px rgba(0, 0, 0, 0.14), 0 18px 30px rgba(0, 0, 0, 0.1);
             --fg: #141413;
-            --muted: #686862;
+            --muted: #66665e;
             --accent: #141413;
-            --accent-fg: #f4f4f0;
+            --accent-fg: #f4f4ef;
             --danger: #dc2626;
         }
         [data-theme="orange"] {
-            --bg: #111113;
-            --surface: #18181b;
-            --surface-alt: #222227;
-            --border: #32323a;
+            --bg: #0f0f12;
+            --surface: #18181c;
+            --surface-alt: #222229;
+            --border: #32323c;
             --border-strong: #ff5500;
+            --top-edge: rgba(255, 255, 255, 0.1);
+            --shadow-rest: 0 4px 10px rgba(0, 0, 0, 0.45), 0 12px 24px rgba(0, 0, 0, 0.35);
+            --shadow-lift: 0 10px 20px rgba(0, 0, 0, 0.55), 0 20px 36px rgba(255, 85, 0, 0.14);
             --fg: #f4f4f5;
-            --muted: #8e8e98;
+            --muted: #90909c;
             --accent: #ff5500;
             --accent-fg: #ffffff;
             --danger: #ef4444;
         }
         [data-theme="blueprint"] {
-            --bg: #08121e;
-            --surface: #0d1b2c;
-            --surface-alt: #13253b;
-            --border: #1e3a5f;
+            --bg: #06101c;
+            --surface: #0c1a2c;
+            --surface-alt: #12253d;
+            --border: #1e3b60;
             --border-strong: #38bdf8;
+            --top-edge: rgba(56, 189, 248, 0.18);
+            --shadow-rest: 0 4px 10px rgba(0, 0, 0, 0.45), 0 12px 24px rgba(0, 0, 0, 0.35);
+            --shadow-lift: 0 10px 20px rgba(0, 0, 0, 0.55), 0 20px 36px rgba(56, 189, 248, 0.15);
             --fg: #e0f2fe;
             --muted: #7dd3fc;
             --accent: #38bdf8;
-            --accent-fg: #08121e;
+            --accent-fg: #06101c;
             --danger: #f87171;
         }
         [data-theme="terminal"] {
-            --bg: #070d09;
-            --surface: #0c1610;
-            --surface-alt: #122118;
-            --border: #1c3827;
+            --bg: #050b07;
+            --surface: #0b160f;
+            --surface-alt: #112217;
+            --border: #1d3a27;
             --border-strong: #4ade80;
+            --top-edge: rgba(74, 222, 128, 0.16);
+            --shadow-rest: 0 4px 10px rgba(0, 0, 0, 0.5), 0 12px 24px rgba(0, 0, 0, 0.4);
+            --shadow-lift: 0 10px 20px rgba(0, 0, 0, 0.6), 0 20px 36px rgba(74, 222, 128, 0.14);
             --fg: #dcfce7;
             --muted: #6ee7b7;
             --accent: #4ade80;
-            --accent-fg: #070d09;
+            --accent-fg: #050b07;
             --danger: #f87171;
         }
 
@@ -75,16 +91,14 @@
             box-sizing: border-box;
             margin: 0;
             padding: 0;
-            border-radius: 0 !important; /* 完全カクカク保証 */
+            border-radius: 0 !important;
             font-family: -apple-system, BlinkMacSystemFont, "SF Pro Text", "Hiragino Sans", "Segoe UI", sans-serif;
             -webkit-tap-highlight-color: transparent;
             user-select: none;
             -webkit-user-select: none;
         }
 
-        .mono {
-            font-family: ui-monospace, "SF Mono", Menlo, Consolas, monospace;
-        }
+        .mono { font-family: ui-monospace, "SF Mono", Menlo, Consolas, monospace; }
 
         input, textarea, select {
             user-select: text;
@@ -102,7 +116,6 @@
             touch-action: manipulation;
         }
 
-        /* 背景全面塗り（iPadOSセーフエリアの黒帯を根本排除） */
         .bg-bleed {
             position: fixed;
             inset: -120px;
@@ -111,9 +124,10 @@
                 linear-gradient(to right, var(--border) 1px, transparent 1px),
                 linear-gradient(to bottom, var(--border) 1px, transparent 1px);
             background-size: 48px 48px;
-            opacity: 0.28;
+            opacity: 0.24;
             z-index: 0;
             pointer-events: none;
+            transition: background 0.35s ease;
         }
 
         .os-shell {
@@ -122,14 +136,13 @@
             z-index: 1;
             display: flex;
             flex-direction: column;
-            background: transparent;
             padding-top: max(26px, env(safe-area-inset-top, 20px));
             padding-bottom: max(10px, env(safe-area-inset-bottom, 6px));
         }
 
         /* ====== トップバー ====== */
         .top-bar {
-            height: 40px;
+            height: 42px;
             padding: 0 20px;
             display: flex;
             align-items: center;
@@ -138,6 +151,7 @@
             background: var(--bg);
             flex-shrink: 0;
             gap: 10px;
+            transition: background 0.3s ease;
         }
 
         .page-tabs {
@@ -153,24 +167,22 @@
             background: transparent;
             color: var(--muted);
             border: 1px solid transparent;
-            padding: 5px 10px;
-            font-size: 0.75rem;
+            padding: 5px 11px;
+            font-size: 0.74rem;
             font-weight: 700;
             letter-spacing: 0.06em;
             cursor: pointer;
             white-space: nowrap;
+            transition: all 0.22s cubic-bezier(0.22, 1, 0.36, 1);
         }
+        .tab-chip:hover { color: var(--fg); }
         .tab-chip.active {
             color: var(--accent-fg);
             background: var(--accent);
             border-color: var(--accent);
         }
 
-        .top-actions {
-            display: flex;
-            align-items: center;
-            gap: 6px;
-        }
+        .top-actions { display: flex; align-items: center; gap: 6px; }
 
         .btn-sharp {
             display: inline-flex;
@@ -179,57 +191,48 @@
             background: var(--surface);
             color: var(--fg);
             border: 1px solid var(--border);
+            box-shadow: inset 0 1px 0 var(--top-edge), 0 2px 6px rgba(0, 0, 0, 0.2);
             padding: 5px 11px;
-            font-size: 0.74rem;
+            font-size: 0.73rem;
             font-weight: 700;
             letter-spacing: 0.04em;
             cursor: pointer;
             white-space: nowrap;
+            transition: transform 0.16s cubic-bezier(0.22, 1, 0.36, 1), border-color 0.18s, background 0.18s;
         }
-        .btn-sharp:hover { border-color: var(--border-strong); }
-        .btn-sharp:active { background: var(--surface-alt); }
-        .btn-sharp.primary {
-            background: var(--accent);
-            color: var(--accent-fg);
-            border-color: var(--accent);
-        }
-        .btn-sharp.danger {
-            color: var(--danger);
-            border-color: var(--danger);
-        }
-        .btn-sharp svg { width: 13px; height: 13px; }
+        .btn-sharp:hover { border-color: var(--border-strong); transform: translateY(-1px); }
+        .btn-sharp:active { transform: scale(0.96); background: var(--surface-alt); }
+        .btn-sharp.primary { background: var(--accent); color: var(--accent-fg); border-color: var(--accent); }
+        .btn-sharp.danger { color: var(--danger); border-color: var(--danger); }
 
-        /* ====== 編集インスペクタバー（編集モード時のみ展開） ====== */
+        /* ====== 編集インスペクタ ====== */
         .edit-inspector {
-            display: none;
-            padding: 8px 20px;
+            max-height: 0;
+            overflow: hidden;
+            padding: 0 20px;
             background: var(--surface);
-            border-bottom: 1px solid var(--border);
+            border-bottom: 0 solid var(--border);
+            display: flex;
             align-items: center;
             justify-content: space-between;
             flex-wrap: wrap;
             gap: 8px;
             flex-shrink: 0;
+            opacity: 0;
+            transition: max-height 0.28s cubic-bezier(0.22, 1, 0.36, 1), padding 0.28s ease, opacity 0.22s ease;
         }
-        .editing .edit-inspector { display: flex; }
+        .editing .edit-inspector {
+            max-height: 140px;
+            padding: 8px 20px;
+            border-bottom-width: 1px;
+            opacity: 1;
+        }
 
-        .inspector-left {
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            font-size: 0.74rem;
-            color: var(--muted);
-        }
+        .inspector-left { font-size: 0.74rem; color: var(--muted); }
         .inspector-left strong { color: var(--fg); }
+        .inspector-controls { display: flex; align-items: center; gap: 5px; flex-wrap: wrap; }
 
-        .inspector-controls {
-            display: flex;
-            align-items: center;
-            gap: 5px;
-            flex-wrap: wrap;
-        }
-
-        /* ====== ページスワイプビューポート ====== */
+        /* ====== スワイプトラック ====== */
         .pages-track {
             flex: 1;
             min-height: 0;
@@ -249,19 +252,18 @@
             scroll-snap-align: start;
             scroll-snap-stop: always;
             overflow-y: auto;
-            padding: 18px 20px;
+            padding: 18px 20px 22px;
             display: flex;
             justify-content: center;
             align-items: flex-start;
         }
 
-        /* 正方形アイコン＋長方形ウィジェットの厳密グリッド */
         .bento-grid {
             --cols: 6;
-            --gap: 12px;
+            --gap: 13px;
             --cell: 108px;
             width: 100%;
-            max-width: 880px;
+            max-width: 900px;
             display: grid;
             grid-template-columns: repeat(var(--cols), 1fr);
             grid-auto-rows: var(--cell);
@@ -269,36 +271,49 @@
             gap: var(--gap);
         }
 
-        /* ====== タイル共通 ====== */
+        /* ====== 浮かぶタイルデザイン ====== */
         .tile {
             position: relative;
             background: var(--surface);
             border: 1px solid var(--border);
+            box-shadow: inset 0 1px 0 var(--top-edge), var(--shadow-rest);
             color: var(--fg);
             text-decoration: none;
             display: flex;
             flex-direction: column;
             overflow: hidden;
             cursor: pointer;
-            transition: border-color 0.12s, background-color 0.12s;
+            container-type: size;
+            transition:
+                transform 0.24s cubic-bezier(0.22, 1, 0.36, 1),
+                box-shadow 0.24s cubic-bezier(0.22, 1, 0.36, 1),
+                border-color 0.2s ease,
+                background-color 0.2s ease;
         }
-        .tile:hover { border-color: var(--border-strong); }
-        .tile:active { background: var(--surface-alt); }
+        .tile:hover {
+            transform: translateY(-3px);
+            border-color: var(--border-strong);
+            box-shadow: inset 0 1px 0 var(--top-edge), var(--shadow-lift);
+        }
+        .tile:active {
+            transform: translateY(0) scale(0.97);
+            background: var(--surface-alt);
+        }
 
-        /* 選択・ドラッグ状態 */
         .tile.is-selected {
             outline: 2px solid var(--accent);
             outline-offset: -2px;
             z-index: 3;
+            transform: translateY(-2px);
+            box-shadow: inset 0 1px 0 var(--top-edge), var(--shadow-lift);
         }
         .tile.drop-target {
             outline: 2px dashed var(--accent);
             outline-offset: -2px;
             background: var(--surface-alt);
+            transform: scale(0.96);
         }
-        .tile.is-dragging {
-            opacity: 0.35;
-        }
+        .tile.is-dragging { opacity: 0.28; transform: scale(0.94); }
 
         .drag-ghost {
             position: fixed;
@@ -306,12 +321,11 @@
             z-index: 9999;
             background: var(--surface-alt);
             border: 2px solid var(--accent);
-            opacity: 0.92;
-            transform: translate(-50%, -50%);
-            box-shadow: 0 16px 32px rgba(0, 0, 0, 0.45);
+            transform: translate(-50%, -50%) scale(1.04);
+            box-shadow: 0 22px 44px rgba(0, 0, 0, 0.55);
         }
 
-        /* アプリ（1x1 完全正方形） */
+        /* 1×1 正方形アプリタイル */
         .tile.is-app {
             align-items: center;
             justify-content: center;
@@ -329,7 +343,9 @@
             display: flex;
             align-items: center;
             justify-content: center;
+            transition: transform 0.24s cubic-bezier(0.22, 1, 0.36, 1);
         }
+        .tile.is-app:hover .app-glyph { transform: scale(1.08); }
         .app-glyph svg { width: 100%; height: 100%; display: block; }
         .app-title {
             font-size: 0.72rem;
@@ -343,133 +359,186 @@
             padding: 0 4px;
         }
 
-        /* 編集モード用左上番号/削除バッジ */
         .tile-badge {
-            display: none;
             position: absolute;
             top: 0;
             right: 0;
             background: var(--accent);
             color: var(--accent-fg);
-            font-size: 0.65rem;
+            font-size: 0.62rem;
             font-weight: 700;
             padding: 2px 6px;
             z-index: 4;
+            opacity: 0;
+            transform: translateY(-4px);
+            transition: opacity 0.2s ease, transform 0.2s ease;
+            pointer-events: none;
         }
-        .editing .tile-badge { display: block; }
+        .editing .tile-badge { opacity: 1; transform: translateY(0); }
 
-        /* ウィジェットサイズ（長方形パネル） */
+        /* ウィジェットサイズ */
         .tile.sz-2x1 { grid-column: span 2; grid-row: span 1; }
+        .tile.sz-3x1 { grid-column: span 3; grid-row: span 1; }
+        .tile.sz-4x1 { grid-column: span 4; grid-row: span 1; }
+        .tile.sz-6x1 { grid-column: span 6; grid-row: span 1; }
         .tile.sz-2x2 { grid-column: span 2; grid-row: span 2; }
         .tile.sz-3x2 { grid-column: span 3; grid-row: span 2; }
         .tile.sz-4x2 { grid-column: span 4; grid-row: span 2; }
         .tile.sz-6x2 { grid-column: span 6; grid-row: span 2; }
 
-        /* ウィジェット内部レイアウト */
+        /* ウィジェット内部 */
         .w-panel {
             width: 100%;
             height: 100%;
-            padding: 14px 16px;
+            padding: 12px 15px;
             display: flex;
             flex-direction: column;
-            justify-content: space-between;
             overflow: hidden;
         }
         .w-head {
             display: flex;
             justify-content: space-between;
             align-items: center;
-            font-size: 0.68rem;
+            font-size: 0.66rem;
             font-weight: 700;
             letter-spacing: 0.08em;
             color: var(--muted);
             border-bottom: 1px solid var(--border);
-            padding-bottom: 6px;
+            padding-bottom: 5px;
             margin-bottom: 8px;
             flex-shrink: 0;
         }
 
-        /* 時計ウィジェット */
+        /* 修正：デジタル時計（パネルサイズに比例して大きく中央表示） */
+        .w-clock-body {
+            flex: 1;
+            min-height: 0;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            gap: 6px;
+        }
         .w-clock-time {
-            font-size: clamp(2rem, 4.2vw, 3.2rem);
+            font-size: clamp(1.8rem, min(19cqw, 36cqh), 6.2rem);
             font-weight: 800;
-            line-height: 1;
+            line-height: 0.95;
             letter-spacing: -0.04em;
             font-variant-numeric: tabular-nums;
+            white-space: nowrap;
         }
         .w-clock-date {
-            font-size: 0.82rem;
+            font-size: clamp(0.72rem, min(4.2cqw, 9cqh), 1.3rem);
             color: var(--muted);
             font-weight: 600;
-            margin-top: 6px;
+            letter-spacing: 0.04em;
+        }
+
+        /* 新規：洗練された丸型アナログ時計 */
+        .w-analog-body {
+            flex: 1;
+            min-height: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 14px;
+        }
+        .w-analog-svg {
+            height: 92%;
+            max-width: 92%;
+            aspect-ratio: 1;
+            flex-shrink: 0;
+        }
+        .w-analog-meta {
+            display: none;
+            flex-direction: column;
+            gap: 4px;
+        }
+        @container (min-width: 300px) {
+            .w-analog-meta { display: flex; }
+        }
+
+        /* 新規：検索ボックスウィジェット */
+        .w-search-wrap {
+            flex: 1;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            min-height: 0;
+            position: relative;
+        }
+        .w-search-input {
+            flex: 1;
+            height: 100%;
+            max-height: 44px;
+            background: var(--bg);
+            border: 1px solid var(--border);
+            color: var(--fg);
+            padding: 0 12px;
+            font-size: 0.92rem;
+            outline: none;
+            min-width: 0;
+            transition: border-color 0.2s;
+        }
+        .w-search-input:focus { border-color: var(--accent); }
+        .w-search-btn {
+            height: 100%;
+            max-height: 44px;
+            padding: 0 16px;
         }
 
         /* 天気ウィジェット */
+        .w-loc-btn {
+            background: transparent;
+            border: 1px solid var(--border);
+            color: var(--fg);
+            font-size: 0.66rem;
+            font-weight: 700;
+            padding: 2px 7px;
+            cursor: pointer;
+            letter-spacing: 0.05em;
+        }
+        .w-loc-btn:hover { border-color: var(--accent); color: var(--accent); }
         .w-weather-top {
             display: flex;
             justify-content: space-between;
             align-items: baseline;
+            margin-bottom: 4px;
         }
         .w-weather-temp {
-            font-size: 2.1rem;
+            font-size: clamp(1.6rem, 11cqw, 2.5rem);
             font-weight: 800;
             line-height: 1;
             font-variant-numeric: tabular-nums;
         }
-        .w-weather-svg { width: 100%; height: 42px; overflow: visible; }
-        .w-weather-hours {
-            display: flex;
-            justify-content: space-between;
-            font-size: 0.66rem;
-            color: var(--muted);
-        }
-        .w-rain-bars {
-            display: flex;
-            justify-content: space-between;
-            align-items: flex-end;
-            gap: 8px;
-            height: 20px;
-            margin-top: 4px;
-        }
+        .w-weather-svg { width: 100%; flex: 1; min-height: 36px; max-height: 64px; overflow: visible; }
+        .w-weather-hours { display: flex; justify-content: space-between; font-size: 0.65rem; color: var(--muted); margin-top: 2px; }
+        .w-rain-bars { display: flex; justify-content: space-between; align-items: flex-end; gap: 8px; height: 22px; margin-top: 4px; }
         .w-rain-col { flex: 1; display: flex; flex-direction: column; align-items: center; gap: 2px; }
         .w-rain-fill { width: 100%; background: var(--accent); opacity: 0.65; min-height: 2px; }
         .w-rain-txt { font-size: 0.6rem; color: var(--muted); }
 
-        /* タイマーウィジェット */
+        /* タイマー / オーディオ / メモ / ToDo / 時間割 */
+        .w-timer-body { flex: 1; display: flex; flex-direction: column; justify-content: center; gap: 10px; }
         .w-timer-row { display: flex; align-items: center; justify-content: space-between; gap: 10px; }
-        .w-timer-num { font-size: 2.3rem; font-weight: 800; font-variant-numeric: tabular-nums; line-height: 1; }
-        .w-timer-btns { display: flex; gap: 5px; flex-wrap: wrap; margin-top: 8px; }
+        .w-timer-num { font-size: clamp(1.8rem, 15cqw, 3rem); font-weight: 800; font-variant-numeric: tabular-nums; line-height: 1; }
+        .w-timer-btns { display: flex; gap: 5px; flex-wrap: wrap; }
 
-        /* オーディオデッキ（レコード）ウィジェット */
-        .w-audio-body {
-            display: flex;
-            align-items: center;
-            gap: 14px;
-            flex: 1;
-            min-height: 0;
-        }
+        .w-audio-body { display: flex; align-items: center; gap: 14px; flex: 1; min-height: 0; }
         .w-disc {
-            width: 72px;
-            height: 72px;
+            width: 68px;
+            height: 68px;
             border: 2px solid var(--fg);
             display: flex;
             align-items: center;
             justify-content: center;
             flex-shrink: 0;
-            position: relative;
         }
-        .w-disc-inner {
-            width: 24px;
-            height: 24px;
-            border: 2px solid var(--accent);
-            background: var(--surface-alt);
-        }
-        .w-disc.playing {
-            animation: spinStep 4s linear infinite;
-        }
+        .w-disc-inner { width: 22px; height: 22px; border: 2px solid var(--accent); background: var(--surface-alt); }
+        .w-disc.playing { animation: spinStep 4s linear infinite; }
         @keyframes spinStep { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
 
-        /* メモ・ToDo・時間割 */
         .w-textarea {
             width: 100%;
             flex: 1;
@@ -519,35 +588,15 @@
         }
         .w-todo-row.done .w-chk { background: var(--accent); border-color: var(--accent); }
 
-        .w-sch-grid {
-            display: grid;
-            grid-template-columns: repeat(2, 1fr);
-            gap: 6px;
-            flex: 1;
-        }
-        .w-sch-cell {
-            display: flex;
-            align-items: center;
-            gap: 6px;
-            border: 1px solid var(--border);
-            background: var(--bg);
-            padding: 3px 7px;
-        }
+        .w-sch-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 6px; flex: 1; }
+        .w-sch-cell { display: flex; align-items: center; gap: 6px; border: 1px solid var(--border); background: var(--bg); padding: 3px 7px; }
         .w-sch-cell span { font-size: 0.72rem; font-weight: 700; color: var(--accent); }
-        .w-sch-cell input {
-            flex: 1;
-            min-width: 0;
-            background: transparent;
-            border: none;
-            color: var(--fg);
-            font-size: 0.8rem;
-            outline: none;
-        }
+        .w-sch-cell input { flex: 1; min-width: 0; background: transparent; border: none; color: var(--fg); font-size: 0.8rem; outline: none; }
 
-        /* ====== 下部 Dock バー ====== */
+        /* ====== 下部 Dock バー（浮かぶコンテナ） ====== */
         .dock-wrap {
             flex-shrink: 0;
-            padding: 8px 20px 2px;
+            padding: 6px 20px 2px;
             display: flex;
             justify-content: center;
         }
@@ -557,6 +606,7 @@
             gap: 8px;
             background: var(--surface);
             border: 1px solid var(--border);
+            box-shadow: inset 0 1px 0 var(--top-edge), var(--shadow-lift);
             padding: 6px;
             max-width: 100%;
             overflow-x: auto;
@@ -569,6 +619,7 @@
             height: 56px;
             background: var(--bg);
             border: 1px solid var(--border);
+            box-shadow: 0 2px 6px rgba(0, 0, 0, 0.25);
             color: var(--fg);
             text-decoration: none;
             display: flex;
@@ -578,55 +629,57 @@
             gap: 3px;
             flex-shrink: 0;
             cursor: pointer;
+            transition: transform 0.2s cubic-bezier(0.22, 1, 0.36, 1), border-color 0.2s;
         }
-        .dock-item:hover { border-color: var(--border-strong); }
+        .dock-item:hover { transform: translateY(-2px); border-color: var(--border-strong); }
+        .dock-item:active { transform: scale(0.94); }
         .dock-item.is-selected { outline: 2px solid var(--accent); outline-offset: -2px; }
         .dock-item svg { width: 22px; height: 22px; }
-        .dock-item span {
-            font-size: 0.56rem;
-            font-weight: 600;
-            max-width: 50px;
-            overflow: hidden;
-            text-overflow: ellipsis;
-            white-space: nowrap;
-            color: var(--muted);
-        }
+        .dock-item span { font-size: 0.56rem; font-weight: 600; max-width: 50px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; color: var(--muted); }
 
-        /* ====== モーダル ====== */
+        /* ====== モーダル（滑らかフェード＋スライド） ====== */
         .modal-bg {
-            display: none;
             position: fixed;
             inset: 0;
             z-index: 200;
-            background: rgba(0, 0, 0, 0.72);
+            background: rgba(0, 0, 0, 0.68);
+            display: flex;
             align-items: center;
             justify-content: center;
             padding: 20px;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.22s ease;
         }
-        .modal-bg.open { display: flex; }
+        .modal-bg.open { opacity: 1; pointer-events: auto; }
 
         .modal-panel {
             width: 100%;
-            max-width: 500px;
+            max-width: 520px;
             background: var(--surface);
             border: 1px solid var(--border-strong);
+            box-shadow: var(--shadow-lift);
             padding: 20px;
             display: flex;
             flex-direction: column;
             gap: 14px;
             max-height: 86vh;
             overflow-y: auto;
+            transform: translateY(14px) scale(0.98);
+            transition: transform 0.28s cubic-bezier(0.22, 1, 0.36, 1);
         }
+        .modal-bg.open .modal-panel { transform: translateY(0) scale(1); }
+
         .modal-panel h3 {
-            font-size: 0.95rem;
+            font-size: 0.92rem;
             font-weight: 800;
-            letter-spacing: 0.05em;
+            letter-spacing: 0.06em;
             border-bottom: 1px solid var(--border);
             padding-bottom: 8px;
         }
         .field { display: flex; flex-direction: column; gap: 5px; }
         .field label { font-size: 0.72rem; font-weight: 700; color: var(--muted); letter-spacing: 0.04em; }
-        .field input, .field select, .field textarea {
+        .field input, .field select {
             background: var(--bg);
             border: 1px solid var(--border);
             color: var(--fg);
@@ -638,8 +691,11 @@
 
         .icon-picker {
             display: grid;
-            grid-template-columns: repeat(6, 1fr);
-            gap: 6px;
+            grid-template-columns: repeat(7, 1fr);
+            gap: 5px;
+            max-height: 210px;
+            overflow-y: auto;
+            padding: 2px;
         }
         .ip-btn {
             aspect-ratio: 1;
@@ -650,13 +706,11 @@
             align-items: center;
             justify-content: center;
             cursor: pointer;
-            padding: 10px;
+            padding: 8px;
+            transition: transform 0.12s, background 0.15s;
         }
-        .ip-btn.active {
-            border-color: var(--accent);
-            background: var(--accent);
-            color: var(--accent-fg);
-        }
+        .ip-btn:hover { border-color: var(--border-strong); }
+        .ip-btn.active { border-color: var(--accent); background: var(--accent); color: var(--accent-fg); }
         .ip-btn svg { width: 100%; height: 100%; }
 
         .theme-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 6px; }
@@ -667,10 +721,14 @@
             padding: 10px;
             text-align: left;
             cursor: pointer;
+            transition: border-color 0.15s, transform 0.15s;
         }
+        .theme-btn:hover { border-color: var(--border-strong); transform: translateY(-1px); }
         .theme-btn.active { border-color: var(--accent); background: var(--surface-alt); }
         .theme-btn strong { display: block; font-size: 0.82rem; }
         .theme-btn span { font-size: 0.7rem; color: var(--muted); }
+
+        .city-chips { display: flex; flex-wrap: wrap; gap: 6px; }
 
         /* 検索モーダル */
         .search-modal { align-items: flex-start; padding-top: 10vh; }
@@ -679,22 +737,13 @@
             max-width: 540px;
             background: var(--surface);
             border: 1px solid var(--border-strong);
+            box-shadow: var(--shadow-lift);
+            transform: translateY(-10px);
+            transition: transform 0.25s cubic-bezier(0.22, 1, 0.36, 1);
         }
-        .search-head {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            padding: 12px 14px;
-            border-bottom: 1px solid var(--border);
-        }
-        .search-head input {
-            flex: 1;
-            background: transparent;
-            border: none;
-            color: var(--fg);
-            font-size: 1rem;
-            outline: none;
-        }
+        .modal-bg.open .search-box { transform: translateY(0); }
+        .search-head { display: flex; align-items: center; gap: 10px; padding: 12px 14px; border-bottom: 1px solid var(--border); }
+        .search-head input { flex: 1; background: transparent; border: none; color: var(--fg); font-size: 1rem; outline: none; }
         .search-list { max-height: 48vh; overflow-y: auto; }
         .search-row {
             display: flex;
@@ -706,10 +755,10 @@
             color: var(--fg);
             cursor: pointer;
         }
-        .search-row:hover, .search-row.focused { background: var(--surface-alt); }
+        .search-row:hover { background: var(--surface-alt); }
         .search-row svg { width: 20px; height: 20px; flex-shrink: 0; }
 
-        /* トースト（元に戻す通知） */
+        /* トースト */
         .toast {
             position: fixed;
             bottom: 84px;
@@ -724,15 +773,15 @@
             align-items: center;
             gap: 12px;
             z-index: 300;
+            box-shadow: var(--shadow-lift);
         }
         .toast.show { display: flex; }
 
         @media (max-width: 720px) {
             .page-pane { padding: 12px; }
-            .bento-grid { --cols: 4; --gap: 8px; }
-            .tile.sz-6x2 { grid-column: span 4; }
-            .tile.sz-4x2 { grid-column: span 4; }
-            .tile.sz-3x2 { grid-column: span 4; }
+            .bento-grid { --cols: 4; --gap: 9px; }
+            .tile.sz-6x2, .tile.sz-4x2, .tile.sz-3x2 { grid-column: span 4; }
+            .tile.sz-6x1, .tile.sz-4x1, .tile.sz-3x1 { grid-column: span 4; }
         }
     </style>
 </head>
@@ -741,44 +790,39 @@
     <div class="bg-bleed"></div>
 
     <div class="os-shell" id="osShell">
-        <!-- トップバー -->
         <header class="top-bar">
             <div class="page-tabs" id="pageTabs"></div>
             <div class="top-actions">
                 <button class="btn-sharp mono" onclick="openSearch()">SEARCH [/]</button>
-                <button class="btn-sharp mono" onclick="openThemeModal()">THEME</button>
+                <button class="btn-sharp mono" onclick="openModal('themeModal'); applyTheme();">THEME</button>
                 <button class="btn-sharp mono" id="editBtn" onclick="toggleEditMode()">EDIT [E]</button>
             </div>
         </header>
 
-        <!-- 編集インスペクタ（編集モード時のみ表示・絶対バグらない操作系） -->
         <div class="edit-inspector">
             <div class="inspector-left mono" id="selInfo">SELECT A TILE (OR USE ARROWS)</div>
             <div class="inspector-controls">
-                <button class="btn-sharp" onclick="moveSelected(-1)" title="前へ (Shift+←)">◀ 前へ</button>
-                <button class="btn-sharp" onclick="moveSelected(1)" title="次へ (Shift+→)">次へ ▶</button>
+                <button class="btn-sharp" onclick="moveSelected(-1)">◀ 前へ</button>
+                <button class="btn-sharp" onclick="moveSelected(1)">次へ ▶</button>
                 <button class="btn-sharp" id="btnResize" style="display:none;" onclick="cycleSelectedSize()">サイズ変更</button>
                 <button class="btn-sharp" id="btnEditSel" onclick="editSelectedItem()">設定</button>
                 <button class="btn-sharp danger" onclick="deleteSelectedItem()">削除</button>
                 <button class="btn-sharp" id="btnUndo" onclick="undoAction()" style="display:none;">元に戻す</button>
-                <button class="btn-sharp primary" onclick="openAddModal()">＋ 追加 [N]</button>
+                <button class="btn-sharp primary" onclick="openModal('addModal')">＋ 追加 [N]</button>
                 <button class="btn-sharp" onclick="addPage()">＋ ページ</button>
                 <button class="btn-sharp primary" onclick="toggleEditMode(false)">完了 [Esc]</button>
             </div>
         </div>
 
-        <!-- ページエリア -->
         <main class="pages-track" id="pagesTrack"></main>
 
-        <!-- 下部Dock -->
         <footer class="dock-wrap">
             <nav class="dock-bar" id="dockBar"></nav>
         </footer>
     </div>
 
-    <!-- Undoトースト -->
     <div class="toast mono" id="undoToast">
-        <span id="toastMsg">DELETED</span>
+        <span id="toastMsg">UPDATED</span>
         <button class="btn-sharp" style="padding:3px 8px;" onclick="undoAction()">UNDO</button>
     </div>
 
@@ -789,8 +833,10 @@
             <button class="btn-sharp primary" style="justify-content:center; padding:11px;" onclick="closeModal('addModal'); openAppModal();">＋ 新しいアプリアイコンを追加</button>
             <div style="font-size:0.74rem; color:var(--muted); font-weight:700;">長方形ウィジェットパネルを追加</div>
             <div class="theme-grid">
-                <button class="theme-btn" onclick="addWidget('clock','3x2')"><strong>CLOCK</strong><span>特大デジタル時計 (3×2)</span></button>
-                <button class="theme-btn" onclick="addWidget('weather','3x2')"><strong>WEATHER</strong><span>気温グラフ＆降水確率 (3×2)</span></button>
+                <button class="theme-btn" onclick="addWidget('search','6x1')"><strong>SEARCH BOX</strong><span>アプリ＆Web検索バー (6×1)</span></button>
+                <button class="theme-btn" onclick="addWidget('clock','2x2')"><strong>DIGITAL CLOCK</strong><span>拡大対応の大型時計 (2×2)</span></button>
+                <button class="theme-btn" onclick="addWidget('analog','2x2')"><strong>ANALOG CLOCK</strong><span>洗練された丸型時計 (2×2)</span></button>
+                <button class="theme-btn" onclick="addWidget('weather','2x2')"><strong>WEATHER</strong><span>場所選択・グラフ・降水確率 (2×2)</span></button>
                 <button class="theme-btn" onclick="addWidget('timer','2x2')"><strong>TIMER</strong><span>バックグラウンド対応 (2×2)</span></button>
                 <button class="theme-btn" onclick="addWidget('audio','2x2')"><strong>AUDIO DECK</strong><span>Lo-Fi自動演奏レコード (2×2)</span></button>
                 <button class="theme-btn" onclick="addWidget('note','3x2')"><strong>NOTES</strong><span>自動保存メモパッド (3×2)</span></button>
@@ -798,6 +844,37 @@
                 <button class="theme-btn" onclick="addWidget('schedule','4x2')"><strong>TIMETABLE</strong><span>1〜6限の時間割 (4×2)</span></button>
             </div>
             <button class="btn-sharp" style="justify-content:center;" onclick="closeModal('addModal')">閉じる</button>
+        </div>
+    </div>
+
+    <!-- 天気 場所選択モーダル -->
+    <div class="modal-bg" id="cityModal" onclick="if(event.target===this) closeModal('cityModal')">
+        <div class="modal-panel">
+            <h3 class="mono">WEATHER LOCATION</h3>
+            <div class="field">
+                <label>よく使う都市（ワンタップ）</label>
+                <div class="city-chips">
+                    <button class="btn-sharp" onclick="selectWeatherCity('TOKYO', 35.6762, 139.6503)">東京</button>
+                    <button class="btn-sharp" onclick="selectWeatherCity('OSAKA', 34.6937, 135.5023)">大阪</button>
+                    <button class="btn-sharp" onclick="selectWeatherCity('NAGOYA', 35.1815, 136.9066)">名古屋</button>
+                    <button class="btn-sharp" onclick="selectWeatherCity('YOKOHAMA', 35.4437, 139.6380)">横浜</button>
+                    <button class="btn-sharp" onclick="selectWeatherCity('KYOTO', 35.0116, 135.7681)">京都</button>
+                    <button class="btn-sharp" onclick="selectWeatherCity('FUKUOKA', 33.5902, 130.4017)">福岡</button>
+                    <button class="btn-sharp" onclick="selectWeatherCity('SAPPORO', 43.0618, 141.3545)">札幌</button>
+                    <button class="btn-sharp" onclick="selectWeatherCity('SENDAI', 38.2682, 140.8694)">仙台</button>
+                    <button class="btn-sharp" onclick="selectWeatherCity('NAHA', 26.2124, 127.6809)">那覇</button>
+                </div>
+            </div>
+            <div class="field">
+                <label>都市名で検索（世界の都市・市区町村）</label>
+                <div style="display:flex; gap:6px;">
+                    <input type="text" id="cityQueryInput" style="flex:1;" placeholder="例：渋谷, London, 札幌..." onkeydown="if(event.key==='Enter') searchCityGeo()">
+                    <button class="btn-sharp primary" onclick="searchCityGeo()">検索</button>
+                </div>
+            </div>
+            <div id="citySearchResults" style="display:flex; flex-direction:column; gap:5px;"></div>
+            <button class="btn-sharp" style="justify-content:center;" onclick="useGpsWeather()">現在地（GPS）を取得</button>
+            <button class="btn-sharp" style="justify-content:center;" onclick="closeModal('cityModal')">閉じる</button>
         </div>
     </div>
 
@@ -810,11 +887,11 @@
                 <input type="text" id="fName" placeholder="例：Notion">
             </div>
             <div class="field">
-                <label>URL（アプリ起動は https://... 推奨）</label>
-                <input type="text" id="fUrl" placeholder="https://www.notion.so/">
+                <label>URL（アプリ起動URL / https://...）</label>
+                <input type="text" id="fUrl" placeholder="https://...">
             </div>
             <div class="field">
-                <label>アイコンを選択（一目でわかるシンプル統一デザイン）</label>
+                <label>アイコンを選択</label>
                 <div class="icon-picker" id="iconPicker"></div>
             </div>
             <div class="field">
@@ -832,7 +909,7 @@
         </div>
     </div>
 
-    <!-- テーマ・拡張設定モーダル -->
+    <!-- テーマ・バックアップモーダル -->
     <div class="modal-bg" id="themeModal" onclick="if(event.target===this) closeModal('themeModal')">
         <div class="modal-panel">
             <h3 class="mono">SYSTEM &amp; THEME</h3>
@@ -847,7 +924,7 @@
                 </div>
             </div>
             <div class="field">
-                <label>列数設定（PC / iPad横向き）</label>
+                <label>列数設定（iPad横向き / PC）</label>
                 <select id="fCols" onchange="setCols(this.value)">
                     <option value="5">5列</option>
                     <option value="6">6列（標準）</option>
@@ -862,7 +939,7 @@
                 </div>
             </div>
             <div style="display:flex; justify-content:space-between; margin-top:4px;">
-                <button class="btn-sharp danger" onclick="resetAll()">初期状態に戻す</button>
+                <button class="btn-sharp danger" onclick="resetAll()">全アプリ初期配置に戻す</button>
                 <button class="btn-sharp primary" onclick="closeModal('themeModal')">閉じる</button>
             </div>
         </div>
@@ -872,7 +949,7 @@
     <div class="modal-bg search-modal" id="searchModal" onclick="if(event.target===this) closeModal('searchModal')">
         <div class="search-box">
             <div class="search-head">
-                <span class="mono" style="font-size:0.8rem; color:var(--muted);">CMD+K</span>
+                <span class="mono" style="font-size:0.78rem; color:var(--muted);">CMD+K</span>
                 <input type="text" id="searchInput" placeholder="アプリを検索 / Google検索..." autocomplete="off">
             </div>
             <div class="search-list" id="searchList"></div>
@@ -881,86 +958,179 @@
 
     <script>
         /* =========================================================
-           1. 単色・高視認ミニマルSVGアイコンセット（24種類）
+           1. 全アプリ対応・統一ミニマルSVGアイコン集（48種類）
         ========================================================= */
         const GLYPHS = {
-            loilo:     `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="square"><rect x="3" y="3" width="10" height="8"/><rect x="11" y="13" width="10" height="8"/><path d="M13 7h4v4"/></svg>`,
-            google:    `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="square"><path d="M20 12h-8M19.2 8.2A8 8 0 1 0 20 12"/></svg>`,
-            classroom: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="square"><rect x="2" y="4" width="20" height="14"/><circle cx="12" cy="10" r="2.2"/><path d="M7.5 16c0-2 2-3.2 4.5-3.2s4.5 1.2 4.5 3.2M6 20h12"/></svg>`,
-            drive:     `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="miter"><polygon points="12,3 21,18 3,18"/><line x1="7.5" y1="10.5" x2="16.5" y2="10.5"/><line x1="12" y1="3" x2="7.5" y2="18"/></svg>`,
-            docs:      `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="4" y="3" width="16" height="18"/><line x1="8" y1="8" x2="16" y2="8"/><line x1="8" y1="12" x2="16" y2="12"/><line x1="8" y1="16" x2="13" y2="16"/></svg>`,
-            sheets:    `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="3" y="4" width="18" height="16"/><line x1="3" y1="10" x2="21" y2="10"/><line x1="3" y1="15" x2="21" y2="15"/><line x1="10" y1="4" x2="10" y2="20"/></svg>`,
-            slides:    `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="3" y="4" width="18" height="13"/><rect x="7" y="8" width="10" height="5"/><line x1="12" y1="17" x2="12" y2="21"/><line x1="8" y1="21" x2="16" y2="21"/></svg>`,
-            maps:      `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M12 21s-6-6.5-6-11a6 6 0 1 1 12 0c0 4.5-6 11-6 11z"/><circle cx="12" cy="10" r="2.2"/></svg>`,
-            youtube:   `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="2" y="5" width="20" height="14"/><polygon points="10,9 16,12 10,15" fill="currentColor" stroke="none"/></svg>`,
-            gmail:     `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="3" y="5" width="18" height="14"/><polyline points="3,6 12,13 21,6"/></svg>`,
-            meet:      `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="2" y="6" width="14" height="12"/><polygon points="16,10 22,7 22,17 16,14"/></svg>`,
-            gemini:    `<svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2C12 8.5 15.5 12 22 12C15.5 12 12 15.5 12 22C12 15.5 8.5 12 2 12C8.5 12 12 8.5 12 2Z"/></svg>`,
-            notion:    `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="4" y="4" width="16" height="16"/><path d="M8.5 16V8l7 8V8"/></svg>`,
-            canva:     `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9"/><path d="M15 9.2a4.5 4.5 0 1 0 0 5.6"/></svg>`,
-            github:    `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9"><polyline points="8 7 3 12 8 17"/><polyline points="16 7 21 12 16 17"/><line x1="14" y1="5" x2="10" y2="19"/></svg>`,
-            wikipedia: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9"><polyline points="3 6 7.5 18 12 9 16.5 18 21 6"/></svg>`,
-            deepl:     `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><polygon points="12,3 20,7.5 20,16.5 12,21 4,16.5 4,7.5"/><circle cx="12" cy="9" r="1.5" fill="currentColor"/><circle cx="9" cy="15" r="1.5" fill="currentColor"/><circle cx="15" cy="15" r="1.5" fill="currentColor"/></svg>`,
-            translate: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M4 6h10M9 4v2c0 4-2 7-5 9"/><path d="M7 10c1.5 2 3.5 3.5 6 4.5"/><path d="M14 20l3.5-9 3.5 9M15 17.5h5"/></svg>`,
-            calendar:  `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="3" y="5" width="18" height="16"/><line x1="3" y1="10" x2="21" y2="10"/><line x1="8" y1="3" x2="8" y2="7"/><line x1="16" y1="3" x2="16" y2="7"/></svg>`,
-            clock:     `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="12" r="9"/><polyline points="12 7 12 12 16 14"/></svg>`,
-            notes:     `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="4" y="3" width="16" height="18"/><line x1="4" y1="8" x2="20" y2="8"/><line x1="8" y1="13" x2="16" y2="13"/><line x1="8" y1="17" x2="13" y2="17"/></svg>`,
-            web:       `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="12" r="9"/><line x1="3" y1="12" x2="21" y2="12"/><ellipse cx="12" cy="12" rx="4" ry="9"/></svg>`,
-            book:      `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M2 5h8v14H2zM14 5h8v14h-8z"/><line x1="10" y1="5" x2="14" y2="5"/></svg>`,
-            tool:      `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><line x1="4" y1="7" x2="20" y2="7"/><line x1="4" y1="17" x2="20" y2="17"/><rect x="7" y="4" width="4" height="6" fill="var(--bg)"/><rect x="13" y="14" width="4" height="6" fill="var(--bg)"/></svg>`
+            // Apple純正
+            settings:   `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="12" r="3.2"/><path d="M12 2v3M12 19v3M4.9 4.9l2.1 2.1M17 17l2.1 2.1M2 12h3M19 12h3M4.9 19.1l2.1-2.1M17 7l2.1-2.1"/></svg>`,
+            calendar:   `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="3" y="5" width="18" height="16"/><line x1="3" y1="10" x2="21" y2="10"/><line x1="8" y1="3" x2="8" y2="7"/><line x1="16" y1="3" x2="16" y2="7"/></svg>`,
+            clock:      `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="12" r="9"/><polyline points="12 7 12 12 16 14"/></svg>`,
+            reminders:  `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="5" cy="7" r="1.2" fill="currentColor"/><line x1="9" y1="7" x2="20" y2="7"/><circle cx="5" cy="12" r="1.2" fill="currentColor"/><line x1="9" y1="12" x2="20" y2="12"/><circle cx="5" cy="17" r="1.2" fill="currentColor"/><line x1="9" y1="17" x2="20" y2="17"/></svg>`,
+            camera:     `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="2" y="6" width="20" height="14"/><path d="M8 6l2-3h4l2 3"/><circle cx="12" cy="13" r="3.5"/></svg>`,
+            calc:       `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="4" y="2" width="16" height="20"/><rect x="7" y="5" width="10" height="4"/><path d="M8 13h2M14 13h2M8 17h2M14 17h2"/></svg>`,
+            notes:      `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="4" y="3" width="16" height="18"/><line x1="4" y1="8" x2="20" y2="8"/><line x1="8" y1="13" x2="16" y2="13"/><line x1="8" y1="17" x2="13" y2="17"/></svg>`,
+            voicememos: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9"><line x1="4" y1="10" x2="4" y2="14"/><line x1="8" y1="6" x2="8" y2="18"/><line x1="12" y1="3" x2="12" y2="21"/><line x1="16" y1="8" x2="16" y2="16"/><line x1="20" y1="10" x2="20" y2="14"/></svg>`,
+            photos:     `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="3" y="4" width="18" height="16"/><circle cx="8.5" cy="9.5" r="1.5"/><polyline points="21 16 15 10 5 20"/></svg>`,
+            safari:     `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="12" r="9"/><polygon points="15.5,8.5 13.5,13.5 8.5,15.5 10.5,10.5"/></svg>`,
+            files:      `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M2 5h7l2 3h11v12H2z"/></svg>`,
+            books:      `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M2 5h9v14H2zM13 5h9v14h-9z"/></svg>`,
+            freeform:   `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9"><path d="M4 16c3-8 6 4 9-5s4 4 7-3"/></svg>`,
+            preview:    `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="11" cy="11" r="6"/><line x1="16" y1="16" x2="21" y2="21"/><line x1="11" y1="8" x2="11" y2="14"/><line x1="8" y1="11" x2="14" y2="11"/></svg>`,
+            magnifier:  `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="10.5" cy="10.5" r="7"/><line x1="16" y1="16" x2="21" y2="21"/></svg>`,
+            measure:    `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="2" y="7" width="20" height="10"/><line x1="6" y1="7" x2="6" y2="12"/><line x1="10" y1="7" x2="10" y2="10"/><line x1="14" y1="7" x2="14" y2="12"/><line x1="18" y1="7" x2="18" y2="10"/></svg>`,
+            weather:    `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="15" cy="8" r="3.5"/><path d="M6 19h11a4 4 0 0 0 .5-7.9A5.5 5.5 0 0 0 6.8 9.5 4.2 4.2 0 0 0 6 19z"/></svg>`,
+            translate:  `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M4 6h10M9 4v2c0 4-2 7-5 9"/><path d="M7 10c1.5 2 3.5 3.5 6 4.5"/><path d="M14 20l3.5-9 3.5 9M15 17.5h5"/></svg>`,
+            journal:    `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M12 5v14M12 8C9 4 4 5 4 9c0 3 4 4 8 3M12 8c3-4 8-3 8 1 0 3-4 4-8 3M12 13c-3 0-6 2-5 5 1 2 4 1 5-1M12 13c3 0 6 2 5 5-1 2-4 1-5-1"/></svg>`,
+            passwords:  `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="7.5" cy="14.5" r="3.5"/><path d="M10.5 12L19 3.5M16 6.5l2.5 2.5M14 8.5l2 2"/></svg>`,
+            tips:       `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M9 18h6M10 21h4M12 3a6 6 0 0 0-4 10.5c1 .9 1.5 2 1.5 2.5h5c0-.5.5-1.6 1.5-2.5A6 6 0 0 0 12 3z"/></svg>`,
+            game:       `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M14 4c4 0 6 2 6 6l-7 7-6-6 7-7z"/><path d="M7 11L3 15l6 6 4-4"/></svg>`,
+
+            // Google / Study / AI / Dev
+            classroom:  `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="2" y="4" width="20" height="14"/><circle cx="12" cy="10" r="2.2"/><path d="M7.5 16c0-2 2-3.2 4.5-3.2s4.5 1.2 4.5 3.2M6 20h12"/></svg>`,
+            google:     `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M20 12h-8M19.2 8.2A8 8 0 1 0 20 12"/></svg>`,
+            chrome:     `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="12" r="9"/><circle cx="12" cy="12" r="3.5"/><line x1="12" y1="8.5" x2="20" y2="8.5"/><line x1="9" y1="14" x2="5" y2="7"/><line x1="15" y1="14" x2="11" y2="21"/></svg>`,
+            drive:      `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><polygon points="12,3 21,18 3,18"/><line x1="7.5" y1="10.5" x2="16.5" y2="10.5"/><line x1="12" y1="3" x2="7.5" y2="18"/></svg>`,
+            maps:       `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M12 21s-6-6.5-6-11a6 6 0 1 1 12 0c0 4.5-6 11-6 11z"/><circle cx="12" cy="10" r="2.2"/></svg>`,
+            gphotos:    `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M12 12V4a4 4 0 0 1 4 4 4 4 0 0 1-4 4zM12 12h8a4 4 0 0 1-4 4 4 4 0 0 1-4-4zM12 12v8a4 4 0 0 1-4-4 4 4 0 0 1 4-4zM12 12H4a4 4 0 0 1 4-4 4 4 0 0 1 4 4z"/></svg>`,
+            gmail:      `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="3" y="5" width="18" height="14"/><polyline points="3,6 12,13 21,6"/></svg>`,
+            docs:       `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="4" y="3" width="16" height="18"/><line x1="8" y1="8" x2="16" y2="8"/><line x1="8" y1="12" x2="16" y2="12"/><line x1="8" y1="16" x2="13" y2="16"/></svg>`,
+            slides:     `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="3" y="4" width="18" height="13"/><rect x="7" y="8" width="10" height="5"/><line x1="12" y1="17" x2="12" y2="21"/><line x1="8" y1="21" x2="16" y2="21"/></svg>`,
+            sheets:     `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="3" y="4" width="18" height="16"/><line x1="3" y1="10" x2="21" y2="10"/><line x1="3" y1="15" x2="21" y2="15"/><line x1="10" y1="4" x2="10" y2="20"/></svg>`,
+            earth:      `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="12" r="9"/><path d="M3.6 9h16.8M3.6 15h16.8M12 3a14 14 0 0 0 0 18M12 3a14 14 0 0 1 0 18"/></svg>`,
+            zoom:       `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="2" y="6" width="14" height="12"/><polygon points="16,10 22,7 22,17 16,14"/></svg>`,
+            loilo:      `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9"><rect x="3" y="3" width="10" height="8"/><rect x="11" y="13" width="10" height="8"/><path d="M13 7h4v4"/></svg>`,
+            gelp:       `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9"><path d="M18 7a7 7 0 1 0 1 8h-6"/><polyline points="16,4 19,7 15,9"/></svg>`,
+            ashell:     `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M12 12a1 1 0 0 0 2 0 3 3 0 0 0-6 0 5 5 0 0 0 10 0 7 7 0 0 0-14 0 9 9 0 0 0 18 0"/></svg>`,
+            claude:     `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9"><line x1="12" y1="3" x2="12" y2="21"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="5.6" y1="5.6" x2="18.4" y2="18.4"/><line x1="18.4" y1="5.6" x2="5.6" y2="18.4"/></svg>`,
+            dropbox:    `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><polygon points="7,4 12,7 7,10 2,7"/><polygon points="17,4 22,7 17,10 12,7"/><polygon points="7,12 12,15 7,18 2,15"/><polygon points="17,12 22,15 17,18 12,15"/></svg>`,
+            firefox:    `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="12" r="9"/><path d="M12 3c4 2 5 6 2 9s-1 5 2 6"/></svg>`,
+            gemini:     `<svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2C12 8.5 15.5 12 22 12C15.5 12 12 15.5 12 22C12 15.5 8.5 12 2 12C8.5 12 12 8.5 12 2Z"/></svg>`,
+            ish:        `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="9" y1="4" x2="7" y2="20"/><line x1="17" y1="4" x2="15" y2="20"/><line x1="4" y1="9" x2="20" y2="9"/><line x1="3" y1="15" x2="19" y2="15"/></svg>`,
+            notebooklm: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9"><path d="M4 18a8 8 0 0 1 16 0"/><path d="M7.5 18a4.5 4.5 0 0 1 9 0"/><path d="M11 18a1 1 0 0 1 2 0"/></svg>`,
+            orion:      `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="12" r="9"/><path d="M12 6l1.5 4.5L18 12l-4.5 1.5L12 18l-1.5-4.5L6 12l4.5-1.5z"/></svg>`,
+            vivaldi:    `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="5 6 12 19 19 6"/></svg>`,
+            youtube:    `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="2" y="5" width="20" height="14"/><polygon points="10,9 16,12 10,15" fill="currentColor" stroke="none"/></svg>`,
+            notion:     `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="4" y="4" width="16" height="16"/><path d="M8.5 16V8l7 8V8"/></svg>`,
+            canva:      `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9"/><path d="M15 9.2a4.5 4.5 0 1 0 0 5.6"/></svg>`,
+            github:     `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9"><polyline points="8 7 3 12 8 17"/><polyline points="16 7 21 12 16 17"/><line x1="14" y1="5" x2="10" y2="19"/></svg>`,
+
+            // Study / Calligraphy / Science
+            shufa:      `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M12 3v3M5 7h14M6 7l-1 4M19 7l-1 4M8 11h8l-4 3v6"/><line x1="4" y1="15" x2="20" y2="15"/></svg>`,
+            suken:      `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="4" y="3" width="16" height="18"/><path d="M8 9h8M8 14h8M12 6v12"/></svg>`,
+            cisco:      `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M12 3l8 3v6c0 5-3.5 8.5-8 10-4.5-1.5-8-5-8-10V6l8-3z"/><polyline points="9 12 11.2 14.2 15.5 9.8"/></svg>`,
+            classic:    `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="12" r="7"/><circle cx="12" cy="5" r="1.5" fill="currentColor"/><circle cx="18.5" cy="9.8" r="1.5" fill="currentColor"/><circle cx="16" cy="17.5" r="1.5" fill="currentColor"/><circle cx="8" cy="17.5" r="1.5" fill="currentColor"/><circle cx="5.5" cy="9.8" r="1.5" fill="currentColor"/></svg>`,
+            graphical:  `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M3 12c3-7 6-7 9 0s6 7 9 0"/><line x1="3" y1="19" x2="21" y2="19"/></svg>`,
+            analyzer:   `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><line x1="4" y1="18" x2="4" y2="12"/><line x1="8" y1="18" x2="8" y2="7"/><line x1="12" y1="18" x2="12" y2="10"/><line x1="16" y1="18" x2="16" y2="5"/><line x1="20" y1="18" x2="20" y2="14"/></svg>`,
+            phyphox:    `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="6" y="2" width="12" height="20"/><path d="M8 12h2l1.5-4 2 8 1.5-4h1"/></svg>`,
+            forest:     `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><polygon points="12,3 5,14 19,14"/><line x1="12" y1="14" x2="12" y2="21"/></svg>`,
+            mdm:        `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="3" y="4" width="18" height="16"/><text x="12" y="14.5" text-anchor="middle" fill="currentColor" stroke="none" font-size="7" font-weight="800">MDM</text></svg>`,
+            freenotes:  `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M16 3l5 5-11 11H5v-5L16 3z"/><line x1="13" y1="6" x2="18" y2="11"/></svg>`,
+            web:        `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="12" r="9"/><line x1="3" y1="12" x2="21" y2="12"/><ellipse cx="12" cy="12" rx="4" ry="9"/></svg>`
         };
 
         /* =========================================================
-           2. 状態管理・Undoスタック
+           2. 初期データ（スクショ全アプリ＋進化ウィジェット）
         ========================================================= */
-        const STORAGE_KEY = 'grid_os_v1';
+        const STORAGE_KEY = 'grid_os_v2';
 
         const DEFAULT_STATE = {
             theme: 'obsidian',
             cols: 6,
             dock: [
+                { type: 'app', name: 'Googleカレンダー', url: 'https://calendar.google.com/', icon: 'calendar', newTab: false },
                 { type: 'app', name: 'ロイロノート', url: 'https://loilonote.app', icon: 'loilo', newTab: false },
                 { type: 'app', name: 'Google', url: 'https://www.google.com/', icon: 'google', newTab: true },
                 { type: 'app', name: 'Classroom', url: 'https://classroom.google.com/', icon: 'classroom', newTab: false },
                 { type: 'app', name: 'ドライブ', url: 'https://drive.google.com/', icon: 'drive', newTab: false },
-                { type: 'app', name: 'YouTube', url: 'https://www.youtube.com/', icon: 'youtube', newTab: false },
-                { type: 'app', name: 'Notion', url: 'https://www.notion.so/', icon: 'notion', newTab: true }
+                { type: 'app', name: 'Claude', url: 'https://claude.ai/', icon: 'claude', newTab: false },
+                { type: 'app', name: 'Gemini', url: 'https://gemini.google.com/', icon: 'gemini', newTab: true }
             ],
             pages: [
                 {
-                    title: '01 MAIN',
+                    title: '01 HOME',
                     items: [
-                        { type: 'widget', widgetType: 'clock', size: '3x2', id: 'w_clk_1' },
-                        { type: 'widget', widgetType: 'weather', size: '3x2', id: 'w_wth_1' },
-                        { type: 'app', name: 'ロイロノート', url: 'https://loilonote.app', icon: 'loilo', newTab: false },
-                        { type: 'app', name: 'Google', url: 'https://www.google.com/', icon: 'google', newTab: true },
-                        { type: 'app', name: 'Classroom', url: 'https://classroom.google.com/', icon: 'classroom', newTab: false },
-                        { type: 'app', name: 'ドライブ', url: 'https://drive.google.com/', icon: 'drive', newTab: false },
-                        { type: 'app', name: 'ドキュメント', url: 'https://docs.google.com/document/', icon: 'docs', newTab: false },
-                        { type: 'app', name: 'スプレッドシート', url: 'https://docs.google.com/spreadsheets/', icon: 'sheets', newTab: false },
-                        { type: 'app', name: 'スライド', url: 'https://docs.google.com/presentation/', icon: 'slides', newTab: false },
-                        { type: 'app', name: 'マップ', url: 'https://maps.google.com/', icon: 'maps', newTab: false },
-                        { type: 'app', name: 'YouTube', url: 'https://www.youtube.com/', icon: 'youtube', newTab: false },
-                        { type: 'app', name: 'Gmail', url: 'https://mail.google.com/', icon: 'gmail', newTab: false },
-                        { type: 'app', name: 'Meet', url: 'https://meet.google.com/', icon: 'meet', newTab: false },
-                        { type: 'app', name: 'Gemini', url: 'https://gemini.google.com/', icon: 'gemini', newTab: true }
+                        { type: 'widget', widgetType: 'search', size: '6x1', id: 'w_srch_1' },
+                        { type: 'widget', widgetType: 'clock', size: '2x2', id: 'w_clk_1' },
+                        { type: 'widget', widgetType: 'analog', size: '2x2', id: 'w_alg_1' },
+                        { type: 'widget', widgetType: 'weather', size: '2x2', id: 'w_wth_1', city: 'TOKYO', lat: 35.6762, lon: 139.6503 },
+                        { type: 'app', name: '設定', url: 'App-prefs:', icon: 'settings', newTab: false },
+                        { type: 'app', name: 'カレンダー', url: 'calshow://', icon: 'calendar', newTab: false },
+                        { type: 'app', name: '時計', url: 'clock-worldclock://', icon: 'clock', newTab: false },
+                        { type: 'app', name: 'リマインダー', url: 'x-apple-reminderkit://', icon: 'reminders', newTab: false },
+                        { type: 'app', name: 'カメラ', url: 'camera://', icon: 'camera', newTab: false },
+                        { type: 'app', name: '計算機', url: 'calc://', icon: 'calc', newTab: false },
+                        { type: 'app', name: 'メモ', url: 'mobilenotes://', icon: 'notes', newTab: false },
+                        { type: 'app', name: 'ボイスメモ', url: 'voicememos://', icon: 'voicememos', newTab: false },
+                        { type: 'app', name: '写真', url: 'photos-redirect://', icon: 'photos', newTab: false },
+                        { type: 'app', name: 'Safari', url: 'https://www.google.com/', icon: 'safari', newTab: true },
+                        { type: 'app', name: 'ファイル', url: 'shareddocuments://', icon: 'files', newTab: false },
+                        { type: 'app', name: '翻訳', url: 'translate://', icon: 'translate', newTab: false }
                     ]
                 },
                 {
-                    title: '02 WORKSPACE',
+                    title: '02 GOOGLE & AI',
                     items: [
                         { type: 'widget', widgetType: 'note', size: '3x2', id: 'w_note_1', storageKey: 'ipad_dashboard_memo' },
                         { type: 'widget', widgetType: 'todo', size: '3x2', id: 'w_todo_1' },
+                        { type: 'app', name: 'Classroom', url: 'https://classroom.google.com/', icon: 'classroom', newTab: false },
+                        { type: 'app', name: 'Google', url: 'https://www.google.com/', icon: 'google', newTab: true },
+                        { type: 'app', name: 'Chrome', url: 'googlechromes://', icon: 'chrome', newTab: false },
+                        { type: 'app', name: 'Googleカレンダー', url: 'https://calendar.google.com/', icon: 'calendar', newTab: false },
+                        { type: 'app', name: 'ドライブ', url: 'https://drive.google.com/', icon: 'drive', newTab: false },
+                        { type: 'app', name: 'Googleマップ', url: 'https://maps.google.com/', icon: 'maps', newTab: false },
+                        { type: 'app', name: 'Google フォト', url: 'https://photos.google.com/', icon: 'gphotos', newTab: false },
+                        { type: 'app', name: 'Gmail', url: 'https://mail.google.com/', icon: 'gmail', newTab: false },
+                        { type: 'app', name: 'ドキュメント', url: 'https://docs.google.com/document/', icon: 'docs', newTab: false },
+                        { type: 'app', name: 'スライド', url: 'https://docs.google.com/presentation/', icon: 'slides', newTab: false },
+                        { type: 'app', name: 'スプレッドシート', url: 'https://docs.google.com/spreadsheets/', icon: 'sheets', newTab: false },
+                        { type: 'app', name: 'Google Earth', url: 'https://earth.google.com/web/', icon: 'earth', newTab: true },
+                        { type: 'app', name: 'Zoom', url: 'zoomus://', icon: 'zoom', newTab: false },
+                        { type: 'app', name: 'ロイロノート', url: 'https://loilonote.app', icon: 'loilo', newTab: false },
+                        { type: 'app', name: 'GELP', url: 'https://gelp.jp/', icon: 'gelp', newTab: true },
+                        { type: 'app', name: 'a-Shell', url: 'ashell://', icon: 'ashell', newTab: false },
+                        { type: 'app', name: 'Claude', url: 'https://claude.ai/', icon: 'claude', newTab: false },
+                        { type: 'app', name: 'Dropbox', url: 'https://www.dropbox.com/', icon: 'dropbox', newTab: false },
+                        { type: 'app', name: 'Firefox Focus', url: 'firefox-focus://', icon: 'firefox', newTab: false },
+                        { type: 'app', name: 'Gemini', url: 'https://gemini.google.com/', icon: 'gemini', newTab: true },
+                        { type: 'app', name: 'iSH', url: 'ish://', icon: 'ish', newTab: false },
+                        { type: 'app', name: 'NotebookLM', url: 'https://notebooklm.google.com/', icon: 'notebooklm', newTab: true },
+                        { type: 'app', name: 'Orion', url: 'orion://', icon: 'orion', newTab: false },
+                        { type: 'app', name: 'Vivaldi', url: 'vivaldi://', icon: 'vivaldi', newTab: false },
+                        { type: 'app', name: 'ゲーム', url: 'gamecenter://', icon: 'game', newTab: false },
+                        { type: 'app', name: 'ジャーナル', url: 'apple-journal://', icon: 'journal', newTab: false },
+                        { type: 'app', name: 'パスワード', url: 'prefs:root=PASSWORDS', icon: 'passwords', newTab: false },
+                        { type: 'app', name: 'ヒント', url: 'x-apple-tips://', icon: 'tips', newTab: false }
+                    ]
+                },
+                {
+                    title: '03 STUDY & LAB',
+                    items: [
                         { type: 'widget', widgetType: 'timer', size: '2x2', id: 'w_tmr_1' },
                         { type: 'widget', widgetType: 'audio', size: '2x2', id: 'w_aud_1' },
+                        { type: 'widget', widgetType: 'schedule', size: '2x2', id: 'w_sch_1' },
+                        { type: 'app', name: '书法字典大全', url: 'shufazidian://', icon: 'shufa', newTab: false },
+                        { type: 'app', name: '数研Library', url: 'sukenlibrary://', icon: 'suken', newTab: false },
+                        { type: 'app', name: 'Cisco Security', url: 'ciscosecurity://', icon: 'cisco', newTab: false },
+                        { type: 'app', name: 'Classic', url: 'classic://', icon: 'classic', newTab: false },
+                        { type: 'app', name: '快临书法字典', url: 'kailinshufa://', icon: 'shufa', newTab: false },
+                        { type: 'app', name: '参考書・問題集版', url: 'sankosho://', icon: 'books', newTab: false },
+                        { type: 'app', name: 'Graphical', url: 'graphicalanalysis://', icon: 'graphical', newTab: false },
+                        { type: 'app', name: 'Analyzer', url: 'analyzer://', icon: 'analyzer', newTab: false },
+                        { type: 'app', name: 'phyphox', url: 'phyphox://', icon: 'phyphox', newTab: false },
+                        { type: 'app', name: 'きりはらの森', url: 'kirihara://', icon: 'forest', newTab: false },
+                        { type: 'app', name: 'Yunzhang', url: 'yunzhang://', icon: 'shufa', newTab: false },
+                        { type: 'app', name: 'Meraki MDM', url: 'meraki://', icon: 'mdm', newTab: false },
+                        { type: 'app', name: 'ブック', url: 'ibooks://', icon: 'books', newTab: false },
+                        { type: 'app', name: 'フリーボード', url: 'freeform://', icon: 'freeform', newTab: false },
+                        { type: 'app', name: 'プレビュー', url: 'apple-preview://', icon: 'preview', newTab: false },
+                        { type: 'app', name: '拡大鏡', url: 'magnifier://', icon: 'magnifier', newTab: false },
+                        { type: 'app', name: '計測', url: 'measure://', icon: 'measure', newTab: false },
+                        { type: 'app', name: '自由ノート', url: 'freenotes://', icon: 'freenotes', newTab: false },
+                        { type: 'app', name: '天気', url: 'weather://', icon: 'weather', newTab: false },
+                        { type: 'app', name: 'YouTube', url: 'https://www.youtube.com/', icon: 'youtube', newTab: false },
                         { type: 'app', name: 'Notion', url: 'https://www.notion.so/', icon: 'notion', newTab: true },
                         { type: 'app', name: 'Canva', url: 'https://www.canva.com/', icon: 'canva', newTab: true },
-                        { type: 'app', name: 'GitHub', url: 'https://github.com/', icon: 'github', newTab: true },
-                        { type: 'app', name: 'Wikipedia', url: 'https://ja.wikipedia.org/', icon: 'wikipedia', newTab: true },
-                        { type: 'app', name: 'DeepL', url: 'https://www.deepl.com/ja/translator', icon: 'deepl', newTab: true },
-                        { type: 'app', name: '翻訳', url: 'https://translate.google.com/', icon: 'translate', newTab: true },
-                        { type: 'app', name: 'カレンダー', url: 'https://calendar.google.com/', icon: 'calendar', newTab: false },
-                        { type: 'widget', widgetType: 'schedule', size: '4x2', id: 'w_sch_1' }
+                        { type: 'app', name: 'GitHub', url: 'https://github.com/', icon: 'github', newTab: true }
                     ]
                 }
             ]
@@ -970,7 +1140,14 @@
         let undoStack = [];
         let isEditMode = false;
         let currentPage = 0;
-        let selected = null; // { loc: 'dock' | number, idx: number }
+        let selected = null;
+        let uidCounter = 1;
+
+        function ensureUids() {
+            state.dock.forEach(x => { if (!x._uid) x._uid = 'u_' + (uidCounter++); });
+            state.pages.forEach(p => p.items.forEach(x => { if (!x._uid) x._uid = 'u_' + (uidCounter++); }));
+        }
+        ensureUids();
 
         function pushUndo() {
             undoStack.push(JSON.stringify(state));
@@ -980,10 +1157,12 @@
 
         function undoAction() {
             if (!undoStack.length) return;
+            const prev = captureRects();
             state = JSON.parse(undoStack.pop());
+            ensureUids();
             saveState();
             selected = null;
-            renderAll();
+            renderAll(prev);
             document.getElementById('btnUndo').style.display = undoStack.length ? 'inline-flex' : 'none';
             document.getElementById('undoToast').classList.remove('show');
         }
@@ -996,20 +1175,44 @@
             t._tm = setTimeout(() => t.classList.remove('show'), 4000);
         }
 
-        function saveState() {
-            localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
+        function saveState() { localStorage.setItem(STORAGE_KEY, JSON.stringify(state)); }
+        function isSafeUrl(url) { return !/^\s*javascript:/i.test(url); }
+        function escapeHtml(s) { return String(s).replace(/[<>&"']/g, c => ({ '<':'&lt;', '>':'&gt;', '&':'&amp;', '"':'&quot;', "'":'&#39;' }[c])); }
+
+        /* =========================================================
+           3. FLIP 滑らか位置補間アニメーション
+        ========================================================= */
+        function captureRects() {
+            const map = new Map();
+            document.querySelectorAll('.tile[data-uid]').forEach(el => {
+                map.set(el.dataset.uid, el.getBoundingClientRect());
+            });
+            return map;
         }
 
-        function isSafeUrl(url) {
-            return !/^\s*javascript:/i.test(url);
-        }
+        function playFlip(prevRects) {
+            if (!prevRects || !prevRects.size) return;
+            document.querySelectorAll('.tile[data-uid]').forEach(el => {
+                const first = prevRects.get(el.dataset.uid);
+                if (!first) return;
+                const last = el.getBoundingClientRect();
+                const dx = first.left - last.left;
+                const dy = first.top - last.top;
+                if (Math.abs(dx) < 1 && Math.abs(dy) < 1) return;
 
-        function escapeHtml(s) {
-            return String(s).replace(/[<>&"']/g, c => ({ '<':'&lt;', '>':'&gt;', '&':'&amp;', '"':'&quot;', "'":'&#39;' }[c]));
+                el.style.transition = 'none';
+                el.style.transform = `translate(${dx}px, ${dy}px)`;
+                el.getBoundingClientRect(); // force reflow
+                requestAnimationFrame(() => {
+                    el.style.transition = 'transform 0.34s cubic-bezier(0.22, 1, 0.36, 1)';
+                    el.style.transform = '';
+                    setTimeout(() => { el.style.transition = ''; }, 360);
+                });
+            });
         }
 
         /* =========================================================
-           3. テーマ・列数・正方形サイズの精密計算
+           4. テーマ & 精密グリッドサイズ計算
         ========================================================= */
         function applyTheme() {
             document.body.dataset.theme = state.theme || 'obsidian';
@@ -1019,14 +1222,13 @@
             document.getElementById('fCols').value = String(state.cols || 6);
             recalcGridCells();
         }
-
         function setTheme(t) { state.theme = t; saveState(); applyTheme(); }
         function setCols(c) { state.cols = Number(c); saveState(); recalcGridCells(); }
 
         function recalcGridCells() {
             const isMobile = window.innerWidth <= 720;
             const cols = isMobile ? 4 : (state.cols || 6);
-            const gap = isMobile ? 8 : 12;
+            const gap = isMobile ? 9 : 13;
             document.querySelectorAll('.bento-grid').forEach(grid => {
                 grid.style.setProperty('--cols', cols);
                 grid.style.setProperty('--gap', `${gap}px`);
@@ -1040,10 +1242,9 @@
         window.addEventListener('resize', recalcGridCells);
 
         /* =========================================================
-           4. タイマー / オーディオ / 天気データ
+           5. タイマー / オーディオ / 天気（場所選択対応）
         ========================================================= */
         let durSec = 25 * 60, remSec = durSec, endTime = null, tInt = null;
-
         function renderTimers() {
             const m = String(Math.floor(remSec / 60)).padStart(2, '0');
             const s = String(remSec % 60).padStart(2, '0');
@@ -1061,12 +1262,9 @@
             else { if (remSec <= 0) remSec = durSec; endTime = Date.now() + remSec * 1000; tInt = setInterval(tickTimer, 250); }
             renderTimers();
         }
-        function setTimerMin(min) {
-            clearInterval(tInt); tInt = null; endTime = null; durSec = min * 60; remSec = durSec; renderTimers();
-        }
+        function setTimerMin(min) { clearInterval(tInt); tInt = null; endTime = null; durSec = min * 60; remSec = durSec; renderTimers(); }
         document.addEventListener('visibilitychange', () => { if (!document.hidden && endTime) tickTimer(); });
 
-        // Web Audio Lo-Fi シンセ
         let audioCtx = null, isPlaying = false, songIdx = 0, step = 0, audInt = null;
         const TRACKS = [
             { name: '01 / MIDNIGHT CHORDS', chords: [[261.6,311.1,392,466.2],[220,261.6,329.6,392],[174.6,220,261.6,329.6],[196,246.9,293.7,349.2]] },
@@ -1079,8 +1277,7 @@
                 const o = audioCtx.createOscillator(), fl = audioCtx.createBiquadFilter(), g = audioCtx.createGain();
                 o.type = 'triangle'; o.frequency.setValueAtTime(f, now);
                 fl.type = 'lowpass'; fl.frequency.setValueAtTime(750, now);
-                g.gain.setValueAtTime(0.001, now);
-                g.gain.linearRampToValueAtTime(0.04, now + 0.12);
+                g.gain.setValueAtTime(0.001, now); g.gain.linearRampToValueAtTime(0.04, now + 0.12);
                 g.gain.exponentialRampToValueAtTime(0.0001, now + 2.1);
                 o.connect(fl); fl.connect(g); g.connect(audioCtx.destination);
                 o.start(now); o.stop(now + 2.2);
@@ -1107,11 +1304,20 @@
             document.querySelectorAll('.js-aud-name').forEach(el => el.textContent = TRACKS[songIdx].name);
         }
 
-        // 天気データ (Open-Meteo + オフライン標準)
-        let weather = { city: 'TOKYO', cond: 'CLEAR / CLOUDY', temp: 18, hi: 21, lo: 12, hours: ['12H','15H','18H','21H','00H'], temps: [18,21,17,14,12], rain: [10,20,40,15,5] };
-        async function loadWeather() {
+        // 天気キャッシュ＆場所切り替え
+        const weatherCache = {}; // widgetId -> data
+        let activeWeatherWidget = null;
+
+        function getDefaultWeather(city) {
+            return { city: city || 'TOKYO', cond: 'CLEAR / CLOUDY', temp: 18, hi: 21, lo: 12, hours: ['12H','15H','18H','21H','00H'], temps: [18,21,17,14,12], rain: [10,20,40,15,5] };
+        }
+
+        async function loadWeatherForWidget(w) {
+            const lat = w.lat ?? 35.6762;
+            const lon = w.lon ?? 139.6503;
+            const city = (w.city || 'TOKYO').toUpperCase();
             try {
-                const res = await fetch('https://api.open-meteo.com/v1/forecast?latitude=35.6762&longitude=139.6503&current=temperature_2m,weather_code&hourly=temperature_2m,precipitation_probability&daily=temperature_2m_max,temperature_2m_min&timezone=Asia%2FTokyo&forecast_days=2');
+                const res = await fetch(`https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lon}&current=temperature_2m,weather_code&hourly=temperature_2m,precipitation_probability&daily=temperature_2m_max,temperature_2m_min&timezone=auto&forecast_days=2`);
                 if (!res.ok) return;
                 const d = await res.json();
                 const ch = new Date().getHours();
@@ -1123,39 +1329,108 @@
                     rns.push(d.hourly.precipitation_probability[idx] ?? 10);
                 }
                 const c = d.current.weather_code;
-                weather = {
-                    city: 'TOKYO',
+                weatherCache[w.id] = {
+                    city,
                     cond: c <= 1 ? 'CLEAR' : c <= 3 ? 'PARTLY CLOUDY' : c <= 48 ? 'CLOUDY' : 'RAIN',
                     temp: Math.round(d.current.temperature_2m),
                     hi: Math.round(d.daily.temperature_2m_max[0]),
                     lo: Math.round(d.daily.temperature_2m_min[0]),
                     hours: hrs, temps: tmps, rain: rns
                 };
-                document.querySelectorAll('.js-weather-panel').forEach(el => el.innerHTML = buildWeatherInner());
+                document.querySelectorAll(`.js-weather-panel[data-wid="${w.id}"]`).forEach(el => {
+                    el.innerHTML = buildWeatherInner(w);
+                });
             } catch (e) {}
         }
 
-        function buildWeatherInner() {
-            const minT = Math.min(...weather.temps) - 1, maxT = Math.max(...weather.temps) + 1;
+        function buildWeatherInner(w) {
+            const wd = weatherCache[w.id] || getDefaultWeather(w.city);
+            const minT = Math.min(...wd.temps) - 1, maxT = Math.max(...wd.temps) + 1;
             const span = Math.max(1, maxT - minT);
-            const pts = weather.temps.map((t, i) => [i * 60, Math.round(34 - ((t - minT) / span) * 24)]);
+            const pts = wd.temps.map((t, i) => [i * 60, Math.round(34 - ((t - minT) / span) * 24)]);
             const poly = pts.map(p => p.join(',')).join(' ');
             return `
-                <div class="w-head mono"><span>${weather.city} // ${weather.cond}</span><span>H:${weather.hi}° L:${weather.lo}°</span></div>
+                <div class="w-head mono">
+                    <button type="button" class="w-loc-btn mono" onclick="if(!isEditMode){ event.stopPropagation(); openCityModal('${w.id}'); }">${escapeHtml(wd.city)} ▾</button>
+                    <span>H:${wd.hi}° L:${wd.lo}°</span>
+                </div>
                 <div class="w-weather-top">
-                    <div class="w-weather-temp mono">${weather.temp}°C</div>
+                    <div class="w-weather-temp mono">${wd.temp}°C</div>
+                    <span class="mono" style="font-size:0.68rem; color:var(--muted);">${wd.cond}</span>
                 </div>
                 <svg class="w-weather-svg" viewBox="0 0 240 42">
                     <polyline fill="none" stroke="var(--accent)" stroke-width="2" points="${poly}"/>
-                    ${pts.map(([x, y], i) => `<rect x="${x-2.5}" y="${y-2.5}" width="5" height="5" fill="var(--bg)" stroke="var(--accent)" stroke-width="1.8"/><text x="${x}" y="${Math.max(8, y-6)}" text-anchor="${i===0?'start':(i===4?'end':'middle')}" fill="var(--fg)" font-size="9" font-weight="700">${weather.temps[i]}°</text>`).join('')}
+                    ${pts.map(([x, y], i) => `<rect x="${x-2.5}" y="${y-2.5}" width="5" height="5" fill="var(--bg)" stroke="var(--accent)" stroke-width="1.8"/><text x="${x}" y="${Math.max(8, y-6)}" text-anchor="${i===0?'start':(i===4?'end':'middle')}" fill="var(--fg)" font-size="9" font-weight="700">${wd.temps[i]}°</text>`).join('')}
                 </svg>
-                <div class="w-weather-hours mono">${weather.hours.map(h => `<span>${h}</span>`).join('')}</div>
-                <div class="w-rain-bars">${weather.rain.map(r => `<div class="w-rain-col"><div class="w-rain-fill" style="height:${Math.max(2, Math.round(r*0.14))}px"></div><span class="w-rain-txt mono">${r}%</span></div>`).join('')}</div>
+                <div class="w-weather-hours mono">${wd.hours.map(h => `<span>${h}</span>`).join('')}</div>
+                <div class="w-rain-bars">${wd.rain.map(r => `<div class="w-rain-col"><div class="w-rain-fill" style="height:${Math.max(2, Math.round(r*0.14))}px"></div><span class="w-rain-txt mono">${r}%</span></div>`).join('')}</div>
             `;
         }
 
+        function findWidgetById(wid) {
+            for (const pg of state.pages) {
+                for (const item of pg.items) {
+                    if (item.id === wid) return item;
+                }
+            }
+            return null;
+        }
+
+        function openCityModal(wid) {
+            activeWeatherWidget = wid;
+            document.getElementById('cityQueryInput').value = '';
+            document.getElementById('citySearchResults').innerHTML = '';
+            openModal('cityModal');
+        }
+
+        function selectWeatherCity(name, lat, lon) {
+            const w = findWidgetById(activeWeatherWidget);
+            if (!w) return;
+            w.city = name; w.lat = lat; w.lon = lon;
+            saveState();
+            closeModal('cityModal');
+            loadWeatherForWidget(w);
+            document.querySelectorAll(`.js-weather-panel[data-wid="${w.id}"]`).forEach(el => {
+                el.innerHTML = buildWeatherInner(w);
+            });
+        }
+
+        async function searchCityGeo() {
+            const q = document.getElementById('cityQueryInput').value.trim();
+            if (!q) return;
+            const box = document.getElementById('citySearchResults');
+            box.innerHTML = '<span class="mono" style="font-size:0.75rem; color:var(--muted);">SEARCHING...</span>';
+            try {
+                const res = await fetch(`https://geocoding-api.open-meteo.com/v1/search?name=${encodeURIComponent(q)}&count=5&language=ja`);
+                const d = await res.json();
+                box.innerHTML = '';
+                if (!d.results || !d.results.length) {
+                    box.innerHTML = '<span style="font-size:0.78rem; color:var(--muted);">見つかりませんでした</span>';
+                    return;
+                }
+                d.results.forEach(r => {
+                    const b = document.createElement('button');
+                    b.className = 'btn-sharp';
+                    b.style.justifyContent = 'space-between';
+                    b.innerHTML = `<span>${escapeHtml(r.name)} (${escapeHtml(r.admin1 || r.country || '')})</span><span class="mono" style="color:var(--muted);">${r.latitude.toFixed(2)}, ${r.longitude.toFixed(2)}</span>`;
+                    b.onclick = () => selectWeatherCity(r.name.toUpperCase(), r.latitude, r.longitude);
+                    box.appendChild(b);
+                });
+            } catch (e) {
+                box.innerHTML = '<span style="font-size:0.78rem; color:var(--danger);">通信エラー</span>';
+            }
+        }
+
+        function useGpsWeather() {
+            if (!navigator.geolocation) { alert('GPS非対応です'); return; }
+            navigator.geolocation.getCurrentPosition(
+                pos => selectWeatherCity('CURRENT', pos.coords.latitude, pos.coords.longitude),
+                () => alert('位置情報の取得が許可されませんでした')
+            );
+        }
+
         /* =========================================================
-           5. ウィジェットビルダー
+           6. ウィジェットビルダー（丸時計 / 拡大デジタル / 検索ボックス等）
         ========================================================= */
         let todos = JSON.parse(localStorage.getItem('ipad_dashboard_todos') || '[]');
         function saveTodos() { localStorage.setItem('ipad_dashboard_todos', JSON.stringify(todos)); renderTodos(); }
@@ -1166,41 +1441,86 @@
                     const row = document.createElement('div');
                     row.className = 'w-todo-row' + (t.done ? ' done' : '');
                     const chk = document.createElement('button');
-                    chk.className = 'w-chk';
-                    chk.textContent = t.done ? '×' : '';
+                    chk.className = 'w-chk'; chk.textContent = t.done ? '×' : '';
                     chk.onclick = e => { e.stopPropagation(); todos[i].done = !todos[i].done; saveTodos(); };
-                    const sp = document.createElement('span');
-                    sp.textContent = t.text;
-                    row.append(chk, sp);
-                    ul.appendChild(row);
+                    const sp = document.createElement('span'); sp.textContent = t.text;
+                    row.append(chk, sp); ul.appendChild(row);
                 });
             });
+        }
+
+        function handleInlineSearch(form) {
+            const q = form.querySelector('input').value.trim();
+            if (!q) return;
+            const apps = [...state.dock, ...state.pages.flatMap(p => p.items).filter(x => x.type === 'app')];
+            const hit = apps.find(a => a.name.toLowerCase().includes(q.toLowerCase()));
+            if (hit && isSafeUrl(hit.url)) {
+                if (hit.newTab) window.open(hit.url, '_blank', 'noopener');
+                else window.location.href = hit.url;
+            } else {
+                window.open(`https://www.google.com/search?q=${encodeURIComponent(q)}`, '_blank', 'noopener');
+            }
         }
 
         function buildWidgetPanel(w) {
             const p = document.createElement('div');
             p.className = 'w-panel';
-            if (w.widgetType === 'clock') {
+
+            if (w.widgetType === 'search') {
+                p.innerHTML = `
+                    <div class="w-head mono"><span>QUICK LAUNCH &amp; SEARCH</span><span>WEB / APP</span></div>
+                    <form class="w-search-wrap" onsubmit="event.preventDefault(); handleInlineSearch(this);">
+                        <input class="w-search-input" placeholder="アプリ名または検索ワードを入力してEnter..." onpointerdown="if(!isEditMode) event.stopPropagation()">
+                        <button type="submit" class="btn-sharp primary mono w-search-btn">GO</button>
+                    </form>`;
+            } else if (w.widgetType === 'clock') {
                 p.innerHTML = `
                     <div class="w-head mono"><span>SYSTEM CLOCK</span><span>JST</span></div>
-                    <div>
+                    <div class="w-clock-body">
                         <div class="w-clock-time mono js-clk-time">00:00:00</div>
                         <div class="w-clock-date js-clk-date">---</div>
                     </div>`;
+            } else if (w.widgetType === 'analog') {
+                const ticks = Array.from({ length: 12 }, (_, i) => {
+                    const a = i * 30;
+                    const len = i % 3 === 0 ? 10 : 6;
+                    const sw = i % 3 === 0 ? 2.2 : 1.2;
+                    return `<line x1="50" y1="6" x2="50" y2="${6 + len}" stroke="currentColor" stroke-width="${sw}" transform="rotate(${a} 50 50)"/>`;
+                }).join('');
+                p.innerHTML = `
+                    <div class="w-head mono"><span>ANALOG</span><span class="js-clk-short">---</span></div>
+                    <div class="w-analog-body">
+                        <svg class="w-analog-svg" viewBox="0 0 100 100">
+                            <circle cx="50" cy="50" r="46" fill="var(--bg)" stroke="var(--border-strong)" stroke-width="1.8"/>
+                            ${ticks}
+                            <line class="js-h-hand" x1="50" y1="50" x2="50" y2="26" stroke="var(--fg)" stroke-width="3.2" stroke-linecap="square"/>
+                            <line class="js-m-hand" x1="50" y1="50" x2="50" y2="16" stroke="var(--fg)" stroke-width="2" stroke-linecap="square"/>
+                            <line class="js-s-hand" x1="50" y1="58" x2="50" y2="13" stroke="var(--accent)" stroke-width="1.3" stroke-linecap="square"/>
+                            <rect x="48" y="48" width="4" height="4" fill="var(--accent)"/>
+                        </svg>
+                        <div class="w-analog-meta">
+                            <div class="mono js-clk-time" style="font-size:1.5rem; font-weight:800;">00:00:00</div>
+                            <div class="js-clk-date" style="font-size:0.78rem; color:var(--muted);">---</div>
+                        </div>
+                    </div>`;
             } else if (w.widgetType === 'weather') {
                 p.classList.add('js-weather-panel');
-                p.innerHTML = buildWeatherInner();
+                p.dataset.wid = w.id;
+                p.innerHTML = buildWeatherInner(w);
+                if (!weatherCache[w.id]) loadWeatherForWidget(w);
             } else if (w.widgetType === 'timer') {
                 p.innerHTML = `
                     <div class="w-head mono"><span>FOCUS TIMER</span><span>AUTO</span></div>
-                    <div class="w-timer-row">
-                        <div class="w-timer-num mono js-tmr-num">25:00</div>
-                        <button class="btn-sharp primary mono js-tmr-btn" onclick="event.stopPropagation(); toggleTimer()">START</button>
-                    </div>
-                    <div class="w-timer-btns">
-                        <button class="btn-sharp mono" onclick="event.stopPropagation(); setTimerMin(25)">25M</button>
-                        <button class="btn-sharp mono" onclick="event.stopPropagation(); setTimerMin(10)">10M</button>
-                        <button class="btn-sharp mono" onclick="event.stopPropagation(); setTimerMin(5)">5M</button>
+                    <div class="w-timer-body">
+                        <div class="w-timer-row">
+                            <div class="w-timer-num mono js-tmr-num">25:00</div>
+                            <button class="btn-sharp primary mono js-tmr-btn" onclick="event.stopPropagation(); toggleTimer()">START</button>
+                        </div>
+                        <div class="w-timer-btns">
+                            <button class="btn-sharp mono" onclick="event.stopPropagation(); setTimerMin(25)">25M</button>
+                            <button class="btn-sharp mono" onclick="event.stopPropagation(); setTimerMin(10)">10M</button>
+                            <button class="btn-sharp mono" onclick="event.stopPropagation(); setTimerMin(5)">5M</button>
+                        </div>
                     </div>`;
             } else if (w.widgetType === 'audio') {
                 p.innerHTML = `
@@ -1254,8 +1574,7 @@
         }
 
         /* =========================================================
-           6. 絶対にバグらないドラッグ＆選択システム
-              （※ドラッグ中はDOMを一切書き換えず、Drop時に1回だけ確定）
+           7. バグゼロ・ドラッグ＆ドロップ＋滑らかFLIP確定
         ========================================================= */
         let dragState = null;
 
@@ -1271,7 +1590,6 @@
 
             el.classList.add('is-dragging');
             document.getElementById('pagesTrack').style.overflowX = 'hidden';
-
             dragState = { el, loc, idx, ghost, dropLoc: null, dropIdx: null };
         }
 
@@ -1302,17 +1620,17 @@
             document.getElementById('pagesTrack').style.overflowX = 'auto';
 
             if (dropLoc !== null && dropIdx !== null && !(dropLoc === loc && dropIdx === idx)) {
-                pushUndo();
                 const srcArr = loc === 'dock' ? state.dock : state.pages[loc].items;
                 const dstArr = dropLoc === 'dock' ? state.dock : state.pages[dropLoc].items;
                 const moving = srcArr[idx];
-                // ウィジェットはDockに入れないガード
                 if (!(dropLoc === 'dock' && moving.type === 'widget')) {
+                    const prevRects = captureRects();
+                    pushUndo();
                     srcArr.splice(idx, 1);
                     dstArr.splice(dropIdx, 0, moving);
                     selected = { loc: dropLoc, idx: dropIdx };
                     saveState();
-                    renderAll();
+                    renderAll(prevRects);
                 }
             }
             dragState = null;
@@ -1321,13 +1639,14 @@
         window.addEventListener('pointercancel', endSafeDrag);
 
         /* =========================================================
-           7. 全体描画
+           8. 全体レンダリング
         ========================================================= */
         function createTile(item, loc, idx) {
             const isSel = selected && selected.loc === loc && selected.idx === idx;
             const el = document.createElement(item.type === 'app' ? 'a' : 'div');
             el.dataset.loc = String(loc);
             el.dataset.idx = String(idx);
+            el.dataset.uid = item._uid;
 
             if (loc === 'dock') {
                 el.className = 'dock-item' + (isSel ? ' is-selected' : '');
@@ -1339,10 +1658,7 @@
                 if (item.type === 'app') {
                     el.href = isSafeUrl(item.url) ? item.url : '#';
                     if (item.newTab) { el.target = '_blank'; el.rel = 'noopener'; }
-                    el.innerHTML = `
-                        <div class="app-glyph">${GLYPHS[item.icon] || GLYPHS.web}</div>
-                        <div class="app-title">${escapeHtml(item.name)}</div>
-                    `;
+                    el.innerHTML = `<div class="app-glyph">${GLYPHS[item.icon] || GLYPHS.web}</div><div class="app-title">${escapeHtml(item.name)}</div>`;
                 } else {
                     el.appendChild(buildWidgetPanel(item));
                 }
@@ -1352,16 +1668,12 @@
                 el.appendChild(badge);
             }
 
-            // ポインター操作（長押しで編集、編集モード時はドラッグで入替、タップで選択）
             let sx = 0, sy = 0, lpTimer = null, moved = false;
             el.addEventListener('pointerdown', e => {
                 if (e.button !== 0 && e.pointerType === 'mouse') return;
                 sx = e.clientX; sy = e.clientY; moved = false;
                 if (!isEditMode) {
-                    lpTimer = setTimeout(() => {
-                        toggleEditMode(true);
-                        selectItem(loc, idx);
-                    }, 450);
+                    lpTimer = setTimeout(() => { toggleEditMode(true); selectItem(loc, idx); }, 450);
                 }
             });
             el.addEventListener('pointermove', e => {
@@ -1387,8 +1699,8 @@
             return el;
         }
 
-        function renderAll() {
-            // ページタブ
+        function renderAll(prevRects = null) {
+            ensureUids();
             const tabs = document.getElementById('pageTabs');
             tabs.innerHTML = '';
             state.pages.forEach((pg, i) => {
@@ -1399,14 +1711,11 @@
                 tabs.appendChild(b);
             });
 
-            // ページ本体
             const track = document.getElementById('pagesTrack');
             track.innerHTML = '';
             state.pages.forEach((pg, pIdx) => {
                 const pane = document.createElement('section');
                 pane.className = 'page-pane';
-
-                // 空白長押しでも編集モードへ
                 let et = null;
                 pane.addEventListener('pointerdown', e => {
                     if (e.target === pane || e.target.classList.contains('bento-grid')) {
@@ -1423,7 +1732,6 @@
                 track.appendChild(pane);
             });
 
-            // Dock
             const dock = document.getElementById('dockBar');
             dock.innerHTML = '';
             state.dock.forEach((app, idx) => dock.appendChild(createTile(app, 'dock', idx)));
@@ -1431,6 +1739,7 @@
             requestAnimationFrame(() => {
                 track.scrollTo({ left: currentPage * track.clientWidth, behavior: 'instant' });
                 recalcGridCells();
+                if (prevRects) playFlip(prevRects);
             });
             updateInspector();
             updateClocks();
@@ -1456,16 +1765,14 @@
         });
 
         /* =========================================================
-           8. 選択・キーボード＆ボタン編集ロジック
+           9. 編集・移動・リサイズ（滑らかFLIP対応）
         ========================================================= */
         function toggleEditMode(force) {
             isEditMode = typeof force === 'boolean' ? force : !isEditMode;
             document.getElementById('osShell').classList.toggle('editing', isEditMode);
             document.getElementById('editBtn').classList.toggle('primary', isEditMode);
             document.getElementById('editBtn').textContent = isEditMode ? 'DONE [Esc]' : 'EDIT [E]';
-            if (isEditMode && !selected && state.pages[currentPage].items.length) {
-                selected = { loc: currentPage, idx: 0 };
-            }
+            if (isEditMode && !selected && state.pages[currentPage].items.length) selected = { loc: currentPage, idx: 0 };
             if (!isEditMode) selected = null;
             renderAll();
         }
@@ -1498,7 +1805,7 @@
             const label = item.type === 'app' ? item.name : `${item.widgetType.toUpperCase()} [${item.size}]`;
             info.innerHTML = `SELECTED: <strong>${escapeHtml(label)}</strong>`;
             btnResize.style.display = item.type === 'widget' ? 'inline-flex' : 'none';
-            btnEdit.style.display = item.type === 'app' ? 'inline-flex' : 'none';
+            btnEdit.style.display = (item.type === 'app' || item.widgetType === 'weather') ? 'inline-flex' : 'none';
         }
 
         function moveSelected(dir) {
@@ -1506,22 +1813,26 @@
             const arr = selected.loc === 'dock' ? state.dock : state.pages[selected.loc].items;
             const target = selected.idx + dir;
             if (target < 0 || target >= arr.length) return;
+            const prev = captureRects();
             pushUndo();
             [arr[selected.idx], arr[target]] = [arr[target], arr[selected.idx]];
             selected.idx = target;
             saveState();
-            renderAll();
+            renderAll(prev);
         }
 
         function cycleSelectedSize() {
             const item = getSelectedItem();
             if (!item || item.type !== 'widget') return;
-            const sizes = ['2x1', '2x2', '3x2', '4x2', '6x2'];
+            const sizes = item.widgetType === 'search'
+                ? ['3x1', '4x1', '6x1', '2x1']
+                : ['2x1', '2x2', '3x2', '4x2', '6x2'];
             const next = sizes[(sizes.indexOf(item.size) + 1) % sizes.length];
+            const prev = captureRects();
             pushUndo();
             item.size = next;
             saveState();
-            renderAll();
+            renderAll(prev);
         }
 
         function deleteSelectedItem() {
@@ -1529,18 +1840,20 @@
             const arr = selected.loc === 'dock' ? state.dock : state.pages[selected.loc].items;
             const removed = arr[selected.idx];
             if (!removed) return;
+            const prev = captureRects();
             pushUndo();
             arr.splice(selected.idx, 1);
-            if (arr.length === 0) selected = null;
-            else selected.idx = Math.min(selected.idx, arr.length - 1);
+            selected = arr.length ? { loc: selected.loc, idx: Math.min(selected.idx, arr.length - 1) } : null;
             saveState();
-            renderAll();
+            renderAll(prev);
             showUndoToast(`REMOVED: ${removed.name || removed.widgetType}`);
         }
 
         function editSelectedItem() {
             const item = getSelectedItem();
-            if (item && item.type === 'app') openAppModal(selected.loc, selected.idx);
+            if (!item) return;
+            if (item.type === 'app') openAppModal(selected.loc, selected.idx);
+            else if (item.widgetType === 'weather') openCityModal(item.id);
         }
 
         function addPage() {
@@ -1553,20 +1866,15 @@
         }
 
         /* =========================================================
-           9. キーボード操作エンジン（狂いのないナビゲーション＆編集）
+           10. キーボード操作エンジン
         ========================================================= */
         document.addEventListener('keydown', e => {
             const inInput = e.target.matches('input, textarea, select');
-
-            if ((e.metaKey || e.ctrlKey) && e.key.toLowerCase() === 'k') {
-                e.preventDefault(); openSearch(); return;
-            }
-            if ((e.metaKey || e.ctrlKey) && e.key.toLowerCase() === 'z' && !inInput) {
-                e.preventDefault(); undoAction(); return;
-            }
+            if ((e.metaKey || e.ctrlKey) && e.key.toLowerCase() === 'k') { e.preventDefault(); openSearch(); return; }
+            if ((e.metaKey || e.ctrlKey) && e.key.toLowerCase() === 'z' && !inInput) { e.preventDefault(); undoAction(); return; }
             if (e.key === 'Escape') {
-                const anyOpen = document.querySelector('.modal-bg.open');
-                if (anyOpen) anyOpen.classList.remove('open');
+                const openM = document.querySelector('.modal-bg.open');
+                if (openM) openM.classList.remove('open');
                 else if (isEditMode) toggleEditMode(false);
                 return;
             }
@@ -1574,33 +1882,24 @@
 
             const k = e.key.toLowerCase();
             if (k === 'e') { e.preventDefault(); toggleEditMode(); return; }
-            if (k === 'n') { e.preventDefault(); openAddModal(); return; }
+            if (k === 'n') { e.preventDefault(); openModal('addModal'); return; }
             if (e.key === '/') { e.preventDefault(); openSearch(); return; }
 
-            // Shift + 左右 or [ / ] で順番移動
-            if ((e.shiftKey && e.key === 'ArrowLeft') || e.key === '[') {
-                e.preventDefault(); if (!isEditMode) toggleEditMode(true); moveSelected(-1); return;
-            }
-            if ((e.shiftKey && e.key === 'ArrowRight') || e.key === ']') {
-                e.preventDefault(); if (!isEditMode) toggleEditMode(true); moveSelected(1); return;
-            }
+            if ((e.shiftKey && e.key === 'ArrowLeft') || e.key === '[') { e.preventDefault(); if (!isEditMode) toggleEditMode(true); moveSelected(-1); return; }
+            if ((e.shiftKey && e.key === 'ArrowRight') || e.key === ']') { e.preventDefault(); if (!isEditMode) toggleEditMode(true); moveSelected(1); return; }
 
-            // 矢印キーでタイル選択移動
             if (['ArrowLeft', 'ArrowRight', 'ArrowUp', 'ArrowDown'].includes(e.key)) {
                 e.preventDefault();
                 const items = state.pages[currentPage].items;
                 if (!items.length) return;
-                if (!selected || selected.loc !== currentPage) {
-                    selectItem(currentPage, 0);
-                    return;
-                }
+                if (!selected || selected.loc !== currentPage) { selectItem(currentPage, 0); return; }
                 const cols = window.innerWidth <= 720 ? 4 : (state.cols || 6);
-                let nextIdx = selected.idx;
-                if (e.key === 'ArrowLeft') nextIdx = Math.max(0, selected.idx - 1);
-                if (e.key === 'ArrowRight') nextIdx = Math.min(items.length - 1, selected.idx + 1);
-                if (e.key === 'ArrowUp') nextIdx = Math.max(0, selected.idx - cols);
-                if (e.key === 'ArrowDown') nextIdx = Math.min(items.length - 1, selected.idx + cols);
-                selectItem(currentPage, nextIdx);
+                let ni = selected.idx;
+                if (e.key === 'ArrowLeft') ni = Math.max(0, selected.idx - 1);
+                if (e.key === 'ArrowRight') ni = Math.min(items.length - 1, selected.idx + 1);
+                if (e.key === 'ArrowUp') ni = Math.max(0, selected.idx - cols);
+                if (e.key === 'ArrowDown') ni = Math.min(items.length - 1, selected.idx + cols);
+                selectItem(currentPage, ni);
                 return;
             }
 
@@ -1625,22 +1924,19 @@
         });
 
         /* =========================================================
-           10. モーダル（追加・アプリ設定・テーマ・JSON・検索）
+           11. モーダル・検索・時計更新
         ========================================================= */
+        function openModal(id) { document.getElementById(id).classList.add('open'); }
         function closeModal(id) { document.getElementById(id).classList.remove('open'); }
-        function openAddModal() { document.getElementById('addModal').classList.add('open'); }
-        function openThemeModal() { applyTheme(); document.getElementById('themeModal').classList.add('open'); }
 
         function addWidget(widgetType, size) {
+            const prev = captureRects();
             pushUndo();
-            state.pages[currentPage].items.unshift({
-                type: 'widget',
-                widgetType,
-                size,
-                id: `w_${widgetType}_${Date.now()}`
-            });
+            const wObj = { type: 'widget', widgetType, size, id: `w_${widgetType}_${Date.now()}` };
+            if (widgetType === 'weather') { wObj.city = 'TOKYO'; wObj.lat = 35.6762; wObj.lon = 139.6503; }
+            state.pages[currentPage].items.unshift(wObj);
             saveState();
-            renderAll();
+            renderAll(prev);
             closeModal('addModal');
         }
 
@@ -1683,12 +1979,11 @@
                 sel.appendChild(o);
             });
             const dOpt = document.createElement('option');
-            dOpt.value = 'dock';
-            dOpt.textContent = 'BOTTOM DOCK';
+            dOpt.value = 'dock'; dOpt.textContent = 'BOTTOM DOCK';
             sel.appendChild(dOpt);
             sel.value = editRef ? String(loc) : String(currentPage);
 
-            document.getElementById('appModal').classList.add('open');
+            openModal('appModal');
         }
 
         function saveAppModal() {
@@ -1699,8 +1994,9 @@
             const dest = rawTarget === 'dock' ? 'dock' : Number(rawTarget);
             if (!name || !url) { alert('名前とURLを入力してください'); return; }
 
+            const prev = captureRects();
             pushUndo();
-            const obj = { type: 'app', name, url, icon: pickedIcon, newTab };
+            const obj = { type: 'app', name, url, icon: pickedIcon, newTab, _uid: editRef ? (editRef.loc === 'dock' ? state.dock : state.pages[editRef.loc].items)[editRef.idx]._uid : 'u_' + (uidCounter++) };
             if (editRef) {
                 const srcArr = editRef.loc === 'dock' ? state.dock : state.pages[editRef.loc].items;
                 if (editRef.loc === dest) srcArr[editRef.idx] = obj;
@@ -1712,7 +2008,7 @@
                 (dest === 'dock' ? state.dock : state.pages[dest].items).push(obj);
             }
             saveState();
-            renderAll();
+            renderAll(prev);
             closeModal('appModal');
         }
 
@@ -1732,6 +2028,7 @@
                 if (!parsed.pages || !parsed.dock) throw new Error();
                 pushUndo();
                 state = parsed;
+                ensureUids();
                 saveState();
                 applyTheme();
                 renderAll();
@@ -1743,6 +2040,7 @@
             if (!confirm('初期配置に戻しますか？')) return;
             pushUndo();
             state = structuredClone(DEFAULT_STATE);
+            ensureUids();
             saveState();
             currentPage = 0;
             selected = null;
@@ -1751,13 +2049,12 @@
             closeModal('themeModal');
         }
 
-        // クイック検索
         function openSearch() {
-            document.getElementById('searchModal').classList.add('open');
+            openModal('searchModal');
             const inp = document.getElementById('searchInput');
             inp.value = '';
             renderSearch('');
-            setTimeout(() => inp.focus(), 40);
+            setTimeout(() => inp.focus(), 50);
         }
 
         function renderSearch(q) {
@@ -1770,7 +2067,7 @@
                 if (seen.has(a.name)) return false;
                 seen.add(a.name);
                 return !query || a.name.toLowerCase().includes(query) || a.url.toLowerCase().includes(query);
-            }).slice(0, 7);
+            }).slice(0, 8);
 
             matches.forEach(a => {
                 const row = document.createElement('a');
@@ -1797,22 +2094,24 @@
             if (e.key === 'Enter') document.querySelector('#searchList .search-row')?.click();
         });
 
-        /* =========================================================
-           11. 時計更新＆初期起動
-        ========================================================= */
         function updateClocks() {
             const now = new Date();
-            const hh = String(now.getHours()).padStart(2, '0');
-            const mm = String(now.getMinutes()).padStart(2, '0');
-            const ss = String(now.getSeconds()).padStart(2, '0');
+            const h = now.getHours(), m = now.getMinutes(), s = now.getSeconds();
+            const hh = String(h).padStart(2, '0'), mm = String(m).padStart(2, '0'), ss = String(s).padStart(2, '0');
             document.querySelectorAll('.js-clk-time').forEach(el => el.textContent = `${hh}:${mm}:${ss}`);
             document.querySelectorAll('.js-clk-date').forEach(el => el.textContent = now.toLocaleDateString('ja-JP', { year: 'numeric', month: 'long', day: 'numeric', weekday: 'short' }));
+            document.querySelectorAll('.js-clk-short').forEach(el => el.textContent = now.toLocaleDateString('ja-JP', { month: 'numeric', day: 'numeric', weekday: 'short' }));
+
+            const hd = (h % 12 + m / 60) * 30, md = (m + s / 60) * 6, sd = s * 6;
+            document.querySelectorAll('.js-h-hand').forEach(el => el.setAttribute('transform', `rotate(${hd} 50 50)`));
+            document.querySelectorAll('.js-m-hand').forEach(el => el.setAttribute('transform', `rotate(${md} 50 50)`));
+            document.querySelectorAll('.js-s-hand').forEach(el => el.setAttribute('transform', `rotate(${sd} 50 50)`));
         }
         setInterval(updateClocks, 1000);
 
         applyTheme();
         renderAll();
-        loadWeather();
     </script>
 </body>
 </html>
+
