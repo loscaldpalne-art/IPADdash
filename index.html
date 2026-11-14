@@ -2,17 +2,20 @@
 <html lang="ja">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
     <title>iPad Dashboard</title>
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
     <style>
         :root {
             --bg-color: #090d16;
-            --card-bg: rgba(22, 31, 48, 0.75);
-            --border-color: rgba(255, 255, 255, 0.08);
+            --card-bg: rgba(22, 31, 48, 0.78);
+            --card-inner: rgba(15, 23, 42, 0.65);
+            --border-color: rgba(255, 255, 255, 0.09);
             --accent: #38bdf8;
-            --accent-hover: #0284c7;
+            --accent-soft: rgba(56, 189, 248, 0.15);
+            --danger: #f87171;
+            --success: #4ade80;
             --text-main: #f1f5f9;
             --text-muted: #94a3b8;
         }
@@ -22,25 +25,29 @@
             margin: 0;
             padding: 0;
             font-family: -apple-system, BlinkMacSystemFont, "SF Pro Display", "Segoe UI", Roboto, sans-serif;
+            -webkit-tap-highlight-color: transparent;
         }
 
         body {
-            background: radial-gradient(circle at top right, #1e293b, var(--bg-color) 60%);
+            background: radial-gradient(circle at top right, #1e293b, var(--bg-color) 65%);
             color: var(--text-main);
             min-height: 100vh;
-            padding: 28px;
+            min-height: 100dvh;
+            padding: 24px;
             display: grid;
-            grid-template-columns: 1.2fr 1fr;
+            grid-template-columns: 1.25fr 1fr;
             grid-template-rows: auto 1fr;
             gap: 20px;
+            touch-action: manipulation;
         }
 
         .card {
             background: var(--card-bg);
             border: 1px solid var(--border-color);
-            border-radius: 20px;
-            padding: 24px;
-            backdrop-filter: blur(12px);
+            border-radius: 22px;
+            padding: 22px;
+            backdrop-filter: blur(14px);
+            -webkit-backdrop-filter: blur(14px);
             display: flex;
             flex-direction: column;
         }
@@ -52,11 +59,11 @@
             justify-content: space-between;
             align-items: center;
             gap: 24px;
-            padding: 20px 28px;
+            padding: 18px 26px;
         }
 
         .clock-box .time {
-            font-size: 4.2rem;
+            font-size: 3.8rem;
             font-weight: 800;
             letter-spacing: -2px;
             line-height: 1;
@@ -65,24 +72,54 @@
         }
 
         .clock-box .date {
-            font-size: 1.15rem;
+            font-size: 1.05rem;
             color: var(--text-muted);
             margin-top: 6px;
         }
 
-        .search-form {
+        .search-wrapper {
             flex: 1;
-            max-width: 480px;
+            max-width: 520px;
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        .search-engines {
+            display: flex;
+            gap: 6px;
+            flex-wrap: wrap;
+        }
+
+        .engine-pill {
+            background: rgba(255, 255, 255, 0.06);
+            color: var(--text-muted);
+            border: 1px solid var(--border-color);
+            border-radius: 999px;
+            padding: 4px 12px;
+            font-size: 0.78rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.15s;
+        }
+
+        .engine-pill.active {
+            background: var(--accent-soft);
+            color: var(--accent);
+            border-color: rgba(56, 189, 248, 0.4);
+        }
+
+        .search-form {
             display: flex;
             gap: 10px;
         }
 
         .search-input {
             width: 100%;
-            background: rgba(15, 23, 42, 0.8);
+            background: rgba(15, 23, 42, 0.85);
             border: 1px solid var(--border-color);
             border-radius: 12px;
-            padding: 14px 18px;
+            padding: 13px 16px;
             color: var(--text-main);
             font-size: 1rem;
             outline: none;
@@ -102,100 +139,229 @@
             font-weight: 700;
             font-size: 0.95rem;
             cursor: pointer;
+            white-space: nowrap;
             transition: opacity 0.2s, transform 0.1s;
         }
 
-        .btn:active {
-            transform: scale(0.96);
-        }
-
-        /* 左カラム：タイマー＆ランチャー */
-        .left-col {
-            display: flex;
-            flex-direction: column;
-            gap: 20px;
-        }
-
-        .section-title {
-            font-size: 0.85rem;
-            text-transform: uppercase;
-            letter-spacing: 1px;
-            color: var(--text-muted);
-            margin-bottom: 14px;
-            font-weight: 600;
-        }
-
-        .timer-display {
-            font-size: 3.5rem;
-            font-weight: 700;
-            text-align: center;
-            margin: 10px 0 18px;
-            font-variant-numeric: tabular-nums;
-        }
-
-        .timer-controls {
-            display: flex;
-            justify-content: center;
-            gap: 10px;
-            flex-wrap: wrap;
-        }
+        .btn:active { transform: scale(0.96); }
 
         .btn-sub {
             background: rgba(255, 255, 255, 0.08);
             color: var(--text-main);
             border: 1px solid var(--border-color);
             border-radius: 10px;
-            padding: 10px 16px;
-            font-size: 0.9rem;
+            padding: 9px 14px;
+            font-size: 0.85rem;
             font-weight: 600;
             cursor: pointer;
         }
 
-        .btn-sub:active {
-            background: rgba(255, 255, 255, 0.16);
+        .btn-sub:active { background: rgba(255, 255, 255, 0.16); }
+
+        /* 左カラム */
+        .left-col {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
         }
 
+        .section-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 14px;
+        }
+
+        .section-title {
+            font-size: 0.82rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            color: var(--text-muted);
+            font-weight: 700;
+        }
+
+        .header-actions {
+            display: flex;
+            gap: 8px;
+        }
+
+        .btn-xs {
+            background: rgba(255, 255, 255, 0.07);
+            color: var(--text-muted);
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            padding: 5px 10px;
+            font-size: 0.78rem;
+            font-weight: 600;
+            cursor: pointer;
+        }
+
+        .btn-xs.active {
+            background: var(--accent-soft);
+            color: var(--accent);
+            border-color: var(--accent);
+        }
+
+        /* タイマー */
+        .timer-display {
+            font-size: 3.3rem;
+            font-weight: 800;
+            text-align: center;
+            margin: 4px 0 14px;
+            font-variant-numeric: tabular-nums;
+            transition: color 0.3s;
+        }
+
+        .timer-display.done { color: var(--success); }
+
+        .timer-controls {
+            display: flex;
+            justify-content: center;
+            gap: 8px;
+            flex-wrap: wrap;
+        }
+
+        .timer-controls .btn { padding: 9px 18px; }
+
+        /* ランチャーグリッド */
         .links-grid {
             display: grid;
-            grid-template-columns: repeat(2, 1fr);
+            grid-template-columns: repeat(auto-fill, minmax(145px, 1fr));
             gap: 12px;
-            flex: 1;
+            align-content: start;
+        }
+
+        .link-card {
+            position: relative;
+            background: var(--card-inner);
+            border: 1px solid var(--border-color);
+            border-radius: 16px;
+            transition: border-color 0.2s, transform 0.1s;
+            overflow: hidden;
         }
 
         .link-item {
-            background: rgba(15, 23, 42, 0.6);
-            border: 1px solid var(--border-color);
-            border-radius: 14px;
-            padding: 16px;
+            padding: 14px;
             text-decoration: none;
             color: var(--text-main);
             display: flex;
             flex-direction: column;
-            justify-content: space-between;
-            transition: border-color 0.2s, transform 0.1s;
+            gap: 8px;
+            height: 100%;
         }
 
-        .link-item:active {
+        .link-card:active {
             transform: scale(0.97);
             border-color: var(--accent);
         }
 
+        .link-top {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .link-icon {
+            font-size: 1.6rem;
+            line-height: 1;
+        }
+
+        .link-badge {
+            font-size: 0.68rem;
+            font-weight: 700;
+            padding: 2px 7px;
+            border-radius: 6px;
+            background: rgba(255, 255, 255, 0.08);
+            color: var(--text-muted);
+        }
+
+        .link-badge.app {
+            background: var(--accent-soft);
+            color: var(--accent);
+        }
+
         .link-item span.title {
             font-weight: 700;
-            font-size: 1.05rem;
+            font-size: 0.98rem;
+            line-height: 1.25;
         }
 
         .link-item span.desc {
-            font-size: 0.8rem;
+            font-size: 0.75rem;
             color: var(--text-muted);
-            margin-top: 4px;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
         }
 
-        /* 右カラム：自動保存メモ帳 */
+        /* 編集モードコントロール */
+        .edit-controls {
+            display: none;
+            padding: 6px 8px;
+            background: rgba(9, 13, 22, 0.9);
+            border-top: 1px solid var(--border-color);
+            justify-content: space-between;
+            align-items: center;
+            gap: 4px;
+        }
+
+        .editing .edit-controls { display: flex; }
+        .editing .link-card { border-style: dashed; border-color: rgba(56, 189, 248, 0.45); }
+
+        .edit-btn {
+            background: rgba(255, 255, 255, 0.08);
+            color: var(--text-main);
+            border: none;
+            border-radius: 6px;
+            padding: 4px 8px;
+            font-size: 0.75rem;
+            cursor: pointer;
+        }
+
+        .edit-btn.del { color: var(--danger); }
+
+        /* 右カラム（タブ切替：メモ / ToDo / 時間割） */
+        .tabs-bar {
+            display: flex;
+            gap: 6px;
+            background: rgba(15, 23, 42, 0.7);
+            padding: 5px;
+            border-radius: 12px;
+            border: 1px solid var(--border-color);
+            margin-bottom: 14px;
+        }
+
+        .tab-btn {
+            flex: 1;
+            background: transparent;
+            color: var(--text-muted);
+            border: none;
+            border-radius: 8px;
+            padding: 8px;
+            font-size: 0.85rem;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.15s;
+        }
+
+        .tab-btn.active {
+            background: var(--accent);
+            color: #0f172a;
+        }
+
+        .tab-panel {
+            display: none;
+            flex: 1;
+            flex-direction: column;
+            min-height: 280px;
+        }
+
+        .tab-panel.active { display: flex; }
+
         .memo-area {
             width: 100%;
             flex: 1;
-            background: rgba(15, 23, 42, 0.6);
+            background: var(--card-inner);
             border: 1px solid var(--border-color);
             border-radius: 14px;
             padding: 16px;
@@ -206,33 +372,154 @@
             outline: none;
         }
 
-        .memo-area:focus {
-            border-color: var(--accent);
-        }
+        .memo-area:focus { border-color: var(--accent); }
 
-        .memo-header {
+        .memo-footer {
             display: flex;
             justify-content: space-between;
             align-items: center;
-            margin-bottom: 14px;
+            margin-top: 8px;
+            font-size: 0.78rem;
+            color: var(--text-muted);
         }
 
         .save-status {
-            font-size: 0.8rem;
-            color: #4ade80;
+            color: var(--success);
             opacity: 0;
             transition: opacity 0.3s;
         }
 
-        @media (max-width: 768px) {
+        /* ToDoリスト */
+        .todo-input-row {
+            display: flex;
+            gap: 8px;
+            margin-bottom: 12px;
+        }
+
+        .todo-list {
+            flex: 1;
+            overflow-y: auto;
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        .todo-item {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            background: var(--card-inner);
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            padding: 11px 14px;
+        }
+
+        .todo-item input[type="checkbox"] {
+            width: 20px;
+            height: 20px;
+            accent-color: var(--accent);
+            cursor: pointer;
+        }
+
+        .todo-text {
+            flex: 1;
+            font-size: 0.95rem;
+            word-break: break-word;
+        }
+
+        .todo-item.completed .todo-text {
+            text-decoration: line-through;
+            color: var(--text-muted);
+        }
+
+        .todo-del {
+            background: none;
+            border: none;
+            color: var(--text-muted);
+            font-size: 1rem;
+            cursor: pointer;
+            padding: 2px 6px;
+        }
+
+        /* モーダル */
+        .modal-backdrop {
+            display: none;
+            position: fixed;
+            inset: 0;
+            background: rgba(0, 0, 0, 0.7);
+            backdrop-filter: blur(6px);
+            z-index: 100;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+
+        .modal-backdrop.open { display: flex; }
+
+        .modal {
+            width: 100%;
+            max-width: 440px;
+            background: #131c2e;
+            border: 1px solid rgba(255, 255, 255, 0.14);
+            border-radius: 20px;
+            padding: 24px;
+            display: flex;
+            flex-direction: column;
+            gap: 14px;
+        }
+
+        .modal h3 { font-size: 1.15rem; }
+
+        .field {
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+        }
+
+        .field label {
+            font-size: 0.8rem;
+            color: var(--text-muted);
+            font-weight: 600;
+        }
+
+        .field input[type="text"] {
+            background: rgba(15, 23, 42, 0.9);
+            border: 1px solid var(--border-color);
+            border-radius: 10px;
+            padding: 11px 14px;
+            color: var(--text-main);
+            font-size: 0.95rem;
+            outline: none;
+        }
+
+        .field input[type="text"]:focus { border-color: var(--accent); }
+
+        .checkbox-row {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-size: 0.88rem;
+            color: var(--text-main);
+            cursor: pointer;
+        }
+
+        .modal-actions {
+            display: flex;
+            justify-content: flex-end;
+            gap: 10px;
+            margin-top: 6px;
+        }
+
+        @media (max-width: 820px) {
             body {
                 grid-template-columns: 1fr;
+                padding: 16px;
             }
             .top-bar {
                 flex-direction: column;
                 align-items: flex-start;
             }
-            .search-form {
+            .search-wrapper {
                 width: 100%;
                 max-width: none;
             }
@@ -247,138 +534,545 @@
             <div class="time" id="clock">00:00:00</div>
             <div class="date" id="date">Loading...</div>
         </div>
-        <form class="search-form" action="https://www.google.com/search" method="GET" target="_blank">
-            <input type="text" name="q" class="search-input" placeholder="Googleで検索..." autocomplete="off">
-            <button type="submit" class="btn">検索</button>
-        </form>
+        <div class="search-wrapper">
+            <div class="search-engines" id="enginePills">
+                <button type="button" class="engine-pill active" data-engine="google">Google (Web)</button>
+                <button type="button" class="engine-pill" data-engine="googleapp">Googleアプリ</button>
+                <button type="button" class="engine-pill" data-engine="drive">Drive内検索</button>
+                <button type="button" class="engine-pill" data-engine="youtube">YouTube</button>
+            </div>
+            <form class="search-form" onsubmit="handleSearch(event)">
+                <input type="text" id="searchInput" class="search-input" placeholder="Googleで検索..." autocomplete="off">
+                <button type="submit" class="btn">検索</button>
+            </form>
+        </div>
     </div>
 
-    <!-- 左側：タイマー＆クイックリンク -->
+    <!-- 左側：タイマー＆カスタムランチャー -->
     <div class="left-col">
         <div class="card">
-            <div class="section-title">Focus Timer</div>
+            <div class="section-header" style="margin-bottom: 4px;">
+                <div class="section-title">Focus Timer</div>
+                <span id="timerStatus" style="font-size:0.78rem; color:var(--text-muted);">バックグラウンド対応</span>
+            </div>
             <div class="timer-display" id="timer">25:00</div>
             <div class="timer-controls">
                 <button class="btn" id="startBtn" onclick="toggleTimer()">スタート</button>
                 <button class="btn-sub" onclick="setTimer(25)">25分</button>
+                <button class="btn-sub" onclick="setTimer(10)">10分</button>
                 <button class="btn-sub" onclick="setTimer(5)">5分</button>
+                <button class="btn-sub" onclick="addMinute()">+1分</button>
                 <button class="btn-sub" onclick="resetTimer()">リセット</button>
             </div>
         </div>
 
-        <div class="card" style="flex: 1;">
-            <div class="section-title">Quick Launch (Web)</div>
-            <div class="links-grid">
-                <a href="https://github.com" target="_blank" class="link-item">
-                    <span class="title">GitHub</span>
-                    <span class="desc">コード・リポジトリ</span>
-                </a>
-                <a href="https://gemini.google.com" target="_blank" class="link-item">
-                    <span class="title">Gemini</span>
-                    <span class="desc">AIアシスタント</span>
-                </a>
-                <a href="https://loilonote.app" target="_blank" class="link-item">
-                    <span class="title">ロイロノート (Web)</span>
-                    <span class="desc">ブラウザ版を開く</span>
-                </a>
-                <!-- URLスキーム動作確認用（ダメなら好きなURLに書き換えてOK） -->
-                <a href="comgooglemaps://" class="link-item">
-                    <span class="title">Googleマップ (テスト)</span>
-                    <span class="desc">アプリ起動スキーム</span>
-                </a>
+        <div class="card" id="launcherCard" style="flex: 1;">
+            <div class="section-header">
+                <div class="section-title">Quick Launch</div>
+                <div class="header-actions">
+                    <button class="btn-xs" id="resetLaunchersBtn" style="display:none;" onclick="resetLaunchers()">初期化</button>
+                    <button class="btn-xs" id="editModeBtn" onclick="toggleEditMode()">編集</button>
+                    <button class="btn-xs" onclick="openModal()">＋ 追加</button>
+                </div>
+            </div>
+            <div class="links-grid" id="linksGrid"></div>
+        </div>
+    </div>
+
+    <!-- 右側：多機能ワークスペース -->
+    <div class="card">
+        <div class="tabs-bar">
+            <button class="tab-btn active" onclick="switchTab('memo', this)">📝 メモ</button>
+            <button class="tab-btn" onclick="switchTab('todo', this)">✅ ToDo</button>
+            <button class="tab-btn" onclick="switchTab('schedule', this)">📅 時間割・固定</button>
+        </div>
+
+        <!-- メモタブ -->
+        <div class="tab-panel active" id="tab-memo">
+            <textarea class="memo-area" id="memo" placeholder="ここに書いた内容は自動でiPadに保存されます..."></textarea>
+            <div class="memo-footer">
+                <span id="memoCount">0 文字</span>
+                <span class="save-status" id="saveStatus">保存しました</span>
+                <button class="btn-xs" onclick="clearMemo('memo')">クリア</button>
+            </div>
+        </div>
+
+        <!-- ToDoタブ -->
+        <div class="tab-panel" id="tab-todo">
+            <form class="todo-input-row" onsubmit="addTodo(event)">
+                <input type="text" id="todoInput" class="search-input" style="padding: 10px 14px;" placeholder="やることを追加..." autocomplete="off">
+                <button type="submit" class="btn">追加</button>
+            </form>
+            <div class="todo-list" id="todoList"></div>
+            <div class="memo-footer">
+                <span id="todoStats">0 件</span>
+                <button class="btn-xs" onclick="clearDoneTodos()">完了を削除</button>
+            </div>
+        </div>
+
+        <!-- 時間割・固定メモタブ -->
+        <div class="tab-panel" id="tab-schedule">
+            <textarea class="memo-area" id="scheduleMemo" placeholder="時間割や、クラスコード・よく使うIDなどを書いておくと便利です..."></textarea>
+            <div class="memo-footer">
+                <span>自動保存</span>
+                <span class="save-status" id="scheduleSaveStatus">保存しました</span>
             </div>
         </div>
     </div>
 
-    <!-- 右側：自動保存メモ -->
-    <div class="card">
-        <div class="memo-header">
-            <div class="section-title" style="margin-bottom: 0;">Quick Scratchpad (自動保存)</div>
-            <span class="save-status" id="saveStatus">保存しました</span>
+    <!-- 追加・編集モーダル -->
+    <div class="modal-backdrop" id="modalBackdrop" onclick="closeModalOnBackdrop(event)">
+        <div class="modal">
+            <h3 id="modalTitle">リンクを追加</h3>
+            <div class="field">
+                <label>名前</label>
+                <input type="text" id="inpTitle" placeholder="例：Googleドライブ">
+            </div>
+            <div class="field">
+                <label>アイコン（絵文字）</label>
+                <input type="text" id="inpIcon" placeholder="例：📁" value="🔗">
+            </div>
+            <div class="field">
+                <label>URL（アプリを開く場合は https://... のユニバーサルリンク推奨）</label>
+                <input type="text" id="inpUrl" placeholder="https://drive.google.com/">
+            </div>
+            <div class="field">
+                <label>サブ説明（任意）</label>
+                <input type="text" id="inpDesc" placeholder="例：ファイル管理">
+            </div>
+            <label class="checkbox-row">
+                <input type="checkbox" id="inpNewTab">
+                別タブで開く（Webサイト向け／アプリ起動はOFF推奨）
+            </label>
+            <div class="modal-actions">
+                <button class="btn-sub" onclick="closeModal()">キャンセル</button>
+                <button class="btn" style="padding: 10px 20px;" onclick="saveLauncher()">保存</button>
+            </div>
         </div>
-        <textarea class="memo-area" id="memo" placeholder="ここに書いた内容は自動でブラウザに保存されます..."></textarea>
     </div>
 
     <script>
-        // 時計の更新
+        /* =========================
+           1. 時計
+        ========================= */
         function updateClock() {
             const now = new Date();
             const h = String(now.getHours()).padStart(2, '0');
             const m = String(now.getMinutes()).padStart(2, '0');
             const s = String(now.getSeconds()).padStart(2, '0');
             document.getElementById('clock').textContent = `${h}:${m}:${s}`;
-
             const options = { year: 'numeric', month: 'long', day: 'numeric', weekday: 'short' };
             document.getElementById('date').textContent = now.toLocaleDateString('ja-JP', options);
         }
         setInterval(updateClock, 1000);
         updateClock();
 
-        // タイマー機能
-        let defaultSeconds = 25 * 60;
-        let remainingSeconds = defaultSeconds;
+        /* =========================
+           2. 検索（エンジン切替）
+        ========================= */
+        let currentEngine = 'google';
+        const engineConfig = {
+            google:    { placeholder: 'Googleで検索 (Web)...',   url: q => `https://www.google.com/search?q=${encodeURIComponent(q)}`, newTab: true },
+            googleapp: { placeholder: 'Googleアプリで検索...',     url: q => `google://search?q=${encodeURIComponent(q)}`, newTab: false },
+            drive:     { placeholder: 'Googleドライブを検索...', url: q => `https://drive.google.com/drive/search?q=${encodeURIComponent(q)}`, newTab: false },
+            youtube:   { placeholder: 'YouTubeを検索...',        url: q => `https://www.youtube.com/results?search_query=${encodeURIComponent(q)}`, newTab: false }
+        };
+
+        document.querySelectorAll('.engine-pill').forEach(btn => {
+            btn.addEventListener('click', () => {
+                document.querySelectorAll('.engine-pill').forEach(b => b.classList.remove('active'));
+                btn.classList.add('active');
+                currentEngine = btn.dataset.engine;
+                document.getElementById('searchInput').placeholder = engineConfig[currentEngine].placeholder;
+                document.getElementById('searchInput').focus();
+            });
+        });
+
+        function handleSearch(e) {
+            e.preventDefault();
+            const input = document.getElementById('searchInput');
+            const q = input.value.trim();
+            if (!q) return;
+            const cfg = engineConfig[currentEngine];
+            const targetUrl = cfg.url(q);
+            if (cfg.newTab) {
+                window.open(targetUrl, '_blank', 'noopener');
+            } else {
+                window.location.href = targetUrl;
+            }
+        }
+
+        /* =========================
+           3. バックグラウンド対応タイマー
+        ========================= */
+        let durationSec = 25 * 60;
+        let remainingSec = durationSec;
+        let endTime = null;
         let timerInterval = null;
 
-        function updateTimerDisplay() {
-            const m = String(Math.floor(remainingSeconds / 60)).padStart(2, '0');
-            const s = String(remainingSeconds % 60).padStart(2, '0');
+        function playBeep() {
+            try {
+                const ctx = new (window.AudioContext || window.webkitAudioContext)();
+                [523.25, 659.25, 783.99].forEach((freq, i) => {
+                    const osc = ctx.createOscillator();
+                    const gain = ctx.createGain();
+                    osc.type = 'sine';
+                    osc.frequency.value = freq;
+                    gain.gain.setValueAtTime(0.15, ctx.currentTime + i * 0.14);
+                    gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + i * 0.14 + 0.35);
+                    osc.connect(gain);
+                    gain.connect(ctx.destination);
+                    osc.start(ctx.currentTime + i * 0.14);
+                    osc.stop(ctx.currentTime + i * 0.14 + 0.35);
+                });
+            } catch (e) {}
+        }
+
+        function renderTimer(sec) {
+            const m = String(Math.floor(sec / 60)).padStart(2, '0');
+            const s = String(sec % 60).padStart(2, '0');
             document.getElementById('timer').textContent = `${m}:${s}`;
+        }
+
+        function tickTimer() {
+            if (!endTime) return;
+            const diff = Math.max(0, Math.ceil((endTime - Date.now()) / 1000));
+            remainingSec = diff;
+            renderTimer(diff);
+            if (diff <= 0) {
+                clearInterval(timerInterval);
+                timerInterval = null;
+                endTime = null;
+                document.getElementById('startBtn').textContent = 'スタート';
+                document.getElementById('timer').classList.add('done');
+                document.getElementById('timerStatus').textContent = '時間になりました！';
+                playBeep();
+            }
         }
 
         function toggleTimer() {
             const btn = document.getElementById('startBtn');
+            const disp = document.getElementById('timer');
+            disp.classList.remove('done');
             if (timerInterval) {
+                tickTimer();
                 clearInterval(timerInterval);
                 timerInterval = null;
-                btn.textContent = 'スタート';
+                endTime = null;
+                btn.textContent = '再開';
+                document.getElementById('timerStatus').textContent = '一時停止中';
             } else {
+                if (remainingSec <= 0) remainingSec = durationSec;
+                endTime = Date.now() + remainingSec * 1000;
                 btn.textContent = '一時停止';
-                timerInterval = setInterval(() => {
-                    if (remainingSeconds > 0) {
-                        remainingSeconds--;
-                        updateTimerDisplay();
-                    } else {
-                        clearInterval(timerInterval);
-                        timerInterval = null;
-                        btn.textContent = 'スタート';
-                        alert('タイマー終了！');
-                    }
-                }, 1000);
+                document.getElementById('timerStatus').textContent = '計測中...';
+                timerInterval = setInterval(tickTimer, 250);
             }
         }
 
         function setTimer(minutes) {
             clearInterval(timerInterval);
             timerInterval = null;
+            endTime = null;
+            durationSec = minutes * 60;
+            remainingSec = durationSec;
             document.getElementById('startBtn').textContent = 'スタート';
-            defaultSeconds = minutes * 60;
-            remainingSeconds = defaultSeconds;
-            updateTimerDisplay();
+            document.getElementById('timer').classList.remove('done');
+            document.getElementById('timerStatus').textContent = 'バックグラウンド対応';
+            renderTimer(remainingSec);
+        }
+
+        function addMinute() {
+            remainingSec += 60;
+            if (endTime) endTime += 60000;
+            renderTimer(remainingSec);
         }
 
         function resetTimer() {
-            clearInterval(timerInterval);
-            timerInterval = null;
-            document.getElementById('startBtn').textContent = 'スタート';
-            remainingSeconds = defaultSeconds;
-            updateTimerDisplay();
+            setTimer(durationSec / 60);
         }
 
-        // メモ帳の自動保存（LocalStorage）
-        const memoEl = document.getElementById('memo');
-        const statusEl = document.getElementById('saveStatus');
-        let saveTimeout;
-
-        memoEl.value = localStorage.getItem('ipad_dashboard_memo') || '';
-
-        memoEl.addEventListener('input', () => {
-            localStorage.setItem('ipad_dashboard_memo', memoEl.value);
-            statusEl.style.opacity = '1';
-            clearTimeout(saveTimeout);
-            saveTimeout = setTimeout(() => {
-                statusEl.style.opacity = '0';
-            }, 1500);
+        // 別アプリから戻ってきた瞬間にタイマー表示を最新化
+        document.addEventListener('visibilitychange', () => {
+            if (!document.hidden && endTime) tickTimer();
         });
+
+        /* =========================
+           4. カスタムランチャー
+        ========================= */
+        const LAUNCHER_KEY = 'ipad_dashboard_launchers_v1';
+        const defaultLaunchers = [
+            { title: 'ロイロノート', icon: '📒', url: 'https://loilonote.app', desc: 'ユニバーサルリンク', newTab: false },
+            { title: 'Classroom', icon: '🎓', url: 'https://classroom.google.com/', desc: 'Googleクラスルーム', newTab: false },
+            { title: 'Googleドライブ', icon: '📁', url: 'https://drive.google.com/', desc: 'ファイル・共有', newTab: false },
+            { title: 'ドキュメント', icon: '📄', url: 'https://docs.google.com/document/', desc: 'Google Docs', newTab: false },
+            { title: 'Googleマップ', icon: '🗺️', url: 'https://maps.google.com/', desc: 'マップを開く', newTab: false },
+            { title: 'YouTube', icon: '▶️', url: 'https://www.youtube.com/', desc: '動画を見る', newTab: false },
+            { title: 'Gemini', icon: '✨', url: 'https://gemini.google.com/', desc: 'AIアシスタント', newTab: true },
+            { title: 'GitHub', icon: '💻', url: 'https://github.com/', desc: 'コード管理', newTab: true }
+        ];
+
+        let launchers = JSON.parse(localStorage.getItem(LAUNCHER_KEY) || 'null') || structuredClone(defaultLaunchers);
+        let isEditMode = false;
+        let editingIndex = -1;
+
+        function isSafeUrl(url) {
+            return !/^\s*javascript:/i.test(url);
+        }
+
+        function saveLaunchersStorage() {
+            localStorage.setItem(LAUNCHER_KEY, JSON.stringify(launchers));
+        }
+
+        function renderLaunchers() {
+            const grid = document.getElementById('linksGrid');
+            grid.innerHTML = '';
+            launchers.forEach((item, idx) => {
+                const card = document.createElement('div');
+                card.className = 'link-card';
+
+                const a = document.createElement('a');
+                a.className = 'link-item';
+                a.href = isSafeUrl(item.url) ? item.url : '#';
+                if (item.newTab) {
+                    a.target = '_blank';
+                    a.rel = 'noopener';
+                }
+                if (isEditMode) {
+                    a.addEventListener('click', e => {
+                        e.preventDefault();
+                        openModal(idx);
+                    });
+                }
+
+                const top = document.createElement('div');
+                top.className = 'link-top';
+
+                const iconSpan = document.createElement('span');
+                iconSpan.className = 'link-icon';
+                iconSpan.textContent = item.icon || '🔗';
+
+                const badge = document.createElement('span');
+                badge.className = 'link-badge ' + (item.newTab ? '' : 'app');
+                badge.textContent = item.newTab ? 'Web' : 'App';
+
+                top.append(iconSpan, badge);
+
+                const titleSpan = document.createElement('span');
+                titleSpan.className = 'title';
+                titleSpan.textContent = item.title;
+
+                const descSpan = document.createElement('span');
+                descSpan.className = 'desc';
+                descSpan.textContent = item.desc || item.url;
+
+                a.append(top, titleSpan, descSpan);
+                card.appendChild(a);
+
+                const controls = document.createElement('div');
+                controls.className = 'edit-controls';
+
+                const leftBtn = document.createElement('button');
+                leftBtn.className = 'edit-btn';
+                leftBtn.textContent = '◀';
+                leftBtn.onclick = () => moveLauncher(idx, -1);
+
+                const rightBtn = document.createElement('button');
+                rightBtn.className = 'edit-btn';
+                rightBtn.textContent = '▶';
+                rightBtn.onclick = () => moveLauncher(idx, 1);
+
+                const delBtn = document.createElement('button');
+                delBtn.className = 'edit-btn del';
+                delBtn.textContent = '削除';
+                delBtn.onclick = () => deleteLauncher(idx);
+
+                controls.append(leftBtn, rightBtn, delBtn);
+                card.appendChild(controls);
+
+                grid.appendChild(card);
+            });
+        }
+
+        function toggleEditMode() {
+            isEditMode = !isEditMode;
+            document.getElementById('launcherCard').classList.toggle('editing', isEditMode);
+            document.getElementById('editModeBtn').classList.toggle('active', isEditMode);
+            document.getElementById('editModeBtn').textContent = isEditMode ? '完了' : '編集';
+            document.getElementById('resetLaunchersBtn').style.display = isEditMode ? 'inline-block' : 'none';
+            renderLaunchers();
+        }
+
+        function moveLauncher(idx, dir) {
+            const target = idx + dir;
+            if (target < 0 || target >= launchers.length) return;
+            [launchers[idx], launchers[target]] = [launchers[target], launchers[idx]];
+            saveLaunchersStorage();
+            renderLaunchers();
+        }
+
+        function deleteLauncher(idx) {
+            if (!confirm(`「${launchers[idx].title}」を削除しますか？`)) return;
+            launchers.splice(idx, 1);
+            saveLaunchersStorage();
+            renderLaunchers();
+        }
+
+        function resetLaunchers() {
+            if (!confirm('ランチャーを初期状態に戻しますか？')) return;
+            launchers = structuredClone(defaultLaunchers);
+            saveLaunchersStorage();
+            renderLaunchers();
+        }
+
+        function openModal(idx = -1) {
+            editingIndex = idx;
+            const isEdit = idx >= 0;
+            document.getElementById('modalTitle').textContent = isEdit ? 'リンクを編集' : 'リンクを追加';
+            const item = isEdit ? launchers[idx] : { title: '', icon: '🔗', url: 'https://', desc: '', newTab: false };
+            document.getElementById('inpTitle').value = item.title;
+            document.getElementById('inpIcon').value = item.icon;
+            document.getElementById('inpUrl').value = item.url;
+            document.getElementById('inpDesc').value = item.desc;
+            document.getElementById('inpNewTab').checked = !!item.newTab;
+            document.getElementById('modalBackdrop').classList.add('open');
+        }
+
+        function closeModal() {
+            document.getElementById('modalBackdrop').classList.remove('open');
+        }
+
+        function closeModalOnBackdrop(e) {
+            if (e.target.id === 'modalBackdrop') closeModal();
+        }
+
+        function saveLauncher() {
+            const title = document.getElementById('inpTitle').value.trim();
+            const icon = document.getElementById('inpIcon').value.trim() || '🔗';
+            const url = document.getElementById('inpUrl').value.trim();
+            const desc = document.getElementById('inpDesc').value.trim();
+            const newTab = document.getElementById('inpNewTab').checked;
+
+            if (!title || !url) {
+                alert('名前とURLを入力してください');
+                return;
+            }
+            const data = { title, icon, url, desc, newTab };
+            if (editingIndex >= 0) {
+                launchers[editingIndex] = data;
+            } else {
+                launchers.push(data);
+            }
+            saveLaunchersStorage();
+            renderLaunchers();
+            closeModal();
+        }
+
+        renderLaunchers();
+
+        /* =========================
+           5. 右カラム：タブ＆メモ＆ToDo
+        ========================= */
+        function switchTab(tabName, btn) {
+            document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+            document.querySelectorAll('.tab-panel').forEach(p => p.classList.remove('active'));
+            btn.classList.add('active');
+            document.getElementById(`tab-${tabName}`).classList.add('active');
+        }
+
+        function setupAutoMemo(elId, storageKey, statusId, countId = null) {
+            const el = document.getElementById(elId);
+            const status = document.getElementById(statusId);
+            let timer;
+
+            const updateCount = () => {
+                if (countId) document.getElementById(countId).textContent = `${el.value.length} 文字`;
+            };
+
+            el.value = localStorage.getItem(storageKey) || '';
+            updateCount();
+
+            el.addEventListener('input', () => {
+                localStorage.setItem(storageKey, el.value);
+                updateCount();
+                status.style.opacity = '1';
+                clearTimeout(timer);
+                timer = setTimeout(() => { status.style.opacity = '0'; }, 1200);
+            });
+        }
+
+        setupAutoMemo('memo', 'ipad_dashboard_memo', 'saveStatus', 'memoCount');
+        setupAutoMemo('scheduleMemo', 'ipad_dashboard_schedule', 'scheduleSaveStatus');
+
+        function clearMemo(id) {
+            const el = document.getElementById(id);
+            if (!el.value || !confirm('メモをすべて消去しますか？')) return;
+            el.value = '';
+            el.dispatchEvent(new Event('input'));
+        }
+
+        // ToDoリスト
+        const TODO_KEY = 'ipad_dashboard_todos';
+        let todos = JSON.parse(localStorage.getItem(TODO_KEY) || '[]');
+
+        function saveTodos() {
+            localStorage.setItem(TODO_KEY, JSON.stringify(todos));
+        }
+
+        function renderTodos() {
+            const list = document.getElementById('todoList');
+            list.innerHTML = '';
+            todos.forEach((todo, i) => {
+                const row = document.createElement('div');
+                row.className = 'todo-item' + (todo.done ? ' completed' : '');
+
+                const cb = document.createElement('input');
+                cb.type = 'checkbox';
+                cb.checked = todo.done;
+                cb.onchange = () => {
+                    todos[i].done = cb.checked;
+                    saveTodos();
+                    renderTodos();
+                };
+
+                const span = document.createElement('span');
+                span.className = 'todo-text';
+                span.textContent = todo.text;
+
+                const del = document.createElement('button');
+                del.className = 'todo-del';
+                del.textContent = '✕';
+                del.onclick = () => {
+                    todos.splice(i, 1);
+                    saveTodos();
+                    renderTodos();
+                };
+
+                row.append(cb, span, del);
+                list.appendChild(row);
+            });
+            const left = todos.filter(t => !t.done).length;
+            document.getElementById('todoStats').textContent = `残り ${left} 件 / 全 ${todos.length} 件`;
+        }
+
+        function addTodo(e) {
+            e.preventDefault();
+            const inp = document.getElementById('todoInput');
+            const text = inp.value.trim();
+            if (!text) return;
+            todos.unshift({ text, done: false });
+            inp.value = '';
+            saveTodos();
+            renderTodos();
+        }
+
+        function clearDoneTodos() {
+            todos = todos.filter(t => !t.done);
+            saveTodos();
+            renderTodos();
+        }
+
+        renderTodos();
     </script>
 </body>
 </html>
