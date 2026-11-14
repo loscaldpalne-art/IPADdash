@@ -14,15 +14,12 @@
             --cell-gap: 20px;
             --accent: #0a84ff;
             --text: #ffffff;
-            --text-sub: rgba(255, 255, 255, 0.75);
+            --text-sub: rgba(255, 255, 255, 0.72);
             --icon-size: 74px;
             --icon-radius: 22.5%;
             --glass-bg: rgba(255, 255, 255, 0.16);
             --glass-border: rgba(255, 255, 255, 0.28);
             --glass-blur: blur(28px) saturate(190%);
-            --glass-shine: linear-gradient(135deg, rgba(255, 255, 255, 0.38) 0%, rgba(255, 255, 255, 0.04) 50%, rgba(255, 255, 255, 0.15) 100%);
-            --glass-inner-shadow: inset 0 1.5px 1.5px rgba(255, 255, 255, 0.6), inset 0 -1.5px 2px rgba(0, 0, 0, 0.2);
-            --drop-shadow: 0 12px 30px rgba(0, 0, 0, 0.38);
         }
 
         * {
@@ -113,7 +110,7 @@
             pointer-events: none;
         }
 
-        /* 編集モード時のみ出現するバー */
+        /* 編集モード時バー */
         .jiggle-bar {
             height: 38px;
             padding: 0 28px;
@@ -187,7 +184,7 @@
             justify-items: center;
         }
 
-        /* グリッド要素 */
+        /* グリッド要素共通 */
         .grid-node {
             position: relative;
             display: flex;
@@ -205,13 +202,11 @@
         .grid-node.size-2x2 { grid-column: span 2; grid-row: span 2; }
         .grid-node.size-4x2 { grid-column: span 4; grid-row: span 2; }
 
-        /* ドラッグ中の状態 */
         .grid-node.dragging {
             opacity: 0.35;
             transform: scale(0.92);
         }
 
-        /* ゴースト要素（指に追従） */
         .drag-ghost {
             position: fixed;
             pointer-events: none;
@@ -221,7 +216,7 @@
             transition: none;
         }
 
-        /* ====== アプリアイコン（純粋なロゴ＋背景のみ全面ガラス化） ====== */
+        /* ====== アプリアイコン（本物のスクワークル四角形＋ガラス光沢） ====== */
         .app-cell {
             display: flex;
             flex-direction: column;
@@ -232,41 +227,50 @@
             height: 100%;
         }
 
-        .glass-icon-tile {
+        .app-squircle {
             position: relative;
             width: var(--icon-size);
             height: var(--icon-size);
             border-radius: var(--icon-radius);
-            background: var(--glass-shine), var(--glass-bg);
-            backdrop-filter: var(--glass-blur);
-            -webkit-backdrop-filter: var(--glass-blur);
-            border: 1px solid var(--glass-border);
-            box-shadow: var(--glass-inner-shadow), var(--drop-shadow);
+            box-shadow:
+                0 10px 24px rgba(0, 0, 0, 0.35),
+                0 2px 6px rgba(0, 0, 0, 0.2),
+                inset 0 1.5px 1px rgba(255, 255, 255, 0.45);
             display: flex;
             align-items: center;
             justify-content: center;
             overflow: hidden;
+            background: #ffffff;
             transition: transform 0.15s cubic-bezier(0.2, 0.8, 0.2, 1), filter 0.15s;
         }
 
-        .glass-icon-tile::before {
+        /* 表面のガラス光沢膜（スクワークル全体に自然なハイライト） */
+        .app-squircle::after {
             content: '';
             position: absolute;
             inset: 0;
-            background: linear-gradient(180deg, rgba(255,255,255,0.25) 0%, transparent 60%);
+            background: linear-gradient(135deg, rgba(255, 255, 255, 0.35) 0%, rgba(255, 255, 255, 0) 50%, rgba(255, 255, 255, 0.08) 100%);
+            border: 1px solid rgba(255, 255, 255, 0.25);
+            border-radius: var(--icon-radius);
             pointer-events: none;
         }
 
-        .app-cell:active .glass-icon-tile {
+        .app-cell:active .app-squircle {
             transform: scale(0.9);
             filter: brightness(0.85);
         }
 
-        .logo-svg {
-            width: 64%;
-            height: 64%;
+        .app-squircle svg {
+            width: 100%;
+            height: 100%;
             display: block;
-            filter: drop-shadow(0 2px 5px rgba(0, 0, 0, 0.28));
+        }
+
+        .app-squircle img.favicon-img {
+            width: 72%;
+            height: 72%;
+            object-fit: contain;
+            border-radius: 14%;
         }
 
         .app-caption {
@@ -285,11 +289,13 @@
             width: 100%;
             height: 100%;
             border-radius: 28px;
-            background: var(--glass-shine), var(--glass-bg);
+            background: rgba(255, 255, 255, 0.16);
             backdrop-filter: var(--glass-blur);
             -webkit-backdrop-filter: var(--glass-blur);
             border: 1px solid var(--glass-border);
-            box-shadow: var(--glass-inner-shadow), var(--drop-shadow);
+            box-shadow:
+                inset 0 1.5px 1.5px rgba(255, 255, 255, 0.5),
+                0 16px 36px rgba(0, 0, 0, 0.32);
             overflow: hidden;
             padding: 16px;
             display: flex;
@@ -444,7 +450,6 @@
         .w-condition { font-size: 0.78rem; color: var(--text-sub); }
         .w-current-temp { font-size: 2.3rem; font-weight: 800; line-height: 1; font-variant-numeric: tabular-nums; }
 
-        /* グラフエリア */
         .w-chart-section {
             margin: 6px 0;
             display: flex;
@@ -567,6 +572,24 @@
             gap: 8px;
         }
         .shelf-indicator-bar { display: flex; align-items: center; gap: 10px; }
+        
+        .dial-quick-trigger {
+            display: inline-flex;
+            align-items: center;
+            gap: 5px;
+            background: rgba(255, 255, 255, 0.16);
+            backdrop-filter: blur(14px);
+            -webkit-backdrop-filter: blur(14px);
+            padding: 6px 12px;
+            border-radius: 999px;
+            border: 1px solid rgba(255, 255, 255, 0.18);
+            color: #fff;
+            font-size: 0.74rem;
+            font-weight: 600;
+            cursor: pointer;
+        }
+        .dial-quick-trigger svg { width: 13px; height: 13px; color: #38bdf8; }
+
         .dots-pill {
             display: flex;
             align-items: center;
@@ -624,10 +647,10 @@
         }
         .dock-bar::-webkit-scrollbar { display: none; }
         .dock-bar .app-cell { gap: 0; }
-        .dock-bar .glass-icon-tile { width: 64px; height: 64px; }
+        .dock-bar .app-squircle { width: 64px; height: 64px; }
         .dock-bar .app-caption { display: none; }
 
-        /* ====== 追加機能：3重独立回転ダイヤルランチャー ====== */
+        /* ====== 3重独立回転ダイヤルランチャー ====== */
         .dial-overlay {
             position: fixed;
             inset: 0;
@@ -636,6 +659,9 @@
             opacity: 0;
             transition: opacity 0.4s ease;
             overflow: hidden;
+            background: rgba(3, 7, 18, 0.65);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
         }
 
         .dial-overlay.active {
@@ -646,7 +672,7 @@
         .dial-stage {
             position: absolute;
             top: 50%;
-            left: 2%;
+            left: 20%;
             transform: translate(-50%, -50%);
             width: 900px;
             height: 900px;
@@ -658,13 +684,13 @@
             left: 50%;
             transform: translate(-50%, -50%);
             border-radius: 50%;
-            border: 1.5px dashed rgba(255, 255, 255, 0.2);
+            border: 1.5px dashed rgba(255, 255, 255, 0.22);
             cursor: grab;
             touch-action: none;
             transition: border-color 0.2s;
         }
 
-        .dial-ring:active { cursor: grabbing; border-color: rgba(56, 189, 248, 0.6); }
+        .dial-ring:active { cursor: grabbing; border-color: rgba(56, 189, 248, 0.7); }
 
         .dial-ring.ring-outer { width: 880px; height: 880px; }
         .dial-ring.ring-mid   { width: 620px; height: 620px; }
@@ -684,7 +710,7 @@
             text-decoration: none;
             color: #fff;
         }
-        .dial-app-node .glass-icon-tile { width: 50px; height: 50px; }
+        .dial-app-node .app-squircle { width: 50px; height: 50px; }
 
         .dial-center-hub {
             position: absolute;
@@ -694,7 +720,7 @@
             width: 140px;
             height: 140px;
             border-radius: 50%;
-            background: rgba(15, 23, 42, 0.85);
+            background: rgba(15, 23, 42, 0.88);
             backdrop-filter: blur(24px);
             border: 2px solid rgba(255, 255, 255, 0.3);
             box-shadow: 0 10px 40px rgba(0,0,0,0.6);
@@ -760,7 +786,6 @@
             outline: none;
         }
 
-        .theme-select-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
         .theme-card {
             background: rgba(255, 255, 255, 0.08);
             border: 1.5px solid rgba(255, 255, 255, 0.14);
@@ -770,7 +795,6 @@
             color: #fff;
             cursor: pointer;
         }
-        .theme-card.active { border-color: var(--accent); background: rgba(10, 132, 255, 0.22); }
         .theme-card strong { display: block; font-size: 0.86rem; }
         .theme-card span { font-size: 0.72rem; color: var(--text-sub); }
 
@@ -832,7 +856,7 @@
             :root { --icon-size: 60px; --cell-gap: 12px; }
             .page-board { padding: 4px 14px; }
             .dock-bar { gap: 12px; padding: 7px 14px; border-radius: 24px; }
-            .dock-bar .glass-icon-tile { width: 52px; height: 52px; }
+            .dock-bar .app-squircle { width: 52px; height: 52px; }
         }
     </style>
 </head>
@@ -850,7 +874,7 @@
             </button>
             <div style="display:flex; gap:8px;">
                 <button class="pill-btn" onclick="openCustomizeModal()">
-                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9c.26.604.852.997 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9c.26.604.852.997 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
                     <span>設定</span>
                 </button>
                 <button class="pill-btn primary" onclick="toggleEditMode(false)">完了</button>
@@ -861,6 +885,10 @@
 
         <footer class="bottom-shelf">
             <div class="shelf-indicator-bar">
+                <button class="dial-quick-trigger" onclick="openDial()" title="ダイヤルランチャーを開く">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="9"/><circle cx="12" cy="12" r="5"/><circle cx="12" cy="12" r="1.5"/></svg>
+                    <span>ダイヤル</span>
+                </button>
                 <div class="dots-pill" id="dotsPill"></div>
                 <button class="spotlight-pill" onclick="openSpotlight()">
                     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><path d="M20 20l-3.5-3.5"/></svg>
@@ -871,7 +899,7 @@
         </footer>
     </div>
 
-    <!-- 追加機能：3重独立回転ダイヤルランチャー -->
+    <!-- 3重独立回転ダイヤルランチャー -->
     <div class="dial-overlay" id="dialOverlay">
         <button class="pill-btn dial-back-btn" onclick="closeDial()">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>
@@ -884,8 +912,8 @@
             <div class="dial-ring ring-inner" id="ringInner"></div>
 
             <div class="dial-center-hub" onclick="closeDial()">
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="9"/><polygon points="12 3 15 9 12 15 9 9 12 3"/><polygon points="12 21 9 15 12 9 15 15 12 21"/></svg>
-                <span>Dial Hub</span>
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="9"/><circle cx="12" cy="12" r="5"/><circle cx="12" cy="12" r="1.5"/></svg>
+                <span>ホームへ</span>
             </div>
         </div>
     </div>
@@ -999,38 +1027,38 @@
 
     <script>
         /* =========================================================
-           1. 公式ベクターSVGアイコン群（カプセルなし・純粋ロゴ）
+           1. 公式ベクターSVGアイコン群（カプセルなし・全幅スクワークル）
         ========================================================= */
         const SVGS = {
-            notion: `<svg class="logo-svg" viewBox="0 0 100 100"><path fill="#ffffff" d="M18 20.8l50.5-4.4c4.3-.4 6 .9 7.4 3.4l12.4 20.6c1.7 2.6 1.3 4.7-.9 5.2L83 46.5v37c0 4.8-2.6 7.4-8.7 7.9L24.8 96c-4.8.4-7.4-1.3-8.7-4.3L8.3 27.8c-.9-3 1.3-6.1 5.2-6.5l4.5-.5zm6.5 13.5v52.6l49-4.3V31.2l-49 3.1zm39.6 4.3c.4 1.7 0 3.5-1.7 3.5l-3 .4v30.4c0 3-1.7 4.3-4.3 4.3-1.7 0-3-.4-4.3-2.6L36.9 47.7v20.4l3.9.4c1.7 0 2.6 1.3 2.6 3 0 1.7-.9 2.6-3 2.6l-8.7.9c-.4 0-1.7-.9-1.7-2.6 0-1.7.9-2.6 2.6-2.6l3-.4V39.5c0-2.2.9-3.5 3.5-3.5 2.2 0 3.9.9 5.2 3l14.8 24.3V44.3l-3.9-.4c-1.7 0-2.6-1.3-2.6-3s.9-2.6 3-2.6l8.3-.7z"/></svg>`,
+            notion: `<svg viewBox="0 0 100 100"><rect width="100" height="100" fill="#ffffff"/><path fill="#000000" d="M18 20.8l50.5-4.4c4.3-.4 6 .9 7.4 3.4l12.4 20.6c1.7 2.6 1.3 4.7-.9 5.2L83 46.5v37c0 4.8-2.6 7.4-8.7 7.9L24.8 96c-4.8.4-7.4-1.3-8.7-4.3L8.3 27.8c-.9-3 1.3-6.1 5.2-6.5l4.5-.5zm6.5 13.5v52.6l49-4.3V31.2l-49 3.1zm39.6 4.3c.4 1.7 0 3.5-1.7 3.5l-3 .4v30.4c0 3-1.7 4.3-4.3 4.3-1.7 0-3-.4-4.3-2.6L36.9 47.7v20.4l3.9.4c1.7 0 2.6 1.3 2.6 3 0 1.7-.9 2.6-3 2.6l-8.7.9c-.4 0-1.7-.9-1.7-2.6 0-1.7.9-2.6 2.6-2.6l3-.4V39.5c0-2.2.9-3.5 3.5-3.5 2.2 0 3.9.9 5.2 3l14.8 24.3V44.3l-3.9-.4c-1.7 0-2.6-1.3-2.6-3s.9-2.6 3-2.6l8.3-.7z"/></svg>`,
 
-            canva: `<svg class="logo-svg" viewBox="0 0 100 100"><defs><linearGradient id="canvaG" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" stop-color="#00c4cc"/><stop offset="50%" stop-color="#7d2ae8"/><stop offset="100%" stop-color="#ff007a"/></linearGradient></defs><circle cx="50" cy="50" r="44" fill="url(#canvaG)"/><path fill="#ffffff" d="M60 48c-3-8.5-11-13-20.5-13-14 0-23 10.5-23 24 0 12 8.5 20.5 20.5 20.5 8 0 14.5-3.5 18-9.5l-6-3.5c-2.5 4-6.5 6.5-12 6.5-8 0-13.5-6-13.5-14 0-8.5 6-15 14.5-15 6 0 11 3 13.5 8L60 48z"/></svg>`,
+            canva: `<svg viewBox="0 0 100 100"><defs><linearGradient id="canvaG" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" stop-color="#00c4cc"/><stop offset="50%" stop-color="#7d2ae8"/><stop offset="100%" stop-color="#ff007a"/></linearGradient></defs><rect width="100" height="100" fill="url(#canvaG)"/><path fill="#ffffff" d="M60 48c-3-8.5-11-13-20.5-13-14 0-23 10.5-23 24 0 12 8.5 20.5 20.5 20.5 8 0 14.5-3.5 18-9.5l-6-3.5c-2.5 4-6.5 6.5-12 6.5-8 0-13.5-6-13.5-14 0-8.5 6-15 14.5-15 6 0 11 3 13.5 8L60 48z"/></svg>`,
 
-            loilo: `<svg class="logo-svg" viewBox="0 0 100 100"><rect x="15" y="20" width="70" height="60" rx="14" fill="#00a0e9"/><path d="M30 40h40M30 50h30M30 60h20" stroke="#ffffff" stroke-width="6" stroke-linecap="round"/><circle cx="70" cy="60" r="8" fill="#ffdc00"/></svg>`,
+            loilo: `<svg viewBox="0 0 100 100"><rect width="100" height="100" fill="#00a0e9"/><rect x="18" y="22" width="64" height="56" rx="12" fill="#ffffff" opacity="0.25"/><path d="M28 38h44M28 50h36M28 62h24" stroke="#ffffff" stroke-width="6" stroke-linecap="round"/><circle cx="70" cy="62" r="9" fill="#ffdc00"/></svg>`,
 
-            google: `<svg class="logo-svg" viewBox="0 0 100 100"><path d="M78 51c0-2.1-.2-4.1-.5-6H50v11.5h15.7c-.7 3.5-2.7 6.5-5.7 8.5v7.1h9.2C74.6 67.1 78 59.7 78 51z" fill="#4285F4"/><path d="M50 79.5c7.9 0 14.5-2.6 19.3-7.1l-9.2-7.1c-2.6 1.7-6 2.8-10.1 2.8-7.7 0-14.2-5.2-16.5-12.2H24v7.3C28.8 73.1 38.6 79.5 50 79.5z" fill="#34A853"/><path d="M33.5 55.9c-.6-1.8-1-3.7-1-5.9s.4-4.1 1-5.9V36.8H24C22 40.8 20.8 45.2 20.8 50s1.2 9.2 3.2 13.2l9.5-7.3z" fill="#FBBC05"/><path d="M50 32.5c4.3 0 8.2 1.5 11.2 4.4l8.4-8.4C64.5 23.8 57.9 21 50 21c-11.4 0-21.2 6.4-26 15.8l9.5 7.3C35.8 37.7 42.3 32.5 50 32.5z" fill="#EA4335"/></svg>`,
+            google: `<svg viewBox="0 0 100 100"><rect width="100" height="100" fill="#ffffff"/><path d="M78 51c0-2.1-.2-4.1-.5-6H50v11.5h15.7c-.7 3.5-2.7 6.5-5.7 8.5v7.1h9.2C74.6 67.1 78 59.7 78 51z" fill="#4285F4"/><path d="M50 79.5c7.9 0 14.5-2.6 19.3-7.1l-9.2-7.1c-2.6 1.7-6 2.8-10.1 2.8-7.7 0-14.2-5.2-16.5-12.2H24v7.3C28.8 73.1 38.6 79.5 50 79.5z" fill="#34A853"/><path d="M33.5 55.9c-.6-1.8-1-3.7-1-5.9s.4-4.1 1-5.9V36.8H24C22 40.8 20.8 45.2 20.8 50s1.2 9.2 3.2 13.2l9.5-7.3z" fill="#FBBC05"/><path d="M50 32.5c4.3 0 8.2 1.5 11.2 4.4l8.4-8.4C64.5 23.8 57.9 21 50 21c-11.4 0-21.2 6.4-26 15.8l9.5 7.3C35.8 37.7 42.3 32.5 50 32.5z" fill="#EA4335"/></svg>`,
 
-            drive: `<svg class="logo-svg" viewBox="0 0 100 100"><path d="M39.5 21h21l19 33H58.5z" fill="#FFBA00"/><path d="M20.5 54l19-33L50 39.2 31 72.2z" fill="#00AC47"/><path d="M31 72.2L41.5 54h38l-10.5 18.2z" fill="#0066DA"/></svg>`,
+            drive: `<svg viewBox="0 0 100 100"><rect width="100" height="100" fill="#ffffff"/><path d="M39.5 21h21l19 33H58.5z" fill="#FFBA00"/><path d="M20.5 54l19-33L50 39.2 31 72.2z" fill="#00AC47"/><path d="M31 72.2L41.5 54h38l-10.5 18.2z" fill="#0066DA"/></svg>`,
 
-            classroom: `<svg class="logo-svg" viewBox="0 0 100 100"><rect x="12" y="16" width="76" height="68" rx="10" fill="#1E8E3E"/><circle cx="50" cy="42" r="8" fill="#ffffff"/><path d="M34 66c0-8 7-13 16-13s16 5 16 13v3H34v-3z" fill="#ffffff"/><circle cx="29" cy="47" r="5.5" fill="#A8DAB5"/><path d="M19 66c0-5.5 4.5-9.5 11-9.5 2.8 0 5.2.8 7.2 2.1-3.5 2.2-5.5 5.5-5.5 9.4v1H19v-3z" fill="#A8DAB5"/><circle cx="71" cy="47" r="5.5" fill="#A8DAB5"/><path d="M81 66c0-5.5-4.5-9.5-11-9.5-2.8 0-5.2.8-7.2 2.1 3.5 2.2 5.5 5.5 5.5 9.4v1H81v-3z" fill="#A8DAB5"/></svg>`,
+            classroom: `<svg viewBox="0 0 100 100"><rect width="100" height="100" fill="#FBBC04"/><rect x="12" y="16" width="76" height="68" rx="8" fill="#1E8E3E"/><circle cx="50" cy="42" r="8" fill="#ffffff"/><path d="M34 66c0-8 7-13 16-13s16 5 16 13v3H34v-3z" fill="#ffffff"/><circle cx="29" cy="47" r="5.5" fill="#A8DAB5"/><path d="M19 66c0-5.5 4.5-9.5 11-9.5 2.8 0 5.2.8 7.2 2.1-3.5 2.2-5.5 5.5-5.5 9.4v1H19v-3z" fill="#A8DAB5"/><circle cx="71" cy="47" r="5.5" fill="#A8DAB5"/><path d="M81 66c0-5.5-4.5-9.5-11-9.5-2.8 0-5.2.8-7.2 2.1 3.5 2.2 5.5 5.5 5.5 9.4v1H81v-3z" fill="#A8DAB5"/></svg>`,
 
-            docs: `<svg class="logo-svg" viewBox="0 0 100 100"><path d="M26 16h32l16 16v52a4 4 0 0 1-4 4H26a4 4 0 0 1-4-4V20a4 4 0 0 1 4-4z" fill="#4285F4"/><path d="M58 16v16h16z" fill="#A1C2FA"/><rect x="33" y="44" width="34" height="5" rx="2.5" fill="#ffffff"/><rect x="33" y="55" width="34" height="5" rx="2.5" fill="#ffffff"/><rect x="33" y="66" width="22" height="5" rx="2.5" fill="#ffffff"/></svg>`,
+            docs: `<svg viewBox="0 0 100 100"><rect width="100" height="100" fill="#ffffff"/><path d="M26 16h32l16 16v52a4 4 0 0 1-4 4H26a4 4 0 0 1-4-4V20a4 4 0 0 1 4-4z" fill="#4285F4"/><path d="M58 16v16h16z" fill="#A1C2FA"/><rect x="33" y="44" width="34" height="5" rx="2.5" fill="#ffffff"/><rect x="33" y="55" width="34" height="5" rx="2.5" fill="#ffffff"/><rect x="33" y="66" width="22" height="5" rx="2.5" fill="#ffffff"/></svg>`,
 
-            sheets: `<svg class="logo-svg" viewBox="0 0 100 100"><path d="M26 16h32l16 16v52a4 4 0 0 1-4 4H26a4 4 0 0 1-4-4V20a4 4 0 0 1 4-4z" fill="#0F9D58"/><path d="M58 16v16h16z" fill="#87CEAC"/><rect x="33" y="43" width="34" height="28" rx="2" fill="none" stroke="#ffffff" stroke-width="4.5"/><line x1="33" y1="57" x2="67" y2="57" stroke="#ffffff" stroke-width="4.5"/><line x1="50" y1="43" x2="50" y2="71" stroke="#ffffff" stroke-width="4.5"/></svg>`,
+            sheets: `<svg viewBox="0 0 100 100"><rect width="100" height="100" fill="#ffffff"/><path d="M26 16h32l16 16v52a4 4 0 0 1-4 4H26a4 4 0 0 1-4-4V20a4 4 0 0 1 4-4z" fill="#0F9D58"/><path d="M58 16v16h16z" fill="#87CEAC"/><rect x="33" y="43" width="34" height="28" rx="2" fill="none" stroke="#ffffff" stroke-width="4.5"/><line x1="33" y1="57" x2="67" y2="57" stroke="#ffffff" stroke-width="4.5"/><line x1="50" y1="43" x2="50" y2="71" stroke="#ffffff" stroke-width="4.5"/></svg>`,
 
-            slides: `<svg class="logo-svg" viewBox="0 0 100 100"><path d="M26 16h32l16 16v52a4 4 0 0 1-4 4H26a4 4 0 0 1-4-4V20a4 4 0 0 1 4-4z" fill="#F4B400"/><path d="M58 16v16h16z" fill="#FAD165"/><rect x="33" y="44" width="34" height="26" rx="2" fill="#ffffff"/><rect x="38" y="49" width="24" height="16" rx="1" fill="#F4B400"/></svg>`,
+            slides: `<svg viewBox="0 0 100 100"><rect width="100" height="100" fill="#ffffff"/><path d="M26 16h32l16 16v52a4 4 0 0 1-4 4H26a4 4 0 0 1-4-4V20a4 4 0 0 1 4-4z" fill="#F4B400"/><path d="M58 16v16h16z" fill="#FAD165"/><rect x="33" y="44" width="34" height="26" rx="2" fill="#ffffff"/><rect x="38" y="49" width="24" height="16" rx="1" fill="#F4B400"/></svg>`,
 
-            maps: `<svg class="logo-svg" viewBox="0 0 100 100"><path d="M50 14c-15 0-27 12-27 27 0 19 27 44 27 44s27-25 27-44c0-15-12-27-27-27z" fill="#34A853"/><path d="M50 14c-15 0-27 12-27 27 0 6 2.6 12.5 7 18.5L50 37V14z" fill="#EA4335"/><path d="M50 14v23l20 22.5c4.4-6 7-12.5 7-18.5 0-15-12-27-27-27z" fill="#4285F4"/><circle cx="50" cy="40" r="11" fill="#ffffff"/></svg>`,
+            maps: `<svg viewBox="0 0 100 100"><rect width="100" height="100" fill="#ffffff"/><path d="M50 14c-15 0-27 12-27 27 0 19 27 44 27 44s27-25 27-44c0-15-12-27-27-27z" fill="#34A853"/><path d="M50 14c-15 0-27 12-27 27 0 6 2.6 12.5 7 18.5L50 37V14z" fill="#EA4335"/><path d="M50 14v23l20 22.5c4.4-6 7-12.5 7-18.5 0-15-12-27-27-27z" fill="#4285F4"/><circle cx="50" cy="40" r="11" fill="#ffffff"/></svg>`,
 
-            youtube: `<svg class="logo-svg" viewBox="0 0 100 100"><rect x="14" y="24" width="72" height="52" rx="16" fill="#FF0000"/><polygon points="43,38 65,50 43,62" fill="#ffffff"/></svg>`,
+            youtube: `<svg viewBox="0 0 100 100"><rect width="100" height="100" fill="#ffffff"/><rect x="14" y="24" width="72" height="52" rx="16" fill="#FF0000"/><polygon points="43,38 65,50 43,62" fill="#ffffff"/></svg>`,
 
-            gmail: `<svg class="logo-svg" viewBox="0 0 100 100"><path d="M22 74V38l28 21 28-21v36H66V52L50 64 34 52v22z" fill="#EA4335"/><path d="M22 38l-4-3c-2.5 2-4 5-4 8.5V70a4 4 0 0 0 4 4h4V38z" fill="#4285F4"/><path d="M78 38l4-3c2.5 2 4 5 4 8.5V70a4 4 0 0 1-4 4h-4V38z" fill="#34A853"/><path d="M22 38l28 21 28-21 4-3c-2-3.5-6-5.5-10-3.5L50 48 28 31.5c-4-2-8 0-10 3.5l4 3z" fill="#C5221F"/></svg>`,
+            gmail: `<svg viewBox="0 0 100 100"><rect width="100" height="100" fill="#ffffff"/><path d="M22 74V38l28 21 28-21v36H66V52L50 64 34 52v22z" fill="#EA4335"/><path d="M22 38l-4-3c-2.5 2-4 5-4 8.5V70a4 4 0 0 0 4 4h4V38z" fill="#4285F4"/><path d="M78 38l4-3c2.5 2 4 5 4 8.5V70a4 4 0 0 1-4 4h-4V38z" fill="#34A853"/><path d="M22 38l28 21 28-21 4-3c-2-3.5-6-5.5-10-3.5L50 48 28 31.5c-4-2-8 0-10 3.5l4 3z" fill="#C5221F"/></svg>`,
 
-            meet: `<svg class="logo-svg" viewBox="0 0 100 100"><rect x="20" y="27" width="46" height="46" rx="8" fill="#00832D"/><path d="M20 35a8 8 0 0 1 8-8h20v22H20V35z" fill="#0066DA"/><path d="M48 49h18v16a8 8 0 0 1-8 8H48V49z" fill="#FFBA00"/><path d="M68 40l16-11a3 3 0 0 1 5 2.3v37.4a3 3 0 0 1-5 2.3L68 60V40z" fill="#00AC47"/><path d="M48 27h12a8 8 0 0 1 8 8v14H48V27z" fill="#EA4335"/></svg>`,
+            meet: `<svg viewBox="0 0 100 100"><rect width="100" height="100" fill="#ffffff"/><rect x="20" y="27" width="46" height="46" rx="8" fill="#00832D"/><path d="M20 35a8 8 0 0 1 8-8h20v22H20V35z" fill="#0066DA"/><path d="M48 49h18v16a8 8 0 0 1-8 8H48V49z" fill="#FFBA00"/><path d="M68 40l16-11a3 3 0 0 1 5 2.3v37.4a3 3 0 0 1-5 2.3L68 60V40z" fill="#00AC47"/><path d="M48 27h12a8 8 0 0 1 8 8v14H48V27z" fill="#EA4335"/></svg>`,
 
-            gemini: `<svg class="logo-svg" viewBox="0 0 100 100"><defs><linearGradient id="gemG" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" stop-color="#1A73E8"/><stop offset="50%" stop-color="#60A5FA"/><stop offset="100%" stop-color="#A855F7"/></linearGradient></defs><path d="M50 12C50 38 62 50 88 50 62 50 50 62 50 88 50 62 38 50 12 50 38 50 50 38 50 12Z" fill="url(#gemG)"/></svg>`,
+            gemini: `<svg viewBox="0 0 100 100"><defs><linearGradient id="gemG" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" stop-color="#1A73E8"/><stop offset="50%" stop-color="#60A5FA"/><stop offset="100%" stop-color="#A855F7"/></linearGradient></defs><rect width="100" height="100" fill="#0f172a"/><path d="M50 12C50 38 62 50 88 50 62 50 50 62 50 88 50 62 38 50 12 50 38 50 50 38 50 12Z" fill="url(#gemG)"/></svg>`,
 
-            github: `<svg class="logo-svg" viewBox="0 0 100 100"><path fill="#ffffff" fill-rule="evenodd" clip-rule="evenodd" d="M50 18c-17.7 0-32 14.3-32 32 0 14.1 9.2 26.1 21.9 30.3 1.6.3 2.2-.7 2.2-1.5v-5.4c-8.9 1.9-10.8-4.3-10.8-4.3-1.5-3.7-3.6-4.7-3.6-4.7-2.9-2 .2-1.9.2-1.9 3.2.2 4.9 3.3 4.9 3.3 2.8 4.9 7.5 3.5 9.3 2.7.3-2.1 1.1-3.5 2-4.3-7.1-.8-14.6-3.6-14.6-15.8 0-3.5 1.2-6.3 3.3-8.6-.3-.8-1.4-4.1.3-8.5 0 0 2.7-.9 8.8 3.3 2.6-.7 5.3-1.1 8-1.1s5.4.4 8 1.1c6.1-4.1 8.8-3.3 8.8-3.3 1.7 4.4.6 7.7.3 8.5 2.1 2.2 3.3 5.1 3.3 8.6 0 12.3-7.5 15-14.6 15.8 1.1 1 2.2 2.9 2.2 5.9v8.8c0 .9.6 1.8 2.2 1.5C72.8 76.1 82 64.1 82 50c0-17.7-14.3-32-32-32z"/></svg>`
+            github: `<svg viewBox="0 0 100 100"><rect width="100" height="100" fill="#161b22"/><path fill="#ffffff" fill-rule="evenodd" clip-rule="evenodd" d="M50 18c-17.7 0-32 14.3-32 32 0 14.1 9.2 26.1 21.9 30.3 1.6.3 2.2-.7 2.2-1.5v-5.4c-8.9 1.9-10.8-4.3-10.8-4.3-1.5-3.7-3.6-4.7-3.6-4.7-2.9-2 .2-1.9.2-1.9 3.2.2 4.9 3.3 4.9 3.3 2.8 4.9 7.5 3.5 9.3 2.7.3-2.1 1.1-3.5 2-4.3-7.1-.8-14.6-3.6-14.6-15.8 0-3.5 1.2-6.3 3.3-8.6-.3-.8-1.4-4.1.3-8.5 0 0 2.7-.9 8.8 3.3 2.6-.7 5.3-1.1 8-1.1s5.4.4 8 1.1c6.1-4.1 8.8-3.3 8.8-3.3 1.7 4.4.6 7.7.3 8.5 2.1 2.2 3.3 5.1 3.3 8.6 0 12.3-7.5 15-14.6 15.8 1.1 1 2.2 2.9 2.2 5.9v8.8c0 .9.6 1.8 2.2 1.5C72.8 76.1 82 64.1 82 50c0-17.7-14.3-32-32-32z"/></svg>`
         };
 
         function makeMonogram(name, url) {
@@ -1040,13 +1068,13 @@
             for (let i = 0; i < seed.length; i++) h = seed.charCodeAt(i) + ((h << 5) - h);
             const bg = colors[Math.abs(h) % colors.length];
             const ch = (name.trim()[0] || 'A').toUpperCase();
-            return `<svg class="logo-svg" viewBox="0 0 100 100"><circle cx="50" cy="50" r="44" fill="${bg}"/><text x="50" y="65" text-anchor="middle" fill="#ffffff" font-size="46" font-weight="700">${ch}</text></svg>`;
+            return `<svg viewBox="0 0 100 100"><rect width="100" height="100" fill="${bg}"/><text x="50" y="66" text-anchor="middle" fill="#ffffff" font-size="50" font-weight="700">${ch}</text></svg>`;
         }
 
         /* =========================================================
            2. 状態管理
         ========================================================= */
-        const STORAGE_KEY = 'ipados_dashboard_v4';
+        const STORAGE_KEY = 'ipados_dashboard_v5';
 
         const DEFAULT_STATE = {
             wallpaper: 'wp-1',
@@ -1147,7 +1175,6 @@
                 osc.type = 'triangle';
                 osc.frequency.setValueAtTime(freq, time);
 
-                // ローファイ特有の温かいフィルター
                 filter.type = 'lowpass';
                 filter.frequency.setValueAtTime(800, time);
                 filter.Q.setValueAtTime(3, time);
@@ -1165,12 +1192,11 @@
             });
         }
 
-        // 循環するLo-Fiジャズコード進行
         const CHORD_PROGRESSION = [
-            [261.63, 311.13, 392.00, 466.16], // Cm7
-            [220.00, 261.63, 329.63, 392.00], // Am7
-            [174.61, 220.00, 261.63, 329.63], // Fmaj7
-            [196.00, 246.94, 293.66, 349.23]  // G7
+            [261.63, 311.13, 392.00, 466.16],
+            [220.00, 261.63, 329.63, 392.00],
+            [174.61, 220.00, 261.63, 329.63],
+            [196.00, 246.94, 293.66, 349.23]
         ];
         let chordStep = 0;
 
@@ -1216,7 +1242,7 @@
         ========================================================= */
         function renderIconContent(app) {
             const tile = document.createElement('div');
-            tile.className = 'glass-icon-tile';
+            tile.className = 'app-squircle';
 
             if (app.icon && app.icon.startsWith('svg:') && SVGS[app.icon.slice(4)]) {
                 tile.innerHTML = SVGS[app.icon.slice(4)];
@@ -1225,8 +1251,7 @@
             try {
                 const host = new URL(app.url).hostname;
                 const img = document.createElement('img');
-                img.className = 'logo-svg';
-                img.style.objectFit = 'contain';
+                img.className = 'favicon-img';
                 img.src = `https://www.google.com/s2/favicons?domain=${encodeURIComponent(host)}&sz=128`;
                 img.onerror = () => { tile.innerHTML = makeMonogram(app.name, app.url); };
                 tile.appendChild(img);
@@ -1269,7 +1294,6 @@
                     </div>
                 `;
             } else if (w.widgetType === 'weather') {
-                // 本格時間別グラフ・降水確率付き
                 frame.innerHTML = `
                     <div class="weather-detailed-card">
                         <div class="w-header">
@@ -1334,7 +1358,7 @@
         /* =========================================================
            6. ドラッグ＆ドロップ並び替えシステム（Touch & Pointer）
         ========================================================= */
-        let draggedItem = null; // { loc, idx }
+        let draggedItem = null;
         let ghostEl = null;
 
         function createGridNode(item, loc, idx) {
@@ -1348,17 +1372,16 @@
                 if (item.newTab) { node.target = '_blank'; node.rel = 'noopener'; }
                 const cell = document.createElement('div');
                 cell.className = 'app-cell';
-                const tile = renderIconContent(item);
+                const squircle = renderIconContent(item);
                 const cap = document.createElement('span');
                 cap.className = 'app-caption';
                 cap.textContent = item.name;
-                cell.append(tile, cap);
+                cell.append(squircle, cap);
                 node.appendChild(cell);
             } else {
                 node.appendChild(renderWidgetContent(item));
             }
 
-            // 削除バッジ
             const del = document.createElement('button');
             del.className = 'badge-delete';
             del.innerHTML = `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round"><path d="M5 12h14"/></svg>`;
@@ -1369,7 +1392,6 @@
             };
             node.appendChild(del);
 
-            // Pointerイベントによる長押し判定＆ドラッグハンドリング
             let pressTimer = null;
             let startX = 0, startY = 0;
             let isDragging = false;
@@ -1384,7 +1406,6 @@
                         toggleEditMode(true);
                     }, 500);
                 } else {
-                    // 編集モードなら即座にドラッグ準備
                     draggedItem = { loc, idx };
                     node.setPointerCapture(e.pointerId);
                 }
@@ -1411,7 +1432,6 @@
                     ghostEl.style.left = `${e.clientX}px`;
                     ghostEl.style.top = `${e.clientY}px`;
 
-                    // ドロップ先ハイライト＆入れ替え
                     const targetEl = document.elementFromPoint(e.clientX, e.clientY)?.closest('.grid-node');
                     if (targetEl && targetEl !== node) {
                         const targetLoc = targetEl.dataset.loc === 'dock' ? 'dock' : Number(targetEl.dataset.loc);
@@ -1428,7 +1448,7 @@
                 }
             });
 
-            node.addEventListener('pointerup', () => {
+            const finishDrag = () => {
                 clearTimeout(pressTimer);
                 if (isDragging) {
                     node.classList.remove('dragging');
@@ -1436,17 +1456,10 @@
                     draggedItem = null;
                     isDragging = false;
                 }
-            });
+            };
 
-            node.addEventListener('pointercancel', () => {
-                clearTimeout(pressTimer);
-                if (isDragging) {
-                    node.classList.remove('dragging');
-                    if (ghostEl) { ghostEl.remove(); ghostEl = null; }
-                    draggedItem = null;
-                    isDragging = false;
-                }
-            });
+            node.addEventListener('pointerup', finishDrag);
+            node.addEventListener('pointercancel', finishDrag);
 
             node.addEventListener('click', (e) => {
                 if (isEditMode) {
@@ -1467,7 +1480,7 @@
                 const board = document.createElement('div');
                 board.className = 'page-board';
 
-                // 余白（何もないところ）長押しでジグルモード開始
+                // 何もない空白エリアの長押しでジグルモード
                 let emptyTimer = null;
                 board.addEventListener('pointerdown', (e) => {
                     if (e.target !== board) return;
@@ -1486,12 +1499,10 @@
                 track.appendChild(board);
             });
 
-            // Dock
             const dock = document.getElementById('dockBar');
             dock.innerHTML = '';
             state.dock.forEach((app, idx) => dock.appendChild(createGridNode(app, 'dock', idx)));
 
-            // インジケータ
             const dots = document.getElementById('dotsPill');
             dots.innerHTML = '';
             state.pages.forEach((_, i) => {
@@ -1510,8 +1521,18 @@
             track.scrollTo({ left: i * track.clientWidth, behavior: 'smooth' });
         }
 
+        document.getElementById('pagesTrack').addEventListener('scroll', () => {
+            const track = document.getElementById('pagesTrack');
+            const w = track.clientWidth || 1;
+            const idx = Math.round(track.scrollLeft / w);
+            if (idx !== currentPageIdx) {
+                currentPageIdx = idx;
+                document.querySelectorAll('.dot-btn').forEach((b, i) => b.classList.toggle('active', i === idx));
+            }
+        });
+
         /* =========================================================
-           7. 左スワイプで出現する「3重独立回転ダイヤルランチャー」
+           7. 3重独立回転ダイヤルランチャー
         ========================================================= */
         const DIAL_APPS_OUTER = [
             { name: 'Google', url: 'https://www.google.com/', icon: 'svg:google' },
@@ -1550,7 +1571,6 @@
                 this.isPointerDown = false;
                 this.lastAngle = 0;
                 this.lastTime = 0;
-                this.animId = null;
 
                 this.initNodes();
                 this.bindEvents();
@@ -1570,8 +1590,8 @@
                     node.style.left = `calc(50% + ${x}px)`;
                     node.style.top = `calc(50% + ${y}px)`;
 
-                    const tile = renderIconContent(app);
-                    node.appendChild(tile);
+                    const squircle = renderIconContent(app);
+                    node.appendChild(squircle);
                     this.ringEl.appendChild(node);
                 });
             }
@@ -1591,7 +1611,6 @@
                     const dt = performance.now() - this.lastTime;
                     let delta = curAngle - this.lastAngle;
 
-                    // 180度境界のジャンプ回避
                     if (delta > Math.PI) delta -= Math.PI * 2;
                     if (delta < -Math.PI) delta += Math.PI * 2;
 
@@ -1599,15 +1618,13 @@
                     this.updateTransform();
 
                     if (dt > 10) {
-                        this.velocity = delta / dt; // 角速度
+                        this.velocity = delta / dt;
                         this.lastAngle = curAngle;
                         this.lastTime = performance.now();
                     }
                 });
 
-                const endDrag = () => {
-                    this.isPointerDown = false;
-                };
+                const endDrag = () => { this.isPointerDown = false; };
                 this.ringEl.addEventListener('pointerup', endDrag);
                 this.ringEl.addEventListener('pointercancel', endDrag);
             }
@@ -1627,10 +1644,10 @@
                 const loop = () => {
                     if (!this.isPointerDown && Math.abs(this.velocity) > 0.0001) {
                         this.angle += this.velocity * 16;
-                        this.velocity *= 0.94; // 摩擦減衰
+                        this.velocity *= 0.94;
                         this.updateTransform();
                     }
-                    this.animId = requestAnimationFrame(loop);
+                    requestAnimationFrame(loop);
                 };
                 loop();
             }
@@ -1654,7 +1671,7 @@
             document.getElementById('dialOverlay').classList.remove('active');
         }
 
-        // ホーム1ページ目でさらに右スワイプしたときにダイヤルを展開
+        // 左端からの強スワイプ検知
         let edgeStartX = 0, edgeStartY = 0;
         document.addEventListener('touchstart', (e) => {
             edgeStartX = e.touches[0].clientX;
@@ -1664,8 +1681,7 @@
         document.addEventListener('touchend', (e) => {
             const dx = e.changedTouches[0].clientX - edgeStartX;
             const dy = e.changedTouches[0].clientY - edgeStartY;
-            // 1ページ目の左端で右方向への強スワイプ
-            if (currentPageIdx === 0 && edgeStartX < 80 && dx > 90 && Math.abs(dy) < 60) {
+            if (currentPageIdx === 0 && edgeStartX < 80 && dx > 80 && Math.abs(dy) < 60) {
                 openDial();
             }
         }, { passive: true });
