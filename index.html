@@ -3,1076 +3,1697 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-    <title>iPad Dashboard</title>
+    <title>iPadOS Home</title>
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
     <style>
         :root {
-            --bg-color: #090d16;
-            --card-bg: rgba(22, 31, 48, 0.78);
-            --card-inner: rgba(15, 23, 42, 0.65);
-            --border-color: rgba(255, 255, 255, 0.09);
-            --accent: #38bdf8;
-            --accent-soft: rgba(56, 189, 248, 0.15);
-            --danger: #f87171;
-            --success: #4ade80;
-            --text-main: #f1f5f9;
-            --text-muted: #94a3b8;
+            --icon-size: 72px;
+            --icon-radius: 22.5%;
+            --glass: rgba(255, 255, 255, 0.16);
+            --glass-strong: rgba(28, 32, 42, 0.72);
+            --glass-border: rgba(255, 255, 255, 0.22);
+            --accent: #0a84ff;
+            --text: #ffffff;
+            --text-sub: rgba(255, 255, 255, 0.72);
         }
 
         * {
             box-sizing: border-box;
             margin: 0;
             padding: 0;
-            font-family: -apple-system, BlinkMacSystemFont, "SF Pro Display", "Segoe UI", Roboto, sans-serif;
+            font-family: -apple-system, BlinkMacSystemFont, "SF Pro Display", "SF Pro Text", "Hiragino Sans", sans-serif;
             -webkit-tap-highlight-color: transparent;
+            user-select: none;
+            -webkit-user-select: none;
         }
 
-        body {
-            background: radial-gradient(circle at top right, #1e293b, var(--bg-color) 65%);
-            color: var(--text-main);
-            min-height: 100vh;
-            min-height: 100dvh;
-            padding: 24px;
-            display: grid;
-            grid-template-columns: 1.25fr 1fr;
-            grid-template-rows: auto 1fr;
-            gap: 20px;
+        input, textarea {
+            user-select: text;
+            -webkit-user-select: text;
+        }
+
+        html, body {
+            width: 100%;
+            height: 100%;
+            overflow: hidden;
+            color: var(--text);
+            background-color: #0b1220;
             touch-action: manipulation;
         }
 
-        .card {
-            background: var(--card-bg);
-            border: 1px solid var(--border-color);
-            border-radius: 22px;
-            padding: 22px;
-            backdrop-filter: blur(14px);
-            -webkit-backdrop-filter: blur(14px);
-            display: flex;
-            flex-direction: column;
+        /* 壁紙レイヤー */
+        .wallpaper {
+            position: fixed;
+            inset: 0;
+            z-index: 0;
+            background-size: cover;
+            background-position: center;
+            transition: background 0.4s ease, filter 0.3s ease;
         }
 
-        /* ヘッダー（時計・検索） */
-        .top-bar {
-            grid-column: 1 / -1;
+        .wallpaper.wp-1 {
+            background:
+                radial-gradient(circle at 18% 20%, rgba(56, 189, 248, 0.55), transparent 48%),
+                radial-gradient(circle at 82% 25%, rgba(99, 102, 241, 0.55), transparent 50%),
+                radial-gradient(circle at 70% 80%, rgba(16, 185, 129, 0.42), transparent 52%),
+                radial-gradient(circle at 20% 85%, rgba(30, 64, 175, 0.7), transparent 55%),
+                linear-gradient(135deg, #091326 0%, #0f172a 100%);
+        }
+        .wallpaper.wp-2 {
+            background:
+                radial-gradient(circle at 25% 25%, rgba(244, 63, 94, 0.48), transparent 48%),
+                radial-gradient(circle at 78% 20%, rgba(245, 158, 11, 0.42), transparent 48%),
+                radial-gradient(circle at 55% 75%, rgba(139, 92, 246, 0.52), transparent 55%),
+                linear-gradient(150deg, #1b1026 0%, #0d111d 100%);
+        }
+        .wallpaper.wp-3 {
+            background:
+                radial-gradient(circle at 30% 18%, rgba(34, 211, 238, 0.35), transparent 45%),
+                radial-gradient(circle at 80% 70%, rgba(59, 130, 246, 0.35), transparent 50%),
+                linear-gradient(160deg, #07090f 0%, #111827 55%, #090d16 100%);
+        }
+        .wallpaper.wp-4 {
+            background:
+                radial-gradient(circle at 20% 30%, rgba(52, 211, 153, 0.48), transparent 48%),
+                radial-gradient(circle at 80% 30%, rgba(14, 165, 233, 0.48), transparent 50%),
+                radial-gradient(circle at 50% 85%, rgba(6, 95, 70, 0.6), transparent 55%),
+                linear-gradient(145deg, #06211c 0%, #091522 100%);
+        }
+        .wallpaper.wp-5 {
+            background:
+                radial-gradient(circle at 20% 20%, rgba(255, 255, 255, 0.14), transparent 45%),
+                radial-gradient(circle at 80% 80%, rgba(148, 163, 184, 0.16), transparent 50%),
+                linear-gradient(145deg, #1c1f26 0%, #0c0e12 100%);
+        }
+
+        /* 全体レイアウト */
+        .os-shell {
+            position: relative;
+            z-index: 1;
+            width: 100%;
+            height: 100%;
+            height: 100dvh;
             display: flex;
-            justify-content: space-between;
+            flex-direction: column;
+            padding-top: env(safe-area-inset-top, 0px);
+            padding-bottom: calc(14px + env(safe-area-inset-bottom, 0px));
+        }
+
+        /* ステータスバー */
+        .status-bar {
+            height: 44px;
+            padding: 0 22px;
+            display: flex;
             align-items: center;
-            gap: 24px;
-            padding: 18px 26px;
-        }
-
-        .clock-box .time {
-            font-size: 3.8rem;
-            font-weight: 800;
-            letter-spacing: -2px;
-            line-height: 1;
-            color: var(--accent);
-            font-variant-numeric: tabular-nums;
-        }
-
-        .clock-box .date {
-            font-size: 1.05rem;
-            color: var(--text-muted);
-            margin-top: 6px;
-        }
-
-        .search-wrapper {
-            flex: 1;
-            max-width: 520px;
-            display: flex;
-            flex-direction: column;
-            gap: 8px;
-        }
-
-        .search-engines {
-            display: flex;
-            gap: 6px;
-            flex-wrap: wrap;
-        }
-
-        .engine-pill {
-            background: rgba(255, 255, 255, 0.06);
-            color: var(--text-muted);
-            border: 1px solid var(--border-color);
-            border-radius: 999px;
-            padding: 4px 12px;
-            font-size: 0.78rem;
+            justify-content: space-between;
+            font-size: 0.85rem;
             font-weight: 600;
-            cursor: pointer;
-            transition: all 0.15s;
+            letter-spacing: -0.01em;
+            text-shadow: 0 1px 4px rgba(0, 0, 0, 0.45);
+            flex-shrink: 0;
         }
 
-        .engine-pill.active {
-            background: var(--accent-soft);
-            color: var(--accent);
-            border-color: rgba(56, 189, 248, 0.4);
-        }
-
-        .search-form {
+        .status-left {
             display: flex;
+            align-items: center;
             gap: 10px;
         }
 
-        .search-input {
-            width: 100%;
-            background: rgba(15, 23, 42, 0.85);
-            border: 1px solid var(--border-color);
-            border-radius: 12px;
-            padding: 13px 16px;
-            color: var(--text-main);
-            font-size: 1rem;
-            outline: none;
-            transition: border-color 0.2s;
+        .status-date {
+            color: var(--text-sub);
+            font-weight: 500;
         }
 
-        .search-input:focus {
-            border-color: var(--accent);
-        }
-
-        .btn {
-            background: var(--accent);
-            color: #0f172a;
-            border: none;
-            border-radius: 12px;
-            padding: 0 20px;
-            font-weight: 700;
-            font-size: 0.95rem;
-            cursor: pointer;
-            white-space: nowrap;
-            transition: opacity 0.2s, transform 0.1s;
-        }
-
-        .btn:active { transform: scale(0.96); }
-
-        .btn-sub {
-            background: rgba(255, 255, 255, 0.08);
-            color: var(--text-main);
-            border: 1px solid var(--border-color);
-            border-radius: 10px;
-            padding: 9px 14px;
-            font-size: 0.85rem;
-            font-weight: 600;
-            cursor: pointer;
-        }
-
-        .btn-sub:active { background: rgba(255, 255, 255, 0.16); }
-
-        /* 左カラム */
-        .left-col {
+        .status-actions {
             display: flex;
-            flex-direction: column;
-            gap: 20px;
-        }
-
-        .section-header {
-            display: flex;
-            justify-content: space-between;
             align-items: center;
-            margin-bottom: 14px;
-        }
-
-        .section-title {
-            font-size: 0.82rem;
-            text-transform: uppercase;
-            letter-spacing: 1px;
-            color: var(--text-muted);
-            font-weight: 700;
-        }
-
-        .header-actions {
-            display: flex;
             gap: 8px;
         }
 
-        .btn-xs {
-            background: rgba(255, 255, 255, 0.07);
-            color: var(--text-muted);
-            border: 1px solid var(--border-color);
-            border-radius: 8px;
-            padding: 5px 10px;
+        .pill-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 5px;
+            background: rgba(255, 255, 255, 0.14);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            border: 1px solid rgba(255, 255, 255, 0.18);
+            color: #fff;
+            border-radius: 999px;
+            padding: 5px 12px;
             font-size: 0.78rem;
             font-weight: 600;
             cursor: pointer;
+            transition: background 0.15s, transform 0.1s;
         }
 
-        .btn-xs.active {
-            background: var(--accent-soft);
-            color: var(--accent);
+        .pill-btn:active { transform: scale(0.95); }
+        .pill-btn.active {
+            background: var(--accent);
             border-color: var(--accent);
         }
 
-        /* タイマー */
-        .timer-display {
-            font-size: 3.3rem;
-            font-weight: 800;
-            text-align: center;
-            margin: 4px 0 14px;
-            font-variant-numeric: tabular-nums;
-            transition: color 0.3s;
+        .pill-btn svg {
+            width: 14px;
+            height: 14px;
         }
 
-        .timer-display.done { color: var(--success); }
-
-        .timer-controls {
+        /* スワイプ可能なページコンテナ */
+        .pages-viewport {
+            flex: 1;
+            min-height: 0;
             display: flex;
-            justify-content: center;
-            gap: 8px;
-            flex-wrap: wrap;
+            overflow-x: auto;
+            overflow-y: hidden;
+            scroll-snap-type: x mandatory;
+            scroll-behavior: smooth;
+            scrollbar-width: none;
+            -ms-overflow-style: none;
         }
 
-        .timer-controls .btn { padding: 9px 18px; }
+        .pages-viewport::-webkit-scrollbar { display: none; }
 
-        /* ランチャーグリッド */
-        .links-grid {
+        .page {
+            flex: 0 0 100%;
+            width: 100%;
+            height: 100%;
+            scroll-snap-align: start;
+            scroll-snap-stop: always;
+            padding: 16px 36px 8px;
+            overflow-y: auto;
+            scrollbar-width: none;
+        }
+
+        .page::-webkit-scrollbar { display: none; }
+
+        /* iPad風アイコン配列グリッド */
+        .app-grid {
+            max-width: 980px;
+            margin: 0 auto;
             display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(145px, 1fr));
-            gap: 12px;
+            grid-template-columns: repeat(6, 1fr);
+            gap: 24px 16px;
             align-content: start;
         }
 
-        .link-card {
+        .app-slot {
             position: relative;
-            background: var(--card-inner);
-            border: 1px solid var(--border-color);
-            border-radius: 16px;
-            transition: border-color 0.2s, transform 0.1s;
-            overflow: hidden;
-        }
-
-        .link-item {
-            padding: 14px;
-            text-decoration: none;
-            color: var(--text-main);
             display: flex;
             flex-direction: column;
-            gap: 8px;
-            height: 100%;
+            align-items: center;
+            gap: 7px;
+            text-decoration: none;
+            color: #fff;
+            cursor: pointer;
+            -webkit-touch-callout: none;
         }
 
-        .link-card:active {
-            transform: scale(0.97);
+        .app-icon-wrap {
+            position: relative;
+            width: var(--icon-size);
+            height: var(--icon-size);
+            border-radius: var(--icon-radius);
+            background: #ffffff;
+            box-shadow:
+                0 10px 24px rgba(0, 0, 0, 0.34),
+                0 2px 6px rgba(0, 0, 0, 0.2),
+                inset 0 1px 0 rgba(255, 255, 255, 0.35);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+            transition: transform 0.16s cubic-bezier(0.2, 0.8, 0.2, 1), filter 0.15s;
+        }
+
+        .app-slot:active .app-icon-wrap {
+            transform: scale(0.9);
+            filter: brightness(0.85);
+        }
+
+        .app-icon-wrap svg {
+            width: 100%;
+            height: 100%;
+            display: block;
+        }
+
+        .app-icon-wrap img.favicon-img {
+            width: 72%;
+            height: 72%;
+            object-fit: contain;
+            border-radius: 14%;
+        }
+
+        .app-label {
+            font-size: 0.76rem;
+            font-weight: 500;
+            text-align: center;
+            line-height: 1.2;
+            max-width: 92px;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+            text-shadow: 0 1px 5px rgba(0, 0, 0, 0.75);
+        }
+
+        /* 編集モード（iPad風の揺れと削除バッジ） */
+        @keyframes jiggle {
+            0% { transform: rotate(-1.3deg); }
+            50% { transform: rotate(1.3deg); }
+            100% { transform: rotate(-1.3deg); }
+        }
+
+        .editing .app-slot {
+            animation: jiggle 0.28s infinite ease-in-out;
+        }
+        .editing .app-slot:nth-child(2n) {
+            animation-delay: -0.14s;
+        }
+
+        .badge-delete {
+            display: none;
+            position: absolute;
+            top: -6px;
+            left: calc(50% - var(--icon-size) / 2 - 6px);
+            width: 22px;
+            height: 22px;
+            border-radius: 50%;
+            background: rgba(215, 220, 230, 0.92);
+            color: #111827;
+            border: none;
+            box-shadow: 0 2px 6px rgba(0, 0, 0, 0.35);
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            z-index: 5;
+        }
+
+        .dock .badge-delete {
+            left: -6px;
+        }
+
+        .editing .badge-delete {
+            display: flex;
+        }
+
+        .badge-delete svg {
+            width: 12px;
+            height: 12px;
+        }
+
+        /* 編集モード中のページ管理バー */
+        .edit-toolbar {
+            display: none;
+            justify-content: center;
+            gap: 8px;
+            padding: 4px 16px 8px;
+            flex-shrink: 0;
+        }
+
+        .editing .edit-toolbar {
+            display: flex;
+        }
+
+        /* ウィジェットページ（iPadOSスタイル） */
+        .widgets-grid {
+            max-width: 980px;
+            margin: 0 auto;
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 18px;
+            padding-bottom: 20px;
+        }
+
+        .widget {
+            background: rgba(22, 28, 40, 0.56);
+            backdrop-filter: blur(26px) saturate(160%);
+            -webkit-backdrop-filter: blur(26px) saturate(160%);
+            border: 1px solid rgba(255, 255, 255, 0.16);
+            border-radius: 26px;
+            padding: 20px;
+            box-shadow: 0 12px 32px rgba(0, 0, 0, 0.25);
+            display: flex;
+            flex-direction: column;
+        }
+
+        .widget-title {
+            font-size: 0.78rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.06em;
+            color: var(--text-sub);
+            margin-bottom: 12px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .widget-clock-big {
+            font-size: 3.4rem;
+            font-weight: 700;
+            letter-spacing: -0.04em;
+            line-height: 1;
+            font-variant-numeric: tabular-nums;
+        }
+
+        .widget-clock-sub {
+            margin-top: 6px;
+            font-size: 0.95rem;
+            color: var(--text-sub);
+        }
+
+        .timer-row {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 12px;
+        }
+
+        .timer-num {
+            font-size: 2.5rem;
+            font-weight: 700;
+            font-variant-numeric: tabular-nums;
+        }
+
+        .timer-btns {
+            display: flex;
+            gap: 6px;
+            flex-wrap: wrap;
+            margin-top: 12px;
+        }
+
+        .w-btn {
+            background: rgba(255, 255, 255, 0.13);
+            color: #fff;
+            border: 1px solid rgba(255, 255, 255, 0.14);
+            border-radius: 10px;
+            padding: 7px 12px;
+            font-size: 0.8rem;
+            font-weight: 600;
+            cursor: pointer;
+        }
+
+        .w-btn.primary {
+            background: var(--accent);
             border-color: var(--accent);
         }
 
-        .link-top {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
-
-        .link-icon {
-            font-size: 1.6rem;
-            line-height: 1;
-        }
-
-        .link-badge {
-            font-size: 0.68rem;
-            font-weight: 700;
-            padding: 2px 7px;
-            border-radius: 6px;
-            background: rgba(255, 255, 255, 0.08);
-            color: var(--text-muted);
-        }
-
-        .link-badge.app {
-            background: var(--accent-soft);
-            color: var(--accent);
-        }
-
-        .link-item span.title {
-            font-weight: 700;
-            font-size: 0.98rem;
-            line-height: 1.25;
-        }
-
-        .link-item span.desc {
-            font-size: 0.75rem;
-            color: var(--text-muted);
-            white-space: nowrap;
-            overflow: hidden;
-            text-overflow: ellipsis;
-        }
-
-        /* 編集モードコントロール */
-        .edit-controls {
-            display: none;
-            padding: 6px 8px;
-            background: rgba(9, 13, 22, 0.9);
-            border-top: 1px solid var(--border-color);
-            justify-content: space-between;
-            align-items: center;
-            gap: 4px;
-        }
-
-        .editing .edit-controls { display: flex; }
-        .editing .link-card { border-style: dashed; border-color: rgba(56, 189, 248, 0.45); }
-
-        .edit-btn {
-            background: rgba(255, 255, 255, 0.08);
-            color: var(--text-main);
-            border: none;
-            border-radius: 6px;
-            padding: 4px 8px;
-            font-size: 0.75rem;
-            cursor: pointer;
-        }
-
-        .edit-btn.del { color: var(--danger); }
-
-        /* 右カラム（タブ切替：メモ / ToDo / 時間割） */
-        .tabs-bar {
-            display: flex;
-            gap: 6px;
-            background: rgba(15, 23, 42, 0.7);
-            padding: 5px;
-            border-radius: 12px;
-            border: 1px solid var(--border-color);
-            margin-bottom: 14px;
-        }
-
-        .tab-btn {
-            flex: 1;
-            background: transparent;
-            color: var(--text-muted);
-            border: none;
-            border-radius: 8px;
-            padding: 8px;
-            font-size: 0.85rem;
-            font-weight: 700;
-            cursor: pointer;
-            transition: all 0.15s;
-        }
-
-        .tab-btn.active {
-            background: var(--accent);
-            color: #0f172a;
-        }
-
-        .tab-panel {
-            display: none;
-            flex: 1;
-            flex-direction: column;
-            min-height: 280px;
-        }
-
-        .tab-panel.active { display: flex; }
-
-        .memo-area {
+        .w-textarea {
             width: 100%;
+            min-height: 145px;
             flex: 1;
-            background: var(--card-inner);
-            border: 1px solid var(--border-color);
+            background: rgba(0, 0, 0, 0.22);
+            border: 1px solid rgba(255, 255, 255, 0.1);
             border-radius: 14px;
-            padding: 16px;
-            color: var(--text-main);
-            font-size: 1rem;
-            line-height: 1.6;
+            padding: 12px;
+            color: #fff;
+            font-size: 0.92rem;
+            line-height: 1.5;
             resize: none;
             outline: none;
         }
 
-        .memo-area:focus { border-color: var(--accent); }
-
-        .memo-footer {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-top: 8px;
-            font-size: 0.78rem;
-            color: var(--text-muted);
-        }
-
-        .save-status {
-            color: var(--success);
-            opacity: 0;
-            transition: opacity 0.3s;
-        }
-
-        /* ToDoリスト */
-        .todo-input-row {
+        .todo-add-row {
             display: flex;
             gap: 8px;
-            margin-bottom: 12px;
+            margin-bottom: 10px;
         }
 
-        .todo-list {
+        .w-input {
             flex: 1;
+            background: rgba(0, 0, 0, 0.25);
+            border: 1px solid rgba(255, 255, 255, 0.14);
+            border-radius: 10px;
+            padding: 8px 12px;
+            color: #fff;
+            font-size: 0.9rem;
+            outline: none;
+        }
+
+        .todo-scroll {
+            max-height: 140px;
             overflow-y: auto;
             display: flex;
             flex-direction: column;
-            gap: 8px;
+            gap: 6px;
         }
 
-        .todo-item {
+        .todo-row {
+            display: flex;
+            align-items: center;
+            gap: 9px;
+            padding: 7px 10px;
+            background: rgba(255, 255, 255, 0.06);
+            border-radius: 10px;
+            font-size: 0.88rem;
+        }
+
+        .todo-row.done span {
+            text-decoration: line-through;
+            color: var(--text-sub);
+        }
+
+        .todo-row span { flex: 1; word-break: break-word; }
+
+        .todo-check {
+            width: 18px;
+            height: 18px;
+            border-radius: 50%;
+            border: 2px solid rgba(255, 255, 255, 0.45);
+            background: transparent;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #fff;
+            flex-shrink: 0;
+        }
+
+        .todo-row.done .todo-check {
+            background: var(--accent);
+            border-color: var(--accent);
+        }
+
+        /* 下部：ページドット・検索ピル・Dock */
+        .bottom-area {
+            flex-shrink: 0;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 10px;
+            padding: 4px 16px 0;
+        }
+
+        .page-dots-bar {
             display: flex;
             align-items: center;
             gap: 10px;
-            background: var(--card-inner);
-            border: 1px solid var(--border-color);
-            border-radius: 12px;
-            padding: 11px 14px;
         }
 
-        .todo-item input[type="checkbox"] {
-            width: 20px;
-            height: 20px;
-            accent-color: var(--accent);
+        .page-dots {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            background: rgba(255, 255, 255, 0.12);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            padding: 6px 12px;
+            border-radius: 999px;
+            border: 1px solid rgba(255, 255, 255, 0.12);
+        }
+
+        .dot {
+            width: 7px;
+            height: 7px;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.38);
             cursor: pointer;
-        }
-
-        .todo-text {
-            flex: 1;
-            font-size: 0.95rem;
-            word-break: break-word;
-        }
-
-        .todo-item.completed .todo-text {
-            text-decoration: line-through;
-            color: var(--text-muted);
-        }
-
-        .todo-del {
-            background: none;
+            transition: transform 0.2s, background 0.2s;
             border: none;
-            color: var(--text-muted);
-            font-size: 1rem;
-            cursor: pointer;
-            padding: 2px 6px;
         }
 
-        /* モーダル */
+        .dot.active {
+            background: #ffffff;
+            transform: scale(1.25);
+        }
+
+        .spotlight-trigger {
+            display: inline-flex;
+            align-items: center;
+            gap: 5px;
+            background: rgba(255, 255, 255, 0.15);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            border: 1px solid rgba(255, 255, 255, 0.18);
+            color: #fff;
+            border-radius: 999px;
+            padding: 5px 14px;
+            font-size: 0.76rem;
+            font-weight: 500;
+            cursor: pointer;
+        }
+
+        .spotlight-trigger svg {
+            width: 12px;
+            height: 12px;
+            opacity: 0.9;
+        }
+
+        /* iPadOS Dock */
+        .dock {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 16px;
+            background: rgba(255, 255, 255, 0.18);
+            backdrop-filter: blur(28px) saturate(180%);
+            -webkit-backdrop-filter: blur(28px) saturate(180%);
+            border: 1px solid rgba(255, 255, 255, 0.24);
+            border-radius: 30px;
+            padding: 11px 18px;
+            box-shadow: 0 16px 40px rgba(0, 0, 0, 0.35);
+            max-width: calc(100vw - 24px);
+            overflow-x: auto;
+            scrollbar-width: none;
+        }
+
+        .dock::-webkit-scrollbar { display: none; }
+
+        .dock .app-slot {
+            gap: 0;
+        }
+
+        .dock .app-icon-wrap {
+            width: 64px;
+            height: 64px;
+        }
+
+        .dock .app-label {
+            display: none;
+        }
+
+        /* モーダル共通 */
         .modal-backdrop {
             display: none;
             position: fixed;
             inset: 0;
-            background: rgba(0, 0, 0, 0.7);
-            backdrop-filter: blur(6px);
             z-index: 100;
-            justify-content: center;
+            background: rgba(0, 0, 0, 0.55);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
             align-items: center;
+            justify-content: center;
             padding: 20px;
         }
 
         .modal-backdrop.open { display: flex; }
 
-        .modal {
+        .sheet {
             width: 100%;
             max-width: 440px;
-            background: #131c2e;
-            border: 1px solid rgba(255, 255, 255, 0.14);
-            border-radius: 20px;
-            padding: 24px;
+            background: rgba(28, 32, 42, 0.92);
+            border: 1px solid rgba(255, 255, 255, 0.16);
+            border-radius: 24px;
+            padding: 22px;
+            box-shadow: 0 24px 60px rgba(0, 0, 0, 0.55);
             display: flex;
             flex-direction: column;
             gap: 14px;
+            max-height: 90vh;
+            overflow-y: auto;
         }
 
-        .modal h3 { font-size: 1.15rem; }
+        .sheet h3 {
+            font-size: 1.08rem;
+            font-weight: 700;
+        }
 
         .field {
             display: flex;
             flex-direction: column;
-            gap: 6px;
+            gap: 5px;
         }
 
         .field label {
-            font-size: 0.8rem;
-            color: var(--text-muted);
+            font-size: 0.78rem;
+            color: var(--text-sub);
             font-weight: 600;
         }
 
-        .field input[type="text"] {
-            background: rgba(15, 23, 42, 0.9);
-            border: 1px solid var(--border-color);
-            border-radius: 10px;
-            padding: 11px 14px;
-            color: var(--text-main);
-            font-size: 0.95rem;
+        .field input, .field select {
+            background: rgba(255, 255, 255, 0.08);
+            border: 1px solid rgba(255, 255, 255, 0.15);
+            border-radius: 12px;
+            padding: 10px 12px;
+            color: #fff;
+            font-size: 0.92rem;
             outline: none;
         }
 
-        .field input[type="text"]:focus { border-color: var(--accent); }
+        .field select option { background: #1c202a; color: #fff; }
 
-        .checkbox-row {
+        .row-2 {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 10px;
+        }
+
+        .check-line {
             display: flex;
             align-items: center;
-            gap: 10px;
-            font-size: 0.88rem;
-            color: var(--text-main);
+            gap: 8px;
+            font-size: 0.86rem;
             cursor: pointer;
         }
 
-        .modal-actions {
+        .sheet-actions {
             display: flex;
             justify-content: flex-end;
-            gap: 10px;
-            margin-top: 6px;
+            gap: 8px;
+            margin-top: 4px;
         }
 
-        @media (max-width: 820px) {
-            body {
-                grid-template-columns: 1fr;
-                padding: 16px;
-            }
-            .top-bar {
-                flex-direction: column;
-                align-items: flex-start;
-            }
-            .search-wrapper {
-                width: 100%;
-                max-width: none;
-            }
+        .move-bar {
+            display: flex;
+            gap: 6px;
+            flex-wrap: wrap;
+        }
+
+        /* Spotlight 検索モーダル */
+        .spotlight-box {
+            align-items: flex-start;
+            padding-top: 10vh;
+        }
+
+        .spotlight-panel {
+            width: 100%;
+            max-width: 560px;
+            background: rgba(30, 34, 46, 0.88);
+            backdrop-filter: blur(30px);
+            -webkit-backdrop-filter: blur(30px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 22px;
+            overflow: hidden;
+            box-shadow: 0 24px 60px rgba(0, 0, 0, 0.55);
+        }
+
+        .spotlight-input-row {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 14px 18px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .spotlight-input-row svg {
+            width: 20px;
+            height: 20px;
+            color: var(--text-sub);
+            flex-shrink: 0;
+        }
+
+        .spotlight-input {
+            flex: 1;
+            background: transparent;
+            border: none;
+            color: #fff;
+            font-size: 1.08rem;
+            outline: none;
+        }
+
+        .spotlight-results {
+            max-height: 50vh;
+            overflow-y: auto;
+            padding: 8px;
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+        }
+
+        .spot-item {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 10px 12px;
+            border-radius: 12px;
+            text-decoration: none;
+            color: #fff;
+            cursor: pointer;
+            transition: background 0.12s;
+        }
+
+        .spot-item:hover, .spot-item:active {
+            background: rgba(255, 255, 255, 0.12);
+        }
+
+        .spot-mini-icon {
+            width: 34px;
+            height: 34px;
+            border-radius: 9px;
+            background: #fff;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+            flex-shrink: 0;
+        }
+
+        .spot-mini-icon svg { width: 100%; height: 100%; }
+        .spot-mini-icon img { width: 72%; height: 72%; object-fit: contain; }
+
+        .spot-meta {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .spot-name { font-size: 0.94rem; font-weight: 600; }
+        .spot-sub { font-size: 0.75rem; color: var(--text-sub); }
+
+        /* 壁紙ピッカー */
+        .wp-swatches {
+            display: grid;
+            grid-template-columns: repeat(5, 1fr);
+            gap: 10px;
+        }
+
+        .wp-swatch {
+            height: 54px;
+            border-radius: 12px;
+            border: 2px solid rgba(255, 255, 255, 0.25);
+            cursor: pointer;
+        }
+
+        .wp-swatch.active {
+            border-color: var(--accent);
+            box-shadow: 0 0 0 2px var(--accent);
+        }
+
+        /* レスポンシブ */
+        @media (max-width: 900px) {
+            .app-grid { grid-template-columns: repeat(5, 1fr); }
+        }
+
+        @media (max-width: 680px) {
+            :root { --icon-size: 62px; }
+            .page { padding: 12px 18px 8px; }
+            .app-grid { grid-template-columns: repeat(4, 1fr); gap: 18px 10px; }
+            .widgets-grid { grid-template-columns: 1fr; }
+            .dock { gap: 12px; padding: 9px 14px; border-radius: 26px; }
+            .dock .app-icon-wrap { width: 54px; height: 54px; }
         }
     </style>
 </head>
 <body>
 
-    <!-- 上部：時計＆検索 -->
-    <div class="card top-bar">
-        <div class="clock-box">
-            <div class="time" id="clock">00:00:00</div>
-            <div class="date" id="date">Loading...</div>
-        </div>
-        <div class="search-wrapper">
-            <div class="search-engines" id="enginePills">
-                <button type="button" class="engine-pill active" data-engine="google">Google (Web)</button>
-                <button type="button" class="engine-pill" data-engine="googleapp">Googleアプリ</button>
-                <button type="button" class="engine-pill" data-engine="drive">Drive内検索</button>
-                <button type="button" class="engine-pill" data-engine="youtube">YouTube</button>
+    <div class="wallpaper wp-1" id="wallpaper"></div>
+
+    <div class="os-shell" id="osShell">
+        <!-- 上部ステータスバー -->
+        <header class="status-bar">
+            <div class="status-left">
+                <span id="statusTime">00:00</span>
+                <span class="status-date" id="statusDate">---</span>
             </div>
-            <form class="search-form" onsubmit="handleSearch(event)">
-                <input type="text" id="searchInput" class="search-input" placeholder="Googleで検索..." autocomplete="off">
-                <button type="submit" class="btn">検索</button>
-            </form>
+            <div class="status-actions">
+                <button class="pill-btn" onclick="openWallpaperModal()" title="壁紙変更">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="3"/><circle cx="8.5" cy="8.5" r="1.5"/><path d="M21 15l-5-5L5 21"/></svg>
+                    <span>壁紙</span>
+                </button>
+                <button class="pill-btn" onclick="openAddModal()" title="アプリを追加">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M12 5v14M5 12h14"/></svg>
+                    <span>追加</span>
+                </button>
+                <button class="pill-btn" id="editToggleBtn" onclick="toggleEditMode()">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20h9"/><path d="M16.5 3.5a2.12 2.12 0 0 1 3 3L7 19l-4 1 1-4Z"/></svg>
+                    <span id="editBtnText">編集</span>
+                </button>
+            </div>
+        </header>
+
+        <!-- 編集モード中のページ管理 -->
+        <div class="edit-toolbar">
+            <button class="pill-btn" onclick="addPage()">＋ ページを追加</button>
+            <button class="pill-btn" id="removePageBtn" onclick="removeCurrentPage()">この空ページを削除</button>
+            <button class="pill-btn" onclick="resetDefaults()">初期設定に戻す</button>
         </div>
+
+        <!-- スワイプ可能なホーム画面ページ -->
+        <main class="pages-viewport" id="pagesViewport"></main>
+
+        <!-- ページドット・検索・Dock -->
+        <footer class="bottom-area">
+            <div class="page-dots-bar">
+                <div class="page-dots" id="pageDots"></div>
+                <button class="spotlight-trigger" onclick="openSpotlight()">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><path d="M20 20l-3.5-3.5"/></svg>
+                    <span>検索</span>
+                </button>
+            </div>
+            <nav class="dock" id="dock"></nav>
+        </footer>
     </div>
 
-    <!-- 左側：タイマー＆カスタムランチャー -->
-    <div class="left-col">
-        <div class="card">
-            <div class="section-header" style="margin-bottom: 4px;">
-                <div class="section-title">Focus Timer</div>
-                <span id="timerStatus" style="font-size:0.78rem; color:var(--text-muted);">バックグラウンド対応</span>
+    <!-- アプリ追加・編集モーダル -->
+    <div class="modal-backdrop" id="appModal" onclick="if(event.target===this) closeAppModal()">
+        <div class="sheet">
+            <h3 id="appModalTitle">アプリを追加</h3>
+            <div class="field">
+                <label>表示名</label>
+                <input type="text" id="fName" placeholder="例：Google ドライブ">
             </div>
-            <div class="timer-display" id="timer">25:00</div>
-            <div class="timer-controls">
-                <button class="btn" id="startBtn" onclick="toggleTimer()">スタート</button>
-                <button class="btn-sub" onclick="setTimer(25)">25分</button>
-                <button class="btn-sub" onclick="setTimer(10)">10分</button>
-                <button class="btn-sub" onclick="setTimer(5)">5分</button>
-                <button class="btn-sub" onclick="addMinute()">+1分</button>
-                <button class="btn-sub" onclick="resetTimer()">リセット</button>
+            <div class="field">
+                <label>URL（アプリを起動する場合は https://... 推奨）</label>
+                <input type="text" id="fUrl" placeholder="https://drive.google.com/">
             </div>
-        </div>
-
-        <div class="card" id="launcherCard" style="flex: 1;">
-            <div class="section-header">
-                <div class="section-title">Quick Launch</div>
-                <div class="header-actions">
-                    <button class="btn-xs" id="resetLaunchersBtn" style="display:none;" onclick="resetLaunchers()">初期化</button>
-                    <button class="btn-xs" id="editModeBtn" onclick="toggleEditMode()">編集</button>
-                    <button class="btn-xs" onclick="openModal()">＋ 追加</button>
+            <div class="row-2">
+                <div class="field">
+                    <label>アイコン種類</label>
+                    <select id="fIconType">
+                        <option value="auto">URLから自動取得</option>
+                        <option value="svg:google">Google</option>
+                        <option value="svg:drive">Google ドライブ</option>
+                        <option value="svg:classroom">Classroom</option>
+                        <option value="svg:docs">ドキュメント</option>
+                        <option value="svg:sheets">スプレッドシート</option>
+                        <option value="svg:slides">スライド</option>
+                        <option value="svg:maps">Google マップ</option>
+                        <option value="svg:youtube">YouTube</option>
+                        <option value="svg:gmail">Gmail</option>
+                        <option value="svg:meet">Google Meet</option>
+                        <option value="svg:gemini">Gemini</option>
+                        <option value="svg:github">GitHub</option>
+                        <option value="custom">画像URLを指定</option>
+                    </select>
+                </div>
+                <div class="field">
+                    <label>配置先</label>
+                    <select id="fTargetLoc"></select>
                 </div>
             </div>
-            <div class="links-grid" id="linksGrid"></div>
-        </div>
-    </div>
-
-    <!-- 右側：多機能ワークスペース -->
-    <div class="card">
-        <div class="tabs-bar">
-            <button class="tab-btn active" onclick="switchTab('memo', this)">📝 メモ</button>
-            <button class="tab-btn" onclick="switchTab('todo', this)">✅ ToDo</button>
-            <button class="tab-btn" onclick="switchTab('schedule', this)">📅 時間割・固定</button>
-        </div>
-
-        <!-- メモタブ -->
-        <div class="tab-panel active" id="tab-memo">
-            <textarea class="memo-area" id="memo" placeholder="ここに書いた内容は自動でiPadに保存されます..."></textarea>
-            <div class="memo-footer">
-                <span id="memoCount">0 文字</span>
-                <span class="save-status" id="saveStatus">保存しました</span>
-                <button class="btn-xs" onclick="clearMemo('memo')">クリア</button>
+            <div class="field" id="customIconField" style="display:none;">
+                <label>アイコン画像URL</label>
+                <input type="text" id="fIconUrl" placeholder="https://.../icon.png">
             </div>
-        </div>
-
-        <!-- ToDoタブ -->
-        <div class="tab-panel" id="tab-todo">
-            <form class="todo-input-row" onsubmit="addTodo(event)">
-                <input type="text" id="todoInput" class="search-input" style="padding: 10px 14px;" placeholder="やることを追加..." autocomplete="off">
-                <button type="submit" class="btn">追加</button>
-            </form>
-            <div class="todo-list" id="todoList"></div>
-            <div class="memo-footer">
-                <span id="todoStats">0 件</span>
-                <button class="btn-xs" onclick="clearDoneTodos()">完了を削除</button>
-            </div>
-        </div>
-
-        <!-- 時間割・固定メモタブ -->
-        <div class="tab-panel" id="tab-schedule">
-            <textarea class="memo-area" id="scheduleMemo" placeholder="時間割や、クラスコード・よく使うIDなどを書いておくと便利です..."></textarea>
-            <div class="memo-footer">
-                <span>自動保存</span>
-                <span class="save-status" id="scheduleSaveStatus">保存しました</span>
-            </div>
-        </div>
-    </div>
-
-    <!-- 追加・編集モーダル -->
-    <div class="modal-backdrop" id="modalBackdrop" onclick="closeModalOnBackdrop(event)">
-        <div class="modal">
-            <h3 id="modalTitle">リンクを追加</h3>
-            <div class="field">
-                <label>名前</label>
-                <input type="text" id="inpTitle" placeholder="例：Googleドライブ">
-            </div>
-            <div class="field">
-                <label>アイコン（絵文字）</label>
-                <input type="text" id="inpIcon" placeholder="例：📁" value="🔗">
-            </div>
-            <div class="field">
-                <label>URL（アプリを開く場合は https://... のユニバーサルリンク推奨）</label>
-                <input type="text" id="inpUrl" placeholder="https://drive.google.com/">
-            </div>
-            <div class="field">
-                <label>サブ説明（任意）</label>
-                <input type="text" id="inpDesc" placeholder="例：ファイル管理">
-            </div>
-            <label class="checkbox-row">
-                <input type="checkbox" id="inpNewTab">
-                別タブで開く（Webサイト向け／アプリ起動はOFF推奨）
+            <label class="check-line">
+                <input type="checkbox" id="fNewTab">
+                <span>別タブで開く（Webサイト向け／アプリ起動はOFF推奨）</span>
             </label>
-            <div class="modal-actions">
-                <button class="btn-sub" onclick="closeModal()">キャンセル</button>
-                <button class="btn" style="padding: 10px 20px;" onclick="saveLauncher()">保存</button>
+            <div class="field" id="reorderField" style="display:none;">
+                <label>並び順の移動</label>
+                <div class="move-bar">
+                    <button type="button" class="w-btn" onclick="shiftEditingApp(-1)">左へ移動</button>
+                    <button type="button" class="w-btn" onclick="shiftEditingApp(1)">右へ移動</button>
+                </div>
             </div>
+            <div class="sheet-actions">
+                <button type="button" class="w-btn" onclick="closeAppModal()">キャンセル</button>
+                <button type="button" class="w-btn primary" onclick="saveAppModal()">保存</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- 壁紙モーダル -->
+    <div class="modal-backdrop" id="wpModal" onclick="if(event.target===this) closeWallpaperModal()">
+        <div class="sheet">
+            <h3>壁紙を変更</h3>
+            <div class="wp-swatches" id="wpSwatches">
+                <div class="wp-swatch wallpaper wp-1" data-wp="wp-1" onclick="setWallpaperPreset('wp-1')"></div>
+                <div class="wp-swatch wallpaper wp-2" data-wp="wp-2" onclick="setWallpaperPreset('wp-2')"></div>
+                <div class="wp-swatch wallpaper wp-3" data-wp="wp-3" onclick="setWallpaperPreset('wp-3')"></div>
+                <div class="wp-swatch wallpaper wp-4" data-wp="wp-4" onclick="setWallpaperPreset('wp-4')"></div>
+                <div class="wp-swatch wallpaper wp-5" data-wp="wp-5" onclick="setWallpaperPreset('wp-5')"></div>
+            </div>
+            <div class="field">
+                <label>カスタム画像のURL</label>
+                <div style="display:flex; gap:8px;">
+                    <input type="text" id="wpCustomUrl" style="flex:1;" placeholder="https://...">
+                    <button type="button" class="w-btn primary" onclick="setWallpaperUrl()">適用</button>
+                </div>
+            </div>
+            <div class="field">
+                <label>iPad内の写真から選ぶ</label>
+                <input type="file" id="wpFileInput" accept="image/*" onchange="handleWallpaperFile(event)">
+            </div>
+            <div class="sheet-actions">
+                <button type="button" class="w-btn primary" onclick="closeWallpaperModal()">閉じる</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Spotlight 検索モーダル -->
+    <div class="modal-backdrop spotlight-box" id="spotlightModal" onclick="if(event.target===this) closeSpotlight()">
+        <div class="spotlight-panel">
+            <div class="spotlight-input-row">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><path d="M20 20l-3.5-3.5"/></svg>
+                <input type="text" id="spotlightInput" class="spotlight-input" placeholder="アプリを検索、またはWeb検索..." autocomplete="off">
+            </div>
+            <div class="spotlight-results" id="spotlightResults"></div>
         </div>
     </div>
 
     <script>
-        /* =========================
-           1. 時計
-        ========================= */
-        function updateClock() {
-            const now = new Date();
-            const h = String(now.getHours()).padStart(2, '0');
-            const m = String(now.getMinutes()).padStart(2, '0');
-            const s = String(now.getSeconds()).padStart(2, '0');
-            document.getElementById('clock').textContent = `${h}:${m}:${s}`;
-            const options = { year: 'numeric', month: 'long', day: 'numeric', weekday: 'short' };
-            document.getElementById('date').textContent = now.toLocaleDateString('ja-JP', options);
-        }
-        setInterval(updateClock, 1000);
-        updateClock();
+        /* =========================================================
+           1. ブランド公式デザインのSVGアイコンライブラリ（絵文字ゼロ）
+        ========================================================= */
+        const BRAND_SVGS = {
+            google: `<svg viewBox="0 0 100 100"><rect width="100" height="100" fill="#ffffff"/><path d="M77 51c0-2.1-.2-4.1-.5-6H50v11.5h15.2c-.7 3.5-2.7 6.5-5.7 8.5v7.1h9.2C74.1 67.1 77 59.7 77 51z" fill="#4285F4"/><path d="M50 78.5c7.6 0 14-2.5 18.7-6.8l-9.2-7.1c-2.5 1.7-5.8 2.7-9.5 2.7-7.3 0-13.5-4.9-15.7-11.6h-9.5v7.3C29.5 72.3 39 78.5 50 78.5z" fill="#34A853"/><path d="M34.3 55.7c-.6-1.7-.9-3.6-.9-5.7s.3-4 .9-5.7V37h-9.5c-2 3.9-3.1 8.3-3.1 13s1.1 9.1 3.1 13l9.5-7.3z" fill="#FBBC05"/><path d="M50 32.7c4.1 0 7.9 1.4 10.8 4.2l8.1-8.1C64 24.3 57.6 21.5 50 21.5c-11 0-20.5 6.2-25.2 15.5l9.5 7.3C36.5 37.6 42.7 32.7 50 32.7z" fill="#EA4335"/></svg>`,
 
-        /* =========================
-           2. 検索（エンジン切替）
-        ========================= */
-        let currentEngine = 'google';
-        const engineConfig = {
-            google:    { placeholder: 'Googleで検索 (Web)...',   url: q => `https://www.google.com/search?q=${encodeURIComponent(q)}`, newTab: true },
-            googleapp: { placeholder: 'Googleアプリで検索...',     url: q => `google://search?q=${encodeURIComponent(q)}`, newTab: false },
-            drive:     { placeholder: 'Googleドライブを検索...', url: q => `https://drive.google.com/drive/search?q=${encodeURIComponent(q)}`, newTab: false },
-            youtube:   { placeholder: 'YouTubeを検索...',        url: q => `https://www.youtube.com/results?search_query=${encodeURIComponent(q)}`, newTab: false }
+            drive: `<svg viewBox="0 0 100 100"><rect width="100" height="100" fill="#ffffff"/><path d="M39.5 23h21l19 33H58.5z" fill="#FFBA00"/><path d="M20.5 56l19-33L50 41.2 31 74.2z" fill="#00AC47"/><path d="M31 74.2L41.5 56h38l-10.5 18.2z" fill="#0066DA"/><path d="M39.5 23l10.5 18.2L60.5 23z" fill="#00832D" opacity="0.25"/><path d="M69 74.2L79.5 56H58.5z" fill="#EA4335" opacity="0.85"/></svg>`,
+
+            classroom: `<svg viewBox="0 0 100 100"><rect width="100" height="100" fill="#FBBC04"/><rect x="12" y="18" width="76" height="64" rx="8" fill="#1E8E3E"/><circle cx="50" cy="43" r="7.5" fill="#ffffff"/><path d="M35.5 65c0-7.5 6.5-12 14.5-12s14.5 4.5 14.5 12v3h-29v-3z" fill="#ffffff"/><circle cx="31" cy="48" r="5" fill="#A8DAB5"/><path d="M21 65c0-5 4.2-8.5 10-8.5 2.5 0 4.8.7 6.5 1.9-3.2 2-5 5-5 8.6v1H21v-3z" fill="#A8DAB5"/><circle cx="69" cy="48" r="5" fill="#A8DAB5"/><path d="M79 65c0-5-4.2-8.5-10-8.5-2.5 0-4.8.7-6.5 1.9 3.2 2 5 5 5 8.6v1H79v-3z" fill="#A8DAB5"/><rect x="58" y="75" width="16" height="4" rx="1.5" fill="#ffffff"/></svg>`,
+
+            docs: `<svg viewBox="0 0 100 100"><rect width="100" height="100" fill="#ffffff"/><path d="M27 18h31l15 15v49a4 4 0 0 1-4 4H27a4 4 0 0 1-4-4V22a4 4 0 0 1 4-4z" fill="#4285F4"/><path d="M58 18v15h15z" fill="#A1C2FA"/><rect x="33" y="45" width="34" height="5" rx="2" fill="#ffffff"/><rect x="33" y="56" width="34" height="5" rx="2" fill="#ffffff"/><rect x="33" y="67" width="22" height="5" rx="2" fill="#ffffff"/></svg>`,
+
+            sheets: `<svg viewBox="0 0 100 100"><rect width="100" height="100" fill="#ffffff"/><path d="M27 18h31l15 15v49a4 4 0 0 1-4 4H27a4 4 0 0 1-4-4V22a4 4 0 0 1 4-4z" fill="#0F9D58"/><path d="M58 18v15h15z" fill="#87CEAC"/><rect x="33" y="44" width="34" height="27" rx="2" fill="none" stroke="#ffffff" stroke-width="4"/><line x1="33" y1="57" x2="67" y2="57" stroke="#ffffff" stroke-width="4"/><line x1="50" y1="44" x2="50" y2="71" stroke="#ffffff" stroke-width="4"/></svg>`,
+
+            slides: `<svg viewBox="0 0 100 100"><rect width="100" height="100" fill="#ffffff"/><path d="M27 18h31l15 15v49a4 4 0 0 1-4 4H27a4 4 0 0 1-4-4V22a4 4 0 0 1 4-4z" fill="#F4B400"/><path d="M58 18v15h15z" fill="#FAD165"/><rect x="32" y="44" width="36" height="26" rx="2" fill="#ffffff"/><rect x="37" y="49" width="26" height="16" rx="1" fill="#F4B400"/></svg>`,
+
+            maps: `<svg viewBox="0 0 100 100"><rect width="100" height="100" fill="#ffffff"/><path d="M50 16c-14.4 0-26 11.6-26 26 0 18.6 26 42 26 42s26-23.4 26-42c0-14.4-11.6-26-26-26z" fill="#34A853"/><path d="M50 16c-14.4 0-26 11.6-26 26 0 5.9 2.6 12.1 6.7 18.1L50 38V16z" fill="#EA4335"/><path d="M50 16v22l19.3 22.1C73.4 54.1 76 47.9 76 42c0-14.4-11.6-26-26-26z" fill="#4285F4"/><path d="M30.7 60.1C37.1 69.5 50 84 50 84l19.3-23.9L50 38z" fill="#FBBC05"/><circle cx="50" cy="41" r="10.5" fill="#ffffff"/></svg>`,
+
+            youtube: `<svg viewBox="0 0 100 100"><rect width="100" height="100" fill="#ffffff"/><rect x="14" y="25" width="72" height="50" rx="14" fill="#FF0000"/><polygon points="43,39 64,50 43,61" fill="#ffffff"/></svg>`,
+
+            gmail: `<svg viewBox="0 0 100 100"><rect width="100" height="100" fill="#ffffff"/><path d="M22 72V38l28 21 28-21v34H66V52L50 64 34 52v20z" fill="#EA4335"/><path d="M22 38l-4-3c-2.5 2-4 5-4 8.5V68a4 4 0 0 0 4 4h4V38z" fill="#4285F4"/><path d="M78 38l4-3c2.5 2 4 5 4 8.5V68a4 4 0 0 1-4 4h-4V38z" fill="#34A853"/><path d="M22 38l28 21 28-21 4-3c-2-3.5-6-5.5-10-3.5L50 48 28 31.5c-4-2-8 0-10 3.5l4 3z" fill="#C5221F"/><path d="M78 38l4-3c-2-3.5-6-5.5-10-3.5L50 48v11z" fill="#FBBC05"/></svg>`,
+
+            meet: `<svg viewBox="0 0 100 100"><rect width="100" height="100" fill="#ffffff"/><path d="M20 35a7 7 0 0 1 7-7h34a7 7 0 0 1 7 7v30a7 7 0 0 1-7 7H27a7 7 0 0 1-7-7V35z" fill="#00832D"/><path d="M20 35a7 7 0 0 1 7-7h19v22H20V35z" fill="#0066DA"/><path d="M20 50h26v22H27a7 7 0 0 1-7-7V50z" fill="#FFBA00"/><path d="M68 41l15-11a3 3 0 0 1 5 2.3v35.4a3 3 0 0 1-5 2.3L68 59V41z" fill="#00AC47"/><path d="M46 28h15a7 7 0 0 1 7 7v15H46V28z" fill="#EA4335"/></svg>`,
+
+            gemini: `<svg viewBox="0 0 100 100"><defs><linearGradient id="gemG" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" stop-color="#1A73E8"/><stop offset="50%" stop-color="#60A5FA"/><stop offset="100%" stop-color="#A855F7"/></linearGradient></defs><rect width="100" height="100" fill="#0f172a"/><path d="M50 14C50 38 62 50 86 50 62 50 50 62 50 86 50 62 38 50 14 50 38 50 50 38 50 14Z" fill="url(#gemG)"/></svg>`,
+
+            github: `<svg viewBox="0 0 100 100"><rect width="100" height="100" fill="#161b22"/><path fill="#ffffff" fill-rule="evenodd" clip-rule="evenodd" d="M50 18c-17.7 0-32 14.3-32 32 0 14.1 9.2 26.1 21.9 30.3 1.6.3 2.2-.7 2.2-1.5v-5.4c-8.9 1.9-10.8-4.3-10.8-4.3-1.5-3.7-3.6-4.7-3.6-4.7-2.9-2 .2-1.9.2-1.9 3.2.2 4.9 3.3 4.9 3.3 2.8 4.9 7.5 3.5 9.3 2.7.3-2.1 1.1-3.5 2-4.3-7.1-.8-14.6-3.6-14.6-15.8 0-3.5 1.2-6.3 3.3-8.6-.3-.8-1.4-4.1.3-8.5 0 0 2.7-.9 8.8 3.3 2.6-.7 5.3-1.1 8-1.1s5.4.4 8 1.1c6.1-4.1 8.8-3.3 8.8-3.3 1.7 4.4.6 7.7.3 8.5 2.1 2.2 3.3 5.1 3.3 8.6 0 12.3-7.5 15-14.6 15.8 1.1 1 2.2 2.9 2.2 5.9v8.8c0 .9.6 1.8 2.2 1.5C72.8 76.1 82 64.1 82 50c0-17.7-14.3-32-32-32z"/></svg>`
         };
 
-        document.querySelectorAll('.engine-pill').forEach(btn => {
-            btn.addEventListener('click', () => {
-                document.querySelectorAll('.engine-pill').forEach(b => b.classList.remove('active'));
-                btn.classList.add('active');
-                currentEngine = btn.dataset.engine;
-                document.getElementById('searchInput').placeholder = engineConfig[currentEngine].placeholder;
-                document.getElementById('searchInput').focus();
-            });
-        });
-
-        function handleSearch(e) {
-            e.preventDefault();
-            const input = document.getElementById('searchInput');
-            const q = input.value.trim();
-            if (!q) return;
-            const cfg = engineConfig[currentEngine];
-            const targetUrl = cfg.url(q);
-            if (cfg.newTab) {
-                window.open(targetUrl, '_blank', 'noopener');
-            } else {
-                window.location.href = targetUrl;
-            }
+        function makeMonogramSvg(name, url) {
+            const colors = ['#0a84ff', '#5e5ce6', '#bf5af2', '#ff375f', '#ff9f0a', '#30d158', '#64d2ff', '#007aff'];
+            let hash = 0;
+            const seed = (name || url || 'A');
+            for (let i = 0; i < seed.length; i++) hash = seed.charCodeAt(i) + ((hash << 5) - hash);
+            const bg = colors[Math.abs(hash) % colors.length];
+            const char = (name.trim()[0] || 'A').toUpperCase();
+            return `<svg viewBox="0 0 100 100"><defs><linearGradient id="mg${Math.abs(hash)}" x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stop-color="${bg}"/><stop offset="100%" stop-color="#0f172a" stop-opacity="0.35"/></linearGradient></defs><rect width="100" height="100" fill="${bg}"/><rect width="100" height="100" fill="url(#mg${Math.abs(hash)})" opacity="0.5"/><text x="50" y="64" text-anchor="middle" fill="#ffffff" font-size="48" font-weight="700" font-family="-apple-system, sans-serif">${escapeXml(char)}</text></svg>`;
         }
 
-        /* =========================
-           3. バックグラウンド対応タイマー
-        ========================= */
-        let durationSec = 25 * 60;
-        let remainingSec = durationSec;
-        let endTime = null;
-        let timerInterval = null;
+        function escapeXml(str) {
+            return String(str).replace(/[<>&'"]/g, c => ({ '<':'&lt;', '>':'&gt;', '&':'&amp;', "'":'&apos;', '"':'&quot;' }[c]));
+        }
 
-        function playBeep() {
+        function getDomainFromUrl(url) {
             try {
-                const ctx = new (window.AudioContext || window.webkitAudioContext)();
-                [523.25, 659.25, 783.99].forEach((freq, i) => {
-                    const osc = ctx.createOscillator();
-                    const gain = ctx.createGain();
-                    osc.type = 'sine';
-                    osc.frequency.value = freq;
-                    gain.gain.setValueAtTime(0.15, ctx.currentTime + i * 0.14);
-                    gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + i * 0.14 + 0.35);
-                    osc.connect(gain);
-                    gain.connect(ctx.destination);
-                    osc.start(ctx.currentTime + i * 0.14);
-                    osc.stop(ctx.currentTime + i * 0.14 + 0.35);
-                });
+                if (/^https?:/i.test(url)) return new URL(url).hostname;
             } catch (e) {}
+            return '';
         }
 
-        function renderTimer(sec) {
-            const m = String(Math.floor(sec / 60)).padStart(2, '0');
-            const s = String(sec % 60).padStart(2, '0');
-            document.getElementById('timer').textContent = `${m}:${s}`;
-        }
+        function renderIconElement(app) {
+            const wrap = document.createElement('div');
+            wrap.className = 'app-icon-wrap';
 
-        function tickTimer() {
-            if (!endTime) return;
-            const diff = Math.max(0, Math.ceil((endTime - Date.now()) / 1000));
-            remainingSec = diff;
-            renderTimer(diff);
-            if (diff <= 0) {
-                clearInterval(timerInterval);
-                timerInterval = null;
-                endTime = null;
-                document.getElementById('startBtn').textContent = 'スタート';
-                document.getElementById('timer').classList.add('done');
-                document.getElementById('timerStatus').textContent = '時間になりました！';
-                playBeep();
+            if (app.iconType && app.iconType.startsWith('svg:')) {
+                const key = app.iconType.slice(4);
+                if (BRAND_SVGS[key]) {
+                    wrap.innerHTML = BRAND_SVGS[key];
+                    return wrap;
+                }
             }
-        }
 
-        function toggleTimer() {
-            const btn = document.getElementById('startBtn');
-            const disp = document.getElementById('timer');
-            disp.classList.remove('done');
-            if (timerInterval) {
-                tickTimer();
-                clearInterval(timerInterval);
-                timerInterval = null;
-                endTime = null;
-                btn.textContent = '再開';
-                document.getElementById('timerStatus').textContent = '一時停止中';
-            } else {
-                if (remainingSec <= 0) remainingSec = durationSec;
-                endTime = Date.now() + remainingSec * 1000;
-                btn.textContent = '一時停止';
-                document.getElementById('timerStatus').textContent = '計測中...';
-                timerInterval = setInterval(tickTimer, 250);
+            if (app.iconType === 'custom' && app.iconUrl) {
+                const img = document.createElement('img');
+                img.className = 'favicon-img';
+                img.style.width = '100%';
+                img.style.height = '100%';
+                img.style.borderRadius = '0';
+                img.style.objectFit = 'cover';
+                img.src = app.iconUrl;
+                img.onerror = () => { wrap.innerHTML = makeMonogramSvg(app.name, app.url); };
+                wrap.appendChild(img);
+                return wrap;
             }
+
+            // URLから高解像度ファビコンを自動取得（失敗時はクリーンなSVGモノグラム）
+            const domain = getDomainFromUrl(app.url);
+            if (domain) {
+                const img = document.createElement('img');
+                img.className = 'favicon-img';
+                img.alt = app.name;
+                img.src = `https://www.google.com/s2/favicons?domain=${encodeURIComponent(domain)}&sz=128`;
+                img.onerror = () => { wrap.innerHTML = makeMonogramSvg(app.name, app.url); };
+                wrap.appendChild(img);
+                return wrap;
+            }
+
+            wrap.innerHTML = makeMonogramSvg(app.name, app.url);
+            return wrap;
         }
 
-        function setTimer(minutes) {
-            clearInterval(timerInterval);
-            timerInterval = null;
-            endTime = null;
-            durationSec = minutes * 60;
-            remainingSec = durationSec;
-            document.getElementById('startBtn').textContent = 'スタート';
-            document.getElementById('timer').classList.remove('done');
-            document.getElementById('timerStatus').textContent = 'バックグラウンド対応';
-            renderTimer(remainingSec);
-        }
+        /* =========================================================
+           2. 状態管理（アプリ配列・ページ・Dock・壁紙）
+        ========================================================= */
+        const STORAGE_KEY = 'ipados_launcher_state_v1';
 
-        function addMinute() {
-            remainingSec += 60;
-            if (endTime) endTime += 60000;
-            renderTimer(remainingSec);
-        }
+        const DEFAULT_STATE = {
+            wallpaper: 'wp-1',
+            customWallpaper: '',
+            dock: [
+                { name: 'ロイロノート', url: 'https://loilonote.app', iconType: 'auto', newTab: false },
+                { name: 'Google', url: 'https://www.google.com/', iconType: 'svg:google', newTab: true },
+                { name: 'Classroom', url: 'https://classroom.google.com/', iconType: 'svg:classroom', newTab: false },
+                { name: 'ドライブ', url: 'https://drive.google.com/', iconType: 'svg:drive', newTab: false },
+                { name: 'YouTube', url: 'https://www.youtube.com/', iconType: 'svg:youtube', newTab: false }
+            ],
+            pages: [
+                [
+                    { name: 'ロイロノート', url: 'https://loilonote.app', iconType: 'auto', newTab: false },
+                    { name: 'Google', url: 'https://www.google.com/', iconType: 'svg:google', newTab: true },
+                    { name: 'Classroom', url: 'https://classroom.google.com/', iconType: 'svg:classroom', newTab: false },
+                    { name: 'ドライブ', url: 'https://drive.google.com/', iconType: 'svg:drive', newTab: false },
+                    { name: 'ドキュメント', url: 'https://docs.google.com/document/', iconType: 'svg:docs', newTab: false },
+                    { name: 'スプレッドシート', url: 'https://docs.google.com/spreadsheets/', iconType: 'svg:sheets', newTab: false },
+                    { name: 'スライド', url: 'https://docs.google.com/presentation/', iconType: 'svg:slides', newTab: false },
+                    { name: 'Google マップ', url: 'https://maps.google.com/', iconType: 'svg:maps', newTab: false },
+                    { name: 'YouTube', url: 'https://www.youtube.com/', iconType: 'svg:youtube', newTab: false },
+                    { name: 'Gmail', url: 'https://mail.google.com/', iconType: 'svg:gmail', newTab: false },
+                    { name: 'Meet', url: 'https://meet.google.com/', iconType: 'svg:meet', newTab: false },
+                    { name: 'Gemini', url: 'https://gemini.google.com/', iconType: 'svg:gemini', newTab: true },
+                    { name: 'GitHub', url: 'https://github.com/', iconType: 'svg:github', newTab: true },
+                    { name: 'Wikipedia', url: 'https://ja.wikipedia.org/', iconType: 'auto', newTab: true },
+                    { name: 'DeepL翻訳', url: 'https://www.deepl.com/ja/translator', iconType: 'auto', newTab: true },
+                    { name: 'Google 翻訳', url: 'https://translate.google.com/', iconType: 'auto', newTab: true }
+                ],
+                [
+                    { name: 'Notion', url: 'https://www.notion.so/', iconType: 'auto', newTab: true },
+                    { name: 'Canva', url: 'https://www.canva.com/', iconType: 'auto', newTab: true },
+                    { name: 'Google カレンダー', url: 'https://calendar.google.com/', iconType: 'auto', newTab: false },
+                    { name: 'Google フォーム', url: 'https://docs.google.com/forms/', iconType: 'auto', newTab: true }
+                ]
+            ]
+        };
 
-        function resetTimer() {
-            setTimer(durationSec / 60);
-        }
-
-        // 別アプリから戻ってきた瞬間にタイマー表示を最新化
-        document.addEventListener('visibilitychange', () => {
-            if (!document.hidden && endTime) tickTimer();
-        });
-
-        /* =========================
-           4. カスタムランチャー
-        ========================= */
-        const LAUNCHER_KEY = 'ipad_dashboard_launchers_v1';
-        const defaultLaunchers = [
-            { title: 'ロイロノート', icon: '📒', url: 'https://loilonote.app', desc: 'ユニバーサルリンク', newTab: false },
-            { title: 'Classroom', icon: '🎓', url: 'https://classroom.google.com/', desc: 'Googleクラスルーム', newTab: false },
-            { title: 'Googleドライブ', icon: '📁', url: 'https://drive.google.com/', desc: 'ファイル・共有', newTab: false },
-            { title: 'ドキュメント', icon: '📄', url: 'https://docs.google.com/document/', desc: 'Google Docs', newTab: false },
-            { title: 'Googleマップ', icon: '🗺️', url: 'https://maps.google.com/', desc: 'マップを開く', newTab: false },
-            { title: 'YouTube', icon: '▶️', url: 'https://www.youtube.com/', desc: '動画を見る', newTab: false },
-            { title: 'Gemini', icon: '✨', url: 'https://gemini.google.com/', desc: 'AIアシスタント', newTab: true },
-            { title: 'GitHub', icon: '💻', url: 'https://github.com/', desc: 'コード管理', newTab: true }
-        ];
-
-        let launchers = JSON.parse(localStorage.getItem(LAUNCHER_KEY) || 'null') || structuredClone(defaultLaunchers);
+        let state = JSON.parse(localStorage.getItem(STORAGE_KEY) || 'null') || structuredClone(DEFAULT_STATE);
         let isEditMode = false;
-        let editingIndex = -1;
+        let currentPageIdx = 0;
+        let editingRef = null; // { loc: 'dock' | number, index: number } or null
+
+        function saveState() {
+            localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
+        }
 
         function isSafeUrl(url) {
             return !/^\s*javascript:/i.test(url);
         }
 
-        function saveLaunchersStorage() {
-            localStorage.setItem(LAUNCHER_KEY, JSON.stringify(launchers));
-        }
+        /* =========================================================
+           3. ホーム画面・Dock・ウィジェットページの描画
+        ========================================================= */
+        function createAppSlot(app, loc, idx) {
+            const slot = document.createElement('a');
+            slot.className = 'app-slot';
+            slot.href = isSafeUrl(app.url) ? app.url : '#';
+            if (app.newTab) {
+                slot.target = '_blank';
+                slot.rel = 'noopener';
+            }
 
-        function renderLaunchers() {
-            const grid = document.getElementById('linksGrid');
-            grid.innerHTML = '';
-            launchers.forEach((item, idx) => {
-                const card = document.createElement('div');
-                card.className = 'link-card';
-
-                const a = document.createElement('a');
-                a.className = 'link-item';
-                a.href = isSafeUrl(item.url) ? item.url : '#';
-                if (item.newTab) {
-                    a.target = '_blank';
-                    a.rel = 'noopener';
-                }
-                if (isEditMode) {
-                    a.addEventListener('click', e => {
-                        e.preventDefault();
-                        openModal(idx);
-                    });
-                }
-
-                const top = document.createElement('div');
-                top.className = 'link-top';
-
-                const iconSpan = document.createElement('span');
-                iconSpan.className = 'link-icon';
-                iconSpan.textContent = item.icon || '🔗';
-
-                const badge = document.createElement('span');
-                badge.className = 'link-badge ' + (item.newTab ? '' : 'app');
-                badge.textContent = item.newTab ? 'Web' : 'App';
-
-                top.append(iconSpan, badge);
-
-                const titleSpan = document.createElement('span');
-                titleSpan.className = 'title';
-                titleSpan.textContent = item.title;
-
-                const descSpan = document.createElement('span');
-                descSpan.className = 'desc';
-                descSpan.textContent = item.desc || item.url;
-
-                a.append(top, titleSpan, descSpan);
-                card.appendChild(a);
-
-                const controls = document.createElement('div');
-                controls.className = 'edit-controls';
-
-                const leftBtn = document.createElement('button');
-                leftBtn.className = 'edit-btn';
-                leftBtn.textContent = '◀';
-                leftBtn.onclick = () => moveLauncher(idx, -1);
-
-                const rightBtn = document.createElement('button');
-                rightBtn.className = 'edit-btn';
-                rightBtn.textContent = '▶';
-                rightBtn.onclick = () => moveLauncher(idx, 1);
-
-                const delBtn = document.createElement('button');
-                delBtn.className = 'edit-btn del';
-                delBtn.textContent = '削除';
-                delBtn.onclick = () => deleteLauncher(idx);
-
-                controls.append(leftBtn, rightBtn, delBtn);
-                card.appendChild(controls);
-
-                grid.appendChild(card);
+            // 削除バッジ
+            const delBtn = document.createElement('button');
+            delBtn.type = 'button';
+            delBtn.className = 'badge-delete';
+            delBtn.innerHTML = `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round"><path d="M5 12h14"/></svg>`;
+            delBtn.addEventListener('click', e => {
+                e.preventDefault();
+                e.stopPropagation();
+                deleteApp(loc, idx);
             });
+
+            // 長押しでiPad風の編集モードへ
+            let pressTimer = null;
+            let moved = false;
+            slot.addEventListener('pointerdown', () => {
+                moved = false;
+                if (isEditMode) return;
+                pressTimer = setTimeout(() => {
+                    if (!moved) toggleEditMode(true);
+                }, 520);
+            });
+            slot.addEventListener('pointermove', () => { moved = true; clearTimeout(pressTimer); });
+            slot.addEventListener('pointerup', () => clearTimeout(pressTimer));
+            slot.addEventListener('pointercancel', () => clearTimeout(pressTimer));
+
+            slot.addEventListener('click', e => {
+                if (isEditMode) {
+                    e.preventDefault();
+                    openEditModal(loc, idx);
+                }
+            });
+
+            const iconEl = renderIconElement(app);
+            const label = document.createElement('span');
+            label.className = 'app-label';
+            label.textContent = app.name;
+
+            slot.append(delBtn, iconEl, label);
+            return slot;
         }
 
-        function toggleEditMode() {
-            isEditMode = !isEditMode;
-            document.getElementById('launcherCard').classList.toggle('editing', isEditMode);
-            document.getElementById('editModeBtn').classList.toggle('active', isEditMode);
-            document.getElementById('editModeBtn').textContent = isEditMode ? '完了' : '編集';
-            document.getElementById('resetLaunchersBtn').style.display = isEditMode ? 'inline-block' : 'none';
-            renderLaunchers();
+        function renderAll() {
+            const viewport = document.getElementById('pagesViewport');
+            const prevScroll = viewport.scrollLeft;
+            viewport.innerHTML = '';
+
+            // アプリアイコンページを描画
+            state.pages.forEach((apps, pIdx) => {
+                const page = document.createElement('section');
+                page.className = 'page';
+                const grid = document.createElement('div');
+                grid.className = 'app-grid';
+                apps.forEach((app, aIdx) => grid.appendChild(createAppSlot(app, pIdx, aIdx)));
+                page.appendChild(grid);
+                viewport.appendChild(page);
+            });
+
+            // 最終ページ：iPadOSウィジェットページ（時計・タイマー・メモ・ToDo）
+            const widgetPage = document.createElement('section');
+            widgetPage.className = 'page';
+            widgetPage.innerHTML = `
+                <div class="widgets-grid">
+                    <div class="widget">
+                        <div class="widget-title"><span>Clock</span><span>JST</span></div>
+                        <div class="widget-clock-big" id="wClock">00:00:00</div>
+                        <div class="widget-clock-sub" id="wDate">---</div>
+                    </div>
+                    <div class="widget">
+                        <div class="widget-title"><span>Focus Timer</span><span id="wTimerStatus">Ready</span></div>
+                        <div class="timer-row">
+                            <div class="timer-num" id="wTimer">25:00</div>
+                            <button class="w-btn primary" id="wStartBtn" onclick="toggleTimer()">開始</button>
+                        </div>
+                        <div class="timer-btns">
+                            <button class="w-btn" onclick="setTimer(25)">25分</button>
+                            <button class="w-btn" onclick="setTimer(10)">10分</button>
+                            <button class="w-btn" onclick="setTimer(5)">5分</button>
+                            <button class="w-btn" onclick="addMinute()">+1分</button>
+                            <button class="w-btn" onclick="resetTimer()">リセット</button>
+                        </div>
+                    </div>
+                    <div class="widget">
+                        <div class="widget-title"><span>Notes (自動保存)</span><span id="wMemoStatus"></span></div>
+                        <textarea class="w-textarea" id="wMemo" placeholder="メモを入力..."></textarea>
+                    </div>
+                    <div class="widget">
+                        <div class="widget-title"><span>ToDo</span><button class="w-btn" style="padding:3px 8px; font-size:0.7rem;" onclick="clearDoneTodos()">完了削除</button></div>
+                        <form class="todo-add-row" onsubmit="addTodo(event)">
+                            <input type="text" class="w-input" id="wTodoInput" placeholder="タスクを追加..." autocomplete="off">
+                            <button type="submit" class="w-btn primary">追加</button>
+                        </form>
+                        <div class="todo-scroll" id="wTodoList"></div>
+                    </div>
+                </div>
+            `;
+            viewport.appendChild(widgetPage);
+
+            // Dockを描画
+            const dock = document.getElementById('dock');
+            dock.innerHTML = '';
+            state.dock.forEach((app, idx) => dock.appendChild(createAppSlot(app, 'dock', idx)));
+
+            // ページドットを描画
+            const totalPages = state.pages.length + 1;
+            const dotsEl = document.getElementById('pageDots');
+            dotsEl.innerHTML = '';
+            for (let i = 0; i < totalPages; i++) {
+                const dot = document.createElement('button');
+                dot.type = 'button';
+                dot.className = 'dot' + (i === currentPageIdx ? ' active' : '');
+                dot.onclick = () => goToPage(i);
+                dotsEl.appendChild(dot);
+            }
+
+            viewport.scrollLeft = prevScroll;
+            initWidgets();
+            updateClock();
+            updateRemovePageButton();
         }
 
-        function moveLauncher(idx, dir) {
-            const target = idx + dir;
-            if (target < 0 || target >= launchers.length) return;
-            [launchers[idx], launchers[target]] = [launchers[target], launchers[idx]];
-            saveLaunchersStorage();
-            renderLaunchers();
+        function goToPage(idx) {
+            const viewport = document.getElementById('pagesViewport');
+            viewport.scrollTo({ left: idx * viewport.clientWidth, behavior: 'smooth' });
         }
 
-        function deleteLauncher(idx) {
-            if (!confirm(`「${launchers[idx].title}」を削除しますか？`)) return;
-            launchers.splice(idx, 1);
-            saveLaunchersStorage();
-            renderLaunchers();
+        document.getElementById('pagesViewport').addEventListener('scroll', () => {
+            const viewport = document.getElementById('pagesViewport');
+            const w = viewport.clientWidth || 1;
+            const idx = Math.round(viewport.scrollLeft / w);
+            if (idx !== currentPageIdx) {
+                currentPageIdx = idx;
+                document.querySelectorAll('#pageDots .dot').forEach((d, i) => {
+                    d.classList.toggle('active', i === idx);
+                });
+                updateRemovePageButton();
+            }
+        });
+
+        function updateRemovePageButton() {
+            const btn = document.getElementById('removePageBtn');
+            const isAppPage = currentPageIdx < state.pages.length;
+            const isEmpty = isAppPage && state.pages[currentPageIdx].length === 0;
+            btn.style.display = (isAppPage && isEmpty && state.pages.length > 1) ? 'inline-flex' : 'none';
         }
 
-        function resetLaunchers() {
-            if (!confirm('ランチャーを初期状態に戻しますか？')) return;
-            launchers = structuredClone(defaultLaunchers);
-            saveLaunchersStorage();
-            renderLaunchers();
+        /* =========================================================
+           4. 編集モード・追加・移動・削除
+        ========================================================= */
+        function toggleEditMode(force) {
+            isEditMode = typeof force === 'boolean' ? force : !isEditMode;
+            document.getElementById('osShell').classList.toggle('editing', isEditMode);
+            document.getElementById('editToggleBtn').classList.toggle('active', isEditMode);
+            document.getElementById('editBtnText').textContent = isEditMode ? '完了' : '編集';
         }
 
-        function openModal(idx = -1) {
-            editingIndex = idx;
-            const isEdit = idx >= 0;
-            document.getElementById('modalTitle').textContent = isEdit ? 'リンクを編集' : 'リンクを追加';
-            const item = isEdit ? launchers[idx] : { title: '', icon: '🔗', url: 'https://', desc: '', newTab: false };
-            document.getElementById('inpTitle').value = item.title;
-            document.getElementById('inpIcon').value = item.icon;
-            document.getElementById('inpUrl').value = item.url;
-            document.getElementById('inpDesc').value = item.desc;
-            document.getElementById('inpNewTab').checked = !!item.newTab;
-            document.getElementById('modalBackdrop').classList.add('open');
+        function addPage() {
+            state.pages.push([]);
+            saveState();
+            renderAll();
+            goToPage(state.pages.length - 1);
         }
 
-        function closeModal() {
-            document.getElementById('modalBackdrop').classList.remove('open');
+        function removeCurrentPage() {
+            if (currentPageIdx >= state.pages.length || state.pages.length <= 1) return;
+            if (state.pages[currentPageIdx].length > 0) return;
+            state.pages.splice(currentPageIdx, 1);
+            saveState();
+            currentPageIdx = Math.max(0, currentPageIdx - 1);
+            renderAll();
+            goToPage(currentPageIdx);
         }
 
-        function closeModalOnBackdrop(e) {
-            if (e.target.id === 'modalBackdrop') closeModal();
+        function deleteApp(loc, idx) {
+            const arr = loc === 'dock' ? state.dock : state.pages[loc];
+            arr.splice(idx, 1);
+            saveState();
+            renderAll();
         }
 
-        function saveLauncher() {
-            const title = document.getElementById('inpTitle').value.trim();
-            const icon = document.getElementById('inpIcon').value.trim() || '🔗';
-            const url = document.getElementById('inpUrl').value.trim();
-            const desc = document.getElementById('inpDesc').value.trim();
-            const newTab = document.getElementById('inpNewTab').checked;
+        function resetDefaults() {
+            if (!confirm('配置やアイコンを初期状態に戻しますか？')) return;
+            state = structuredClone(DEFAULT_STATE);
+            saveState();
+            renderAll();
+            goToPage(0);
+        }
 
-            if (!title || !url) {
-                alert('名前とURLを入力してください');
+        function populateLocSelect(selected) {
+            const sel = document.getElementById('fTargetLoc');
+            sel.innerHTML = '';
+            state.pages.forEach((_, i) => {
+                const opt = document.createElement('option');
+                opt.value = String(i);
+                opt.textContent = `ホーム ${i + 1}ページ目`;
+                sel.appendChild(opt);
+            });
+            const dockOpt = document.createElement('option');
+            dockOpt.value = 'dock';
+            dockOpt.textContent = '下部のDock';
+            sel.appendChild(dockOpt);
+            sel.value = String(selected);
+        }
+
+        document.getElementById('fIconType').addEventListener('change', e => {
+            document.getElementById('customIconField').style.display = e.target.value === 'custom' ? 'flex' : 'none';
+        });
+
+        function openAddModal() {
+            editingRef = null;
+            document.getElementById('appModalTitle').textContent = 'アプリを追加';
+            document.getElementById('fName').value = '';
+            document.getElementById('fUrl').value = 'https://';
+            document.getElementById('fIconType').value = 'auto';
+            document.getElementById('fIconUrl').value = '';
+            document.getElementById('fNewTab').checked = false;
+            document.getElementById('customIconField').style.display = 'none';
+            document.getElementById('reorderField').style.display = 'none';
+            const defaultPage = Math.min(currentPageIdx, state.pages.length - 1);
+            populateLocSelect(defaultPage);
+            document.getElementById('appModal').classList.add('open');
+        }
+
+        function openEditModal(loc, idx) {
+            editingRef = { loc, index: idx };
+            const app = (loc === 'dock' ? state.dock : state.pages[loc])[idx];
+            document.getElementById('appModalTitle').textContent = 'アプリを編集';
+            document.getElementById('fName').value = app.name;
+            document.getElementById('fUrl').value = app.url;
+            document.getElementById('fIconType').value = app.iconType || 'auto';
+            document.getElementById('fIconUrl').value = app.iconUrl || '';
+            document.getElementById('fNewTab').checked = !!app.newTab;
+            document.getElementById('customIconField').style.display = app.iconType === 'custom' ? 'flex' : 'none';
+            document.getElementById('reorderField').style.display = 'flex';
+            populateLocSelect(loc);
+            document.getElementById('appModal').classList.add('open');
+        }
+
+        function closeAppModal() {
+            document.getElementById('appModal').classList.remove('open');
+        }
+
+        function shiftEditingApp(dir) {
+            if (!editingRef) return;
+            const arr = editingRef.loc === 'dock' ? state.dock : state.pages[editingRef.loc];
+            const target = editingRef.index + dir;
+            if (target < 0 || target >= arr.length) return;
+            [arr[editingRef.index], arr[target]] = [arr[target], arr[editingRef.index]];
+            editingRef.index = target;
+            saveState();
+            renderAll();
+        }
+
+        function saveAppModal() {
+            const name = document.getElementById('fName').value.trim();
+            const url = document.getElementById('fUrl').value.trim();
+            const iconType = document.getElementById('fIconType').value;
+            const iconUrl = document.getElementById('fIconUrl').value.trim();
+            const newTab = document.getElementById('fNewTab').checked;
+            const rawLoc = document.getElementById('fTargetLoc').value;
+            const targetLoc = rawLoc === 'dock' ? 'dock' : Number(rawLoc);
+
+            if (!name || !url) {
+                alert('表示名とURLを入力してください');
                 return;
             }
-            const data = { title, icon, url, desc, newTab };
-            if (editingIndex >= 0) {
-                launchers[editingIndex] = data;
+
+            const newApp = { name, url, iconType, iconUrl, newTab };
+
+            if (editingRef) {
+                const oldArr = editingRef.loc === 'dock' ? state.dock : state.pages[editingRef.loc];
+                if (editingRef.loc === targetLoc) {
+                    oldArr[editingRef.index] = newApp;
+                } else {
+                    oldArr.splice(editingRef.index, 1);
+                    const newArr = targetLoc === 'dock' ? state.dock : state.pages[targetLoc];
+                    newArr.push(newApp);
+                }
             } else {
-                launchers.push(data);
+                const newArr = targetLoc === 'dock' ? state.dock : state.pages[targetLoc];
+                newArr.push(newApp);
             }
-            saveLaunchersStorage();
-            renderLaunchers();
-            closeModal();
+
+            saveState();
+            renderAll();
+            closeAppModal();
         }
 
-        renderLaunchers();
-
-        /* =========================
-           5. 右カラム：タブ＆メモ＆ToDo
-        ========================= */
-        function switchTab(tabName, btn) {
-            document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
-            document.querySelectorAll('.tab-panel').forEach(p => p.classList.remove('active'));
-            btn.classList.add('active');
-            document.getElementById(`tab-${tabName}`).classList.add('active');
-        }
-
-        function setupAutoMemo(elId, storageKey, statusId, countId = null) {
-            const el = document.getElementById(elId);
-            const status = document.getElementById(statusId);
-            let timer;
-
-            const updateCount = () => {
-                if (countId) document.getElementById(countId).textContent = `${el.value.length} 文字`;
-            };
-
-            el.value = localStorage.getItem(storageKey) || '';
-            updateCount();
-
-            el.addEventListener('input', () => {
-                localStorage.setItem(storageKey, el.value);
-                updateCount();
-                status.style.opacity = '1';
-                clearTimeout(timer);
-                timer = setTimeout(() => { status.style.opacity = '0'; }, 1200);
+        /* =========================================================
+           5. 壁紙管理
+        ========================================================= */
+        function applyWallpaper() {
+            const el = document.getElementById('wallpaper');
+            el.className = 'wallpaper';
+            el.style.backgroundImage = '';
+            if (state.customWallpaper) {
+                el.style.backgroundImage = `url("${state.customWallpaper}")`;
+            } else {
+                el.classList.add(state.wallpaper || 'wp-1');
+            }
+            document.querySelectorAll('.wp-swatch').forEach(s => {
+                s.classList.toggle('active', !state.customWallpaper && s.dataset.wp === state.wallpaper);
             });
         }
 
-        setupAutoMemo('memo', 'ipad_dashboard_memo', 'saveStatus', 'memoCount');
-        setupAutoMemo('scheduleMemo', 'ipad_dashboard_schedule', 'scheduleSaveStatus');
+        function openWallpaperModal() { document.getElementById('wpModal').classList.add('open'); }
+        function closeWallpaperModal() { document.getElementById('wpModal').classList.remove('open'); }
 
-        function clearMemo(id) {
-            const el = document.getElementById(id);
-            if (!el.value || !confirm('メモをすべて消去しますか？')) return;
-            el.value = '';
-            el.dispatchEvent(new Event('input'));
+        function setWallpaperPreset(wp) {
+            state.wallpaper = wp;
+            state.customWallpaper = '';
+            saveState();
+            applyWallpaper();
         }
 
-        // ToDoリスト
-        const TODO_KEY = 'ipad_dashboard_todos';
-        let todos = JSON.parse(localStorage.getItem(TODO_KEY) || '[]');
-
-        function saveTodos() {
-            localStorage.setItem(TODO_KEY, JSON.stringify(todos));
+        function setWallpaperUrl() {
+            const url = document.getElementById('wpCustomUrl').value.trim();
+            if (!url) return;
+            state.customWallpaper = url;
+            saveState();
+            applyWallpaper();
         }
+
+        function handleWallpaperFile(e) {
+            const file = e.target.files[0];
+            if (!file) return;
+            const reader = new FileReader();
+            reader.onload = ev => {
+                try {
+                    state.customWallpaper = ev.target.result;
+                    saveState();
+                    applyWallpaper();
+                } catch (err) {
+                    alert('画像サイズが大きすぎるため保存できませんでした。小さい画像かURLをお試しください。');
+                }
+            };
+            reader.readAsDataURL(file);
+        }
+
+        /* =========================================================
+           6. Spotlight検索（アプリ絞り込み＋Web検索）
+        ========================================================= */
+        function openSpotlight() {
+            document.getElementById('spotlightModal').classList.add('open');
+            const inp = document.getElementById('spotlightInput');
+            inp.value = '';
+            renderSpotlightResults('');
+            setTimeout(() => inp.focus(), 50);
+        }
+
+        function closeSpotlight() {
+            document.getElementById('spotlightModal').classList.remove('open');
+        }
+
+        function getAllAppsUnique() {
+            const map = new Map();
+            [...state.dock, ...state.pages.flat()].forEach(a => {
+                if (!map.has(a.name + a.url)) map.set(a.name + a.url, a);
+            });
+            return Array.from(map.values());
+        }
+
+        function renderSpotlightResults(query) {
+            const box = document.getElementById('spotlightResults');
+            box.innerHTML = '';
+            const q = query.trim().toLowerCase();
+
+            // 登録済みアプリのマッチ
+            const matches = getAllAppsUnique().filter(a =>
+                !q || a.name.toLowerCase().includes(q) || a.url.toLowerCase().includes(q)
+            ).slice(0, 6);
+
+            matches.forEach(app => {
+                const a = document.createElement('a');
+                a.className = 'spot-item';
+                a.href = isSafeUrl(app.url) ? app.url : '#';
+                if (app.newTab) { a.target = '_blank'; a.rel = 'noopener'; }
+                a.onclick = () => closeSpotlight();
+
+                const iconWrap = renderIconElement(app);
+                iconWrap.className = 'spot-mini-icon';
+
+                const meta = document.createElement('div');
+                meta.className = 'spot-meta';
+                const n = document.createElement('span');
+                n.className = 'spot-name';
+                n.textContent = app.name;
+                const s = document.createElement('span');
+                s.className = 'spot-sub';
+                s.textContent = app.url;
+                meta.append(n, s);
+
+                a.append(iconWrap, meta);
+                box.appendChild(a);
+            });
+
+            // Web / アプリ検索アクション
+            if (q) {
+                const engines = [
+                    { label: `Google で「${query}」を検索`, sub: 'Webブラウザで開く', url: `https://www.google.com/search?q=${encodeURIComponent(query)}`, icon: 'svg:google', newTab: true },
+                    { label: `Googleアプリ で「${query}」を検索`, sub: 'Googleアプリを起動', url: `google://search?q=${encodeURIComponent(query)}`, icon: 'svg:google', newTab: false },
+                    { label: `Googleドライブ で「${query}」を検索`, sub: 'ドライブ内を検索', url: `https://drive.google.com/drive/search?q=${encodeURIComponent(query)}`, icon: 'svg:drive', newTab: false },
+                    { label: `YouTube で「${query}」を検索`, sub: 'YouTubeを開く', url: `https://www.youtube.com/results?search_query=${encodeURIComponent(query)}`, icon: 'svg:youtube', newTab: false }
+                ];
+                engines.forEach(eng => {
+                    const a = document.createElement('a');
+                    a.className = 'spot-item';
+                    a.href = eng.url;
+                    if (eng.newTab) { a.target = '_blank'; a.rel = 'noopener'; }
+                    a.onclick = () => closeSpotlight();
+
+                    const iconWrap = renderIconElement({ name: eng.label, url: eng.url, iconType: eng.icon });
+                    iconWrap.className = 'spot-mini-icon';
+
+                    const meta = document.createElement('div');
+                    meta.className = 'spot-meta';
+                    const n = document.createElement('span');
+                    n.className = 'spot-name';
+                    n.textContent = eng.label;
+                    const s = document.createElement('span');
+                    s.className = 'spot-sub';
+                    s.textContent = eng.sub;
+                    meta.append(n, s);
+
+                    a.append(iconWrap, meta);
+                    box.appendChild(a);
+                });
+            }
+        }
+
+        document.getElementById('spotlightInput').addEventListener('input', e => {
+            renderSpotlightResults(e.target.value);
+        });
+
+        document.getElementById('spotlightInput').addEventListener('keydown', e => {
+            if (e.key === 'Enter') {
+                const first = document.querySelector('#spotlightResults .spot-item');
+                if (first) first.click();
+            } else if (e.key === 'Escape') {
+                closeSpotlight();
+            }
+        });
+
+        // キーボードショートカット（Cmd+K / スラッシュでSpotlight、左右キーでページ切替）
+        document.addEventListener('keydown', e => {
+            if ((e.metaKey || e.ctrlKey) && e.key.toLowerCase() === 'k') {
+                e.preventDefault();
+                openSpotlight();
+            } else if (e.key === 'Escape') {
+                closeSpotlight();
+                closeAppModal();
+                closeWallpaperModal();
+            }
+        });
+
+        /* =========================================================
+           7. 時計・バックグラウンド対応タイマー・メモ・ToDo
+        ========================================================= */
+        function updateClock() {
+            const now = new Date();
+            const hh = String(now.getHours()).padStart(2, '0');
+            const mm = String(now.getMinutes()).padStart(2, '0');
+            const ss = String(now.getSeconds()).padStart(2, '0');
+            document.getElementById('statusTime').textContent = `${hh}:${mm}`;
+            const dateStr = now.toLocaleDateString('ja-JP', { month: 'short', day: 'numeric', weekday: 'short' });
+            document.getElementById('statusDate').textContent = dateStr;
+
+            const wc = document.getElementById('wClock');
+            const wd = document.getElementById('wDate');
+            if (wc) wc.textContent = `${hh}:${mm}:${ss}`;
+            if (wd) wd.textContent = now.toLocaleDateString('ja-JP', { year: 'numeric', month: 'long', day: 'numeric', weekday: 'long' });
+        }
+        setInterval(updateClock, 1000);
+
+        let durationSec = 25 * 60;
+        let remainingSec = durationSec;
+        let endTime = null;
+        let timerInterval = null;
+
+        function renderTimerDisplay() {
+            const el = document.getElementById('wTimer');
+            const btn = document.getElementById('wStartBtn');
+            const st = document.getElementById('wTimerStatus');
+            if (!el) return;
+            const m = String(Math.floor(remainingSec / 60)).padStart(2, '0');
+            const s = String(remainingSec % 60).padStart(2, '0');
+            el.textContent = `${m}:${s}`;
+            if (btn) btn.textContent = timerInterval ? '停止' : '開始';
+            if (st) st.textContent = timerInterval ? '計測中' : (remainingSec === 0 ? '終了' : 'Ready');
+        }
+
+        function tickTimer() {
+            if (!endTime) return;
+            remainingSec = Math.max(0, Math.ceil((endTime - Date.now()) / 1000));
+            if (remainingSec <= 0) {
+                clearInterval(timerInterval);
+                timerInterval = null;
+                endTime = null;
+            }
+            renderTimerDisplay();
+        }
+
+        function toggleTimer() {
+            if (timerInterval) {
+                tickTimer();
+                clearInterval(timerInterval);
+                timerInterval = null;
+                endTime = null;
+            } else {
+                if (remainingSec <= 0) remainingSec = durationSec;
+                endTime = Date.now() + remainingSec * 1000;
+                timerInterval = setInterval(tickTimer, 250);
+            }
+            renderTimerDisplay();
+        }
+
+        function setTimer(min) {
+            clearInterval(timerInterval);
+            timerInterval = null;
+            endTime = null;
+            durationSec = min * 60;
+            remainingSec = durationSec;
+            renderTimerDisplay();
+        }
+
+        function addMinute() {
+            remainingSec += 60;
+            if (endTime) endTime += 60000;
+            renderTimerDisplay();
+        }
+
+        function resetTimer() { setTimer(durationSec / 60); }
+
+        document.addEventListener('visibilitychange', () => {
+            if (!document.hidden && endTime) tickTimer();
+        });
+
+        let todos = JSON.parse(localStorage.getItem('ipad_dashboard_todos') || '[]');
 
         function renderTodos() {
-            const list = document.getElementById('todoList');
+            const list = document.getElementById('wTodoList');
+            if (!list) return;
             list.innerHTML = '';
-            todos.forEach((todo, i) => {
+            todos.forEach((t, i) => {
                 const row = document.createElement('div');
-                row.className = 'todo-item' + (todo.done ? ' completed' : '');
+                row.className = 'todo-row' + (t.done ? ' done' : '');
 
-                const cb = document.createElement('input');
-                cb.type = 'checkbox';
-                cb.checked = todo.done;
-                cb.onchange = () => {
-                    todos[i].done = cb.checked;
-                    saveTodos();
+                const chk = document.createElement('button');
+                chk.type = 'button';
+                chk.className = 'todo-check';
+                if (t.done) chk.innerHTML = `<svg viewBox="0 0 24 24" width="12" height="12" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round"><path d="M5 13l4 4L19 7"/></svg>`;
+                chk.onclick = () => {
+                    todos[i].done = !todos[i].done;
+                    localStorage.setItem('ipad_dashboard_todos', JSON.stringify(todos));
                     renderTodos();
                 };
 
                 const span = document.createElement('span');
-                span.className = 'todo-text';
-                span.textContent = todo.text;
+                span.textContent = t.text;
 
-                const del = document.createElement('button');
-                del.className = 'todo-del';
-                del.textContent = '✕';
-                del.onclick = () => {
-                    todos.splice(i, 1);
-                    saveTodos();
-                    renderTodos();
-                };
-
-                row.append(cb, span, del);
+                row.append(chk, span);
                 list.appendChild(row);
             });
-            const left = todos.filter(t => !t.done).length;
-            document.getElementById('todoStats').textContent = `残り ${left} 件 / 全 ${todos.length} 件`;
         }
 
         function addTodo(e) {
             e.preventDefault();
-            const inp = document.getElementById('todoInput');
+            const inp = document.getElementById('wTodoInput');
             const text = inp.value.trim();
             if (!text) return;
             todos.unshift({ text, done: false });
+            localStorage.setItem('ipad_dashboard_todos', JSON.stringify(todos));
             inp.value = '';
-            saveTodos();
             renderTodos();
         }
 
         function clearDoneTodos() {
             todos = todos.filter(t => !t.done);
-            saveTodos();
+            localStorage.setItem('ipad_dashboard_todos', JSON.stringify(todos));
             renderTodos();
         }
 
-        renderTodos();
+        function initWidgets() {
+            renderTimerDisplay();
+            const memo = document.getElementById('wMemo');
+            if (memo) {
+                memo.value = localStorage.getItem('ipad_dashboard_memo') || '';
+                let t;
+                memo.oninput = () => {
+                    localStorage.setItem('ipad_dashboard_memo', memo.value);
+                    const st = document.getElementById('wMemoStatus');
+                    if (st) {
+                        st.textContent = '保存済み';
+                        clearTimeout(t);
+                        t = setTimeout(() => { st.textContent = ''; }, 1000);
+                    }
+                };
+            }
+            renderTodos();
+        }
+
+        // 初期起動
+        applyWallpaper();
+        renderAll();
     </script>
 </body>
 </html>
