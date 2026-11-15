@@ -1,4 +1,3 @@
-html
 <!DOCTYPE html>
 <html lang="ja">
 <head>
@@ -7,9 +6,10 @@ html
     <title>GRID // OS</title>
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="theme-color" id="metaThemeColor" content="#09090b">
     <style>
         /* =========================================================
-           テーマ定義（デフォルト黒を維持＋ガラス＆背景連動変数）
+           テーマ定義
         ========================================================= */
         :root, [data-theme="obsidian"] {
             --bg: #09090b;
@@ -113,27 +113,37 @@ html
             -webkit-user-select: none;
         }
 
-        /* レコード等、明示的に丸くする要素 */
         .is-round { border-radius: 50% !important; }
-
         .mono { font-family: ui-monospace, "SF Mono", Menlo, Consolas, monospace; }
         input, textarea, select { user-select: text; -webkit-user-select: text; }
 
-        html, body {
-            position: fixed;
-            inset: 0;
+        /* 下部の黒帯を排除するため html/body はクリップせず物理高さいっぱいへ拡張 */
+        html {
             width: 100%;
-            height: 100%;
-            overflow: hidden;
-            background: var(--bg);
+            min-height: 100vh;
+            min-height: 100lvh;
+            min-height: calc(100% + 48px);
+            background-color: var(--bg);
+        }
+
+        body {
+            width: 100%;
+            min-height: 100vh;
+            min-height: 100lvh;
+            min-height: calc(100% + 48px);
+            margin: 0;
+            background-color: var(--bg);
             color: var(--fg);
             touch-action: manipulation;
         }
 
-        /* ====== 背景レイヤー（デフォルト黒〜自由画像・グラデまで全対応） ====== */
         .bg-wallpaper {
             position: fixed;
-            inset: -120px;
+            top: -60px;
+            left: -60px;
+            width: calc(100vw + 120px);
+            height: calc(100lvh + 140px);
+            min-height: calc(100vh + 140px);
             z-index: 0;
             background-color: var(--bg);
             background-size: cover;
@@ -144,7 +154,11 @@ html
 
         .bg-grid-lines {
             position: fixed;
-            inset: -120px;
+            top: -60px;
+            left: -60px;
+            width: calc(100vw + 120px);
+            height: calc(100lvh + 140px);
+            min-height: calc(100vh + 140px);
             z-index: 0;
             pointer-events: none;
             background-image:
@@ -156,18 +170,20 @@ html
 
         .os-shell {
             position: fixed;
-            inset: 0;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
             z-index: 1;
             display: flex;
             flex-direction: column;
-            padding-top: max(26px, env(safe-area-inset-top, 20px));
-            padding-bottom: max(10px, env(safe-area-inset-bottom, 6px));
+            padding-bottom: max(12px, env(safe-area-inset-bottom, 8px));
         }
 
-        /* ====== トップバー ====== */
+        /* ====== 最上端統合バー（iPad本体の時計と電池の隙間に綺麗に配置） ====== */
         .top-bar {
-            height: 42px;
-            padding: 0 20px;
+            min-height: 36px;
+            padding: 2px 108px 2px 156px;
             display: flex;
             align-items: center;
             justify-content: space-between;
@@ -178,15 +194,23 @@ html
             transition: background 0.25s ease, border-color 0.25s ease;
         }
 
-        .page-tabs { display: flex; align-items: center; gap: 4px; overflow-x: auto; scrollbar-width: none; }
+        .page-tabs {
+            display: flex;
+            align-items: center;
+            gap: 4px;
+            flex: 1;
+            min-width: 0;
+            overflow-x: auto;
+            scrollbar-width: none;
+        }
         .page-tabs::-webkit-scrollbar { display: none; }
 
         .tab-chip {
             background: transparent;
             color: var(--muted);
             border: 1px solid transparent;
-            padding: 5px 11px;
-            font-size: 0.74rem;
+            padding: 4px 10px;
+            font-size: 0.72rem;
             font-weight: 700;
             letter-spacing: 0.06em;
             cursor: pointer;
@@ -196,7 +220,7 @@ html
         .tab-chip:hover { color: var(--fg); }
         .tab-chip.active { color: var(--accent-fg); background: var(--accent); border-color: var(--accent); }
 
-        .top-actions { display: flex; align-items: center; gap: 6px; }
+        .top-actions { display: flex; align-items: center; gap: 5px; flex-shrink: 0; }
 
         .btn-sharp {
             display: inline-flex;
@@ -206,8 +230,8 @@ html
             color: var(--fg);
             border: 1px solid var(--border);
             box-shadow: inset 0 1px 0 var(--top-edge), 0 2px 6px rgba(0, 0, 0, 0.2);
-            padding: 5px 11px;
-            font-size: 0.73rem;
+            padding: 4px 10px;
+            font-size: 0.71rem;
             font-weight: 700;
             letter-spacing: 0.04em;
             cursor: pointer;
@@ -260,7 +284,7 @@ html
             scroll-snap-align: start;
             scroll-snap-stop: always;
             overflow-y: auto;
-            padding: 18px 20px 22px;
+            padding: 16px 20px 20px;
             display: flex;
             justify-content: center;
             align-items: flex-start;
@@ -279,7 +303,12 @@ html
             gap: var(--gap);
         }
 
-        /* ====== 浮かぶタイルデザイン ====== */
+        /* ====== 浮かぶタイルデザイン & 滑らか入場 ====== */
+        @keyframes tileRise {
+            from { opacity: 0; transform: translateY(10px) scale(0.98); }
+            to { opacity: 1; transform: translateY(0) scale(1); }
+        }
+
         .tile {
             position: relative;
             background: var(--surface);
@@ -298,12 +327,15 @@ html
                 border-color 0.2s ease,
                 background-color 0.2s ease;
         }
+        .tile.animate-in {
+            animation: tileRise 0.34s cubic-bezier(0.22, 1, 0.36, 1) backwards;
+        }
         .tile:hover {
             transform: translateY(-3px);
             border-color: var(--border-strong);
             box-shadow: inset 0 1px 0 var(--top-edge), var(--shadow-lift);
         }
-        .tile:active { transform: translateY(0) scale(0.97); }
+        .tile:active { transform: translateY(0) scale(0.96); }
         .tile.is-selected { outline: 2px solid var(--accent); outline-offset: -2px; z-index: 3; transform: translateY(-2px); box-shadow: inset 0 1px 0 var(--top-edge), var(--shadow-lift); }
         .tile.drop-target { outline: 2px dashed var(--accent); outline-offset: -2px; transform: scale(0.96); }
         .tile.is-dragging { opacity: 0.28; transform: scale(0.94); }
@@ -318,7 +350,7 @@ html
             box-shadow: 0 22px 44px rgba(0, 0, 0, 0.55);
         }
 
-        /* ====== クリアガラスモード（背景が透ける建築ガラス） ====== */
+        /* ====== クリアガラスモード ====== */
         .glass-mode .top-bar,
         .glass-mode .edit-inspector,
         .glass-mode .tile,
@@ -347,6 +379,7 @@ html
         .glass-mode .w-search-input,
         .glass-mode .w-todo-row,
         .glass-mode .w-sch-cell,
+        .glass-mode .calc-key,
         .glass-mode .btn-sharp:not(.primary):not(.danger) {
             background: rgba(0, 0, 0, 0.22);
             border-color: var(--glass-border);
@@ -359,7 +392,7 @@ html
             color: var(--fg); display: flex; align-items: center; justify-content: center;
             transition: transform 0.24s cubic-bezier(0.22, 1, 0.36, 1);
         }
-        .tile.is-app:hover .app-glyph { transform: scale(1.08); }
+        .tile.is-app:hover .app-glyph { transform: scale(1.1); }
         .app-glyph svg { width: 100%; height: 100%; display: block; }
         .app-title {
             font-size: 0.72rem; font-weight: 600; letter-spacing: 0.02em; text-align: center;
@@ -402,7 +435,7 @@ html
         .w-analog-meta { display: none; flex-direction: column; gap: 4px; }
         @container (min-width: 300px) { .w-analog-meta { display: flex; } }
 
-        /* 検索ボックスウィジェット */
+        /* 検索ボックス */
         .w-search-wrap { flex: 1; display: flex; align-items: center; gap: 10px; min-height: 0; }
         .w-search-input { flex: 1; height: 100%; max-height: 44px; background: var(--bg); border: 1px solid var(--border); color: var(--fg); padding: 0 12px; font-size: 0.92rem; outline: none; min-width: 0; }
         .w-search-input:focus { border-color: var(--accent); }
@@ -426,12 +459,12 @@ html
         .w-timer-num { font-size: clamp(1.8rem, 15cqw, 3rem); font-weight: 800; font-variant-numeric: tabular-nums; line-height: 1; }
         .w-timer-btns { display: flex; gap: 5px; flex-wrap: wrap; }
 
-        /* ====== 丸い本物のレコードプレイヤー (AUDIO DECK) ====== */
+        /* ====== 丸い本物のレコードプレイヤー＋イコライザ ====== */
         .w-audio-body { display: flex; align-items: center; gap: 14px; flex: 1; min-height: 0; }
         .turntable-box {
             position: relative;
-            width: clamp(68px, 38cqw, 110px);
-            height: clamp(68px, 38cqw, 110px);
+            width: clamp(68px, 36cqw, 112px);
+            height: clamp(68px, 36cqw, 112px);
             flex-shrink: 0;
             display: flex;
             align-items: center;
@@ -456,63 +489,58 @@ html
         @keyframes spinVinyl { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
 
         .vinyl-label {
-            width: 38%;
-            height: 38%;
-            background: var(--accent);
-            border: 2px solid #090b10;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            position: relative;
+            width: 38%; height: 38%; background: var(--accent); border: 2px solid #090b10;
+            display: flex; align-items: center; justify-content: center;
         }
-        .vinyl-spindle {
-            width: 30%;
-            height: 30%;
-            background: #090b10;
-            border: 1px solid rgba(255, 255, 255, 0.4);
-        }
+        .vinyl-spindle { width: 30%; height: 30%; background: #090b10; border: 1px solid rgba(255, 255, 255, 0.4); }
 
-        /* レコードの針（トーンアーム） */
         .vinyl-arm {
-            position: absolute;
-            top: -2px;
-            right: -4px;
-            width: 24%;
-            height: 74%;
-            pointer-events: none;
-            transform-origin: 65% 12%;
-            transform: rotate(-28deg);
+            position: absolute; top: -2px; right: -4px; width: 24%; height: 74%;
+            pointer-events: none; transform-origin: 65% 12%; transform: rotate(-28deg);
             transition: transform 0.55s cubic-bezier(0.34, 1.56, 0.64, 1);
             filter: drop-shadow(1px 3px 4px rgba(0, 0, 0, 0.6));
         }
         .vinyl-arm.active { transform: rotate(16deg); }
-        .vinyl-arm-pivot {
-            position: absolute;
-            top: 0;
-            right: 2px;
-            width: 12px;
-            height: 12px;
-            background: #cbd5e1;
-            border: 2px solid #334155;
+        .vinyl-arm-pivot { position: absolute; top: 0; right: 2px; width: 12px; height: 12px; background: #cbd5e1; border: 2px solid #334155; }
+        .vinyl-arm-rod { position: absolute; top: 10px; right: 6.5px; width: 2.5px; height: 68%; background: #e2e8f0; }
+        .vinyl-arm-head { position: absolute; bottom: 4px; right: 4px; width: 7px; height: 12px; background: var(--accent); border: 1px solid #000; transform: rotate(18deg); }
+
+        .eq-bars {
+            display: flex; align-items: flex-end; gap: 3px; height: 16px; margin-bottom: 4px;
         }
-        .vinyl-arm-rod {
-            position: absolute;
-            top: 10px;
-            right: 6.5px;
-            width: 2.5px;
-            height: 68%;
-            background: #e2e8f0;
+        .eq-bar {
+            flex: 1; height: 3px; background: var(--accent); opacity: 0.35;
+            transition: height 0.15s ease;
         }
-        .vinyl-arm-head {
-            position: absolute;
-            bottom: 4px;
-            right: 4px;
-            width: 7px;
-            height: 12px;
-            background: var(--accent);
-            border: 1px solid #000;
-            transform: rotate(18deg);
+        .eq-bars.playing .eq-bar {
+            opacity: 0.9;
+            animation: eqBounce 0.65s infinite alternate ease-in-out;
         }
+        .eq-bars.playing .eq-bar:nth-child(2) { animation-delay: 0.12s; }
+        .eq-bars.playing .eq-bar:nth-child(3) { animation-delay: 0.25s; }
+        .eq-bars.playing .eq-bar:nth-child(4) { animation-delay: 0.08s; }
+        .eq-bars.playing .eq-bar:nth-child(5) { animation-delay: 0.32s; }
+        .eq-bars.playing .eq-bar:nth-child(6) { animation-delay: 0.18s; }
+        @keyframes eqBounce {
+            0% { height: 3px; }
+            100% { height: 15px; }
+        }
+
+        /* 電卓ウィジェット */
+        .calc-screen {
+            background: var(--bg); border: 1px solid var(--border); padding: 4px 8px;
+            text-align: right; font-size: 1.15rem; font-weight: 800; font-variant-numeric: tabular-nums;
+            margin-bottom: 6px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
+        }
+        .calc-keys { flex: 1; display: grid; grid-template-columns: repeat(4, 1fr); gap: 4px; }
+        .calc-key {
+            background: var(--bg); border: 1px solid var(--border); color: var(--fg);
+            font-size: 0.78rem; font-weight: 700; cursor: pointer; display: flex; align-items: center; justify-content: center;
+            transition: background 0.1s, transform 0.08s;
+        }
+        .calc-key:active { transform: scale(0.94); background: var(--surface-alt); }
+        .calc-key.op { color: var(--accent); }
+        .calc-key.eq { background: var(--accent); color: var(--accent-fg); border-color: var(--accent); }
 
         /* メモ・ToDo・時間割 */
         .w-textarea { width: 100%; flex: 1; background: transparent; border: none; color: var(--fg); font-size: 0.88rem; line-height: 1.5; resize: none; outline: none; }
@@ -625,6 +653,7 @@ html
         .toast.show { display: flex; }
 
         @media (max-width: 720px) {
+            .top-bar { padding: 28px 12px 4px; height: auto; }
             .page-pane { padding: 12px; }
             .bento-grid { --cols: 4; --gap: 9px; }
             .tile.sz-6x2, .tile.sz-4x2, .tile.sz-3x2 { grid-column: span 4; }
@@ -634,11 +663,11 @@ html
 </head>
 <body data-theme="obsidian">
 
-    <!-- 背景壁紙＋方眼グリッドレイヤー -->
     <div class="bg-wallpaper" id="bgWallpaper"></div>
     <div class="bg-grid-lines" id="bgGridLines"></div>
 
     <div class="os-shell" id="osShell">
+        <!-- 本体時計・電池と干渉せず最上端にピタッと収まるバー -->
         <header class="top-bar">
             <div class="page-tabs" id="pageTabs"></div>
             <div class="top-actions">
@@ -687,7 +716,8 @@ html
                 <button class="theme-btn" onclick="addWidget('analog','2x2')"><strong>ANALOG CLOCK</strong><span>洗練された丸型時計 (2×2)</span></button>
                 <button class="theme-btn" onclick="addWidget('weather','2x2')"><strong>WEATHER</strong><span>場所選択・グラフ・降水確率 (2×2)</span></button>
                 <button class="theme-btn" onclick="addWidget('timer','2x2')"><strong>TIMER</strong><span>バックグラウンド対応 (2×2)</span></button>
-                <button class="theme-btn" onclick="addWidget('audio','2x2')"><strong>AUDIO DECK</strong><span>丸いレコード＆Lo-Fi再生 (2×2)</span></button>
+                <button class="theme-btn" onclick="addWidget('audio','2x2')"><strong>AUDIO DECK</strong><span>丸型レコード＋ビート演奏 (2×2)</span></button>
+                <button class="theme-btn" onclick="addWidget('calc','2x2')"><strong>CALCULATOR</strong><span>ミニマル電卓 (2×2)</span></button>
                 <button class="theme-btn" onclick="addWidget('note','3x2')"><strong>NOTES</strong><span>自動保存メモパッド (3×2)</span></button>
                 <button class="theme-btn" onclick="addWidget('todo','3x2')"><strong>TODO</strong><span>チェック式タスク管理 (3×2)</span></button>
                 <button class="theme-btn" onclick="addWidget('schedule','4x2')"><strong>TIMETABLE</strong><span>1〜6限の時間割 (4×2)</span></button>
@@ -772,24 +802,24 @@ html
 
             <div id="glassControls" style="display:none; flex-direction:column; gap:10px; border:1px solid var(--border); padding:12px; background:var(--bg);">
                 <div class="field">
-                    <label><span>ガラスの透明度（数値が低いほど透ける）</span><span class="mono" id="lblGlassOp">18%</span></label>
+                    <label><span>ガラスの透明度</span><span class="mono" id="lblGlassOp">18%</span></label>
                     <input type="range" id="rngGlassOp" min="6" max="75" value="18" oninput="updateGlass('glassOpacity', this.value / 100)">
                 </div>
                 <div class="field">
-                    <label><span>ぼかし強度（すりガラス具合）</span><span class="mono" id="lblGlassBlur">18px</span></label>
+                    <label><span>ぼかし強度</span><span class="mono" id="lblGlassBlur">18px</span></label>
                     <input type="range" id="rngGlassBlur" min="0" max="32" value="18" oninput="updateGlass('glassBlur', Number(this.value))">
                 </div>
                 <div class="field">
                     <label>ガラスの色（ティント）</label>
                     <div class="swatch-row">
                         <input type="color" id="inpGlassColor" value="#ffffff" oninput="updateGlass('glassColor', this.value)">
-                        <div class="color-dot" style="background:#ffffff;" onclick="setGlassColor('#ffffff')" title="クリアホワイト"></div>
-                        <div class="color-dot" style="background:#000000;" onclick="setGlassColor('#000000')" title="スモークブラック"></div>
-                        <div class="color-dot" style="background:#38bdf8;" onclick="setGlassColor('#38bdf8')" title="アイスブルー"></div>
-                        <div class="color-dot" style="background:#a855f7;" onclick="setGlassColor('#a855f7')" title="バイオレット"></div>
-                        <div class="color-dot" style="background:#f43f5e;" onclick="setGlassColor('#f43f5e')" title="ローズ"></div>
-                        <div class="color-dot" style="background:#4ade80;" onclick="setGlassColor('#4ade80')" title="ミント"></div>
-                        <div class="color-dot" style="background:#f59e0b;" onclick="setGlassColor('#f59e0b')" title="アンバー"></div>
+                        <div class="color-dot" style="background:#ffffff;" onclick="setGlassColor('#ffffff')"></div>
+                        <div class="color-dot" style="background:#000000;" onclick="setGlassColor('#000000')"></div>
+                        <div class="color-dot" style="background:#38bdf8;" onclick="setGlassColor('#38bdf8')"></div>
+                        <div class="color-dot" style="background:#a855f7;" onclick="setGlassColor('#a855f7')"></div>
+                        <div class="color-dot" style="background:#f43f5e;" onclick="setGlassColor('#f43f5e')"></div>
+                        <div class="color-dot" style="background:#4ade80;" onclick="setGlassColor('#4ade80')"></div>
+                        <div class="color-dot" style="background:#f59e0b;" onclick="setGlassColor('#f59e0b')"></div>
                     </div>
                 </div>
             </div>
@@ -818,7 +848,7 @@ html
             </div>
 
             <div id="bgGradBox" style="display:none;" class="field">
-                <label>グラデーションを選択（クリアガラスと相性抜群）</label>
+                <label>グラデーションを選択</label>
                 <div class="grad-grid" id="gradGrid"></div>
             </div>
 
@@ -947,8 +977,10 @@ html
             { id: 'g6', css: 'radial-gradient(circle at 50% 20%, #3b82f6, transparent 55%), radial-gradient(circle at 50% 90%, #10b981, transparent 55%), #060913' }
         ];
 
+        const THEME_BG_HEX = { obsidian: '#09090b', paper: '#e4e4df', orange: '#0f0f12', blueprint: '#06101c', terminal: '#050b07' };
+
         /* =========================================================
-           2. 状態管理（既存設定を引き継ぎつつ新機能を追加）
+           2. 状態管理
         ========================================================= */
         const STORAGE_KEY = 'grid_os_v2';
 
@@ -1039,7 +1071,7 @@ html
                     items: [
                         { type: 'widget', widgetType: 'timer', size: '2x2', id: 'w_tmr_1' },
                         { type: 'widget', widgetType: 'audio', size: '2x2', id: 'w_aud_1' },
-                        { type: 'widget', widgetType: 'schedule', size: '2x2', id: 'w_sch_1' },
+                        { type: 'widget', widgetType: 'calc', size: '2x2', id: 'w_clc_1' },
                         { type: 'app', name: '书法字典大全', url: 'shufazidian://', icon: 'shufa', newTab: false },
                         { type: 'app', name: '数研Library', url: 'sukenlibrary://', icon: 'suken', newTab: false },
                         { type: 'app', name: 'Cisco Security', url: 'ciscosecurity://', icon: 'cisco', newTab: false },
@@ -1075,6 +1107,7 @@ html
         let currentPage = 0;
         let selected = null;
         let uidCounter = 1;
+        let initialAnimated = false;
 
         function ensureUids() {
             state.dock.forEach(x => { if (!x._uid) x._uid = 'u_' + (uidCounter++); });
@@ -1117,7 +1150,7 @@ html
         function escapeHtml(s) { return String(s).replace(/[<>&"']/g, c => ({ '<':'&lt;', '>':'&gt;', '&':'&amp;', '"':'&quot;', "'":'&#39;' }[c])); }
 
         /* =========================================================
-           3. FLIP アニメーション
+           3. FLIP 滑らか位置アニメーション
         ========================================================= */
         function captureRects() {
             const map = new Map();
@@ -1153,21 +1186,23 @@ html
         }
 
         function applyTheme() {
-            document.body.dataset.theme = state.theme || 'obsidian';
+            const themeKey = state.theme || 'obsidian';
+            document.body.dataset.theme = themeKey;
             document.body.classList.toggle('glass-mode', !!state.glassEnabled);
 
-            // ガラス変数反映
             const [r, g, b] = hexToRgb(state.glassColor || '#ffffff');
             const op = Math.max(0.06, Math.min(0.75, state.glassOpacity ?? 0.18));
             document.documentElement.style.setProperty('--glass-bg', `rgba(${r}, ${g}, ${b}, ${op})`);
             document.documentElement.style.setProperty('--glass-blur', `${state.glassBlur ?? 18}px`);
 
-            // 背景反映
             const wp = document.getElementById('bgWallpaper');
             wp.style.backgroundImage = '';
             wp.style.backgroundColor = '';
+            let metaHex = THEME_BG_HEX[themeKey] || '#09090b';
+
             if (state.bgMode === 'color') {
                 wp.style.backgroundColor = state.bgColor || '#09090b';
+                metaHex = state.bgColor || '#09090b';
             } else if (state.bgMode === 'gradient') {
                 const gObj = GRADIENTS.find(x => x.id === state.bgGradient) || GRADIENTS[0];
                 wp.style.backgroundImage = gObj.css;
@@ -1177,10 +1212,10 @@ html
                 wp.style.backgroundColor = 'var(--bg)';
             }
 
+            document.getElementById('metaThemeColor')?.setAttribute('content', metaHex);
             document.getElementById('bgGridLines').classList.toggle('hidden', state.bgGrid === false);
 
-            // モーダルUI同期
-            document.querySelectorAll('.theme-btn[data-t]').forEach(btn => btn.classList.toggle('active', btn.dataset.t === (state.theme || 'obsidian')));
+            document.querySelectorAll('.theme-btn[data-t]').forEach(btn => btn.classList.toggle('active', btn.dataset.t === themeKey));
             document.getElementById('btnSolidMode').classList.toggle('active', !state.glassEnabled);
             document.getElementById('btnGlassMode').classList.toggle('active', !!state.glassEnabled);
             document.getElementById('glassControls').style.display = state.glassEnabled ? 'flex' : 'none';
@@ -1230,10 +1265,7 @@ html
         function setBgImageUrl() {
             const url = document.getElementById('inpBgImgUrl').value.trim();
             if (!url) return;
-            state.bgMode = 'image';
-            state.bgImage = url;
-            saveState();
-            applyTheme();
+            state.bgMode = 'image'; state.bgImage = url; saveState(); applyTheme();
         }
 
         function uploadBgImage(e) {
@@ -1254,8 +1286,7 @@ html
                     cvs.getContext('2d').drawImage(img, 0, 0, w, h);
                     state.bgMode = 'image';
                     state.bgImage = cvs.toDataURL('image/jpeg', 0.82);
-                    saveState();
-                    applyTheme();
+                    saveState(); applyTheme();
                 };
                 img.src = ev.target.result;
             };
@@ -1279,7 +1310,7 @@ html
         window.addEventListener('resize', recalcGridCells);
 
         /* =========================================================
-           5. タイマー / オーディオ（丸型レコード） / 天気
+           5. タイマー / Lo-Fiレコード＋ドラムビート / 天気
         ========================================================= */
         let durSec = 25 * 60, remSec = durSec, endTime = null, tInt = null;
         function renderTimers() {
@@ -1302,7 +1333,8 @@ html
         function setTimerMin(min) { clearInterval(tInt); tInt = null; endTime = null; durSec = min * 60; remSec = durSec; renderTimers(); }
         document.addEventListener('visibilitychange', () => { if (!document.hidden && endTime) tickTimer(); });
 
-        let audioCtx = null, isPlaying = false, songIdx = 0, step = 0, audInt = null;
+        // Web Audio Lo-Fi シンセ ＋ ミニドラムビート
+        let audioCtx = null, isPlaying = false, beatOn = true, songIdx = 0, step = 0, audInt = null, beatInt = null, beatStep = 0;
         const TRACKS = [
             { name: '01 / MIDNIGHT CHORDS', chords: [[261.6,311.1,392,466.2],[220,261.6,329.6,392],[174.6,220,261.6,329.6],[196,246.9,293.7,349.2]] },
             { name: '02 / STUDY TAPE', chords: [[293.7,349.2,440,523.3],[246.9,293.7,370,440],[196,246.9,293.7,370],[220,277.2,329.6,415.3]] },
@@ -1321,13 +1353,48 @@ html
                 o.start(now); o.stop(now + 2.2);
             });
         }
+        function playSoftDrum(kind) {
+            if (!audioCtx || !beatOn) return;
+            const now = audioCtx.currentTime;
+            if (kind === 'kick') {
+                const o = audioCtx.createOscillator(), g = audioCtx.createGain();
+                o.type = 'sine';
+                o.frequency.setValueAtTime(110, now);
+                o.frequency.exponentialRampToValueAtTime(42, now + 0.12);
+                g.gain.setValueAtTime(0.14, now);
+                g.gain.exponentialRampToValueAtTime(0.001, now + 0.18);
+                o.connect(g); g.connect(audioCtx.destination);
+                o.start(now); o.stop(now + 0.19);
+            } else {
+                const bufSize = audioCtx.sampleRate * 0.04;
+                const buf = audioCtx.createBuffer(1, bufSize, audioCtx.sampleRate);
+                const data = buf.getChannelData(0);
+                for (let i = 0; i < bufSize; i++) data[i] = Math.random() * 2 - 1;
+                const src = audioCtx.createBufferSource();
+                src.buffer = buf;
+                const hp = audioCtx.createBiquadFilter(), g = audioCtx.createGain();
+                hp.type = 'highpass'; hp.frequency.value = kind === 'snare' ? 1800 : 5500;
+                g.gain.setValueAtTime(kind === 'snare' ? 0.035 : 0.015, now);
+                g.gain.exponentialRampToValueAtTime(0.0001, now + 0.04);
+                src.connect(hp); hp.connect(g); g.connect(audioCtx.destination);
+                src.start(now);
+            }
+        }
         function toggleAudio() {
             if (!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)();
             if (audioCtx.state === 'suspended') audioCtx.resume();
-            isPlaying = !isPlaying; clearInterval(audInt);
+            isPlaying = !isPlaying; clearInterval(audInt); clearInterval(beatInt);
             if (isPlaying) {
                 playChord(TRACKS[songIdx].chords[step]); step = (step + 1) % 4;
                 audInt = setInterval(() => { playChord(TRACKS[songIdx].chords[step]); step = (step + 1) % 4; }, 2200);
+                beatStep = 0;
+                beatInt = setInterval(() => {
+                    const p = beatStep % 8;
+                    if (p === 0 || p === 3) playSoftDrum('kick');
+                    else if (p === 4) playSoftDrum('snare');
+                    else playSoftDrum('hat');
+                    beatStep++;
+                }, 275);
             }
             syncAudioUI();
         }
@@ -1336,10 +1403,19 @@ html
             if (isPlaying) playChord(TRACKS[songIdx].chords[0]);
             syncAudioUI();
         }
+        function toggleBeat() {
+            beatOn = !beatOn;
+            syncAudioUI();
+        }
         function syncAudioUI() {
             document.querySelectorAll('.js-disc').forEach(el => el.classList.toggle('playing', isPlaying));
             document.querySelectorAll('.js-arm').forEach(el => el.classList.toggle('active', isPlaying));
+            document.querySelectorAll('.js-eq').forEach(el => el.classList.toggle('playing', isPlaying));
             document.querySelectorAll('.js-aud-btn').forEach(b => b.textContent = isPlaying ? 'STOP' : 'PLAY');
+            document.querySelectorAll('.js-beat-btn').forEach(b => {
+                b.classList.toggle('primary', beatOn);
+                b.textContent = beatOn ? 'BEAT:ON' : 'BEAT:OFF';
+            });
             document.querySelectorAll('.js-aud-name').forEach(el => el.textContent = TRACKS[songIdx].name);
         }
 
@@ -1531,9 +1607,7 @@ html
                     <div class="w-audio-body">
                         <div class="turntable-box">
                             <div class="vinyl-record is-round js-disc ${isPlaying ? 'playing' : ''}">
-                                <div class="vinyl-label is-round">
-                                    <div class="vinyl-spindle is-round"></div>
-                                </div>
+                                <div class="vinyl-label is-round"><div class="vinyl-spindle is-round"></div></div>
                             </div>
                             <div class="vinyl-arm js-arm ${isPlaying ? 'active' : ''}">
                                 <div class="vinyl-arm-pivot is-round"></div>
@@ -1541,11 +1615,55 @@ html
                                 <div class="vinyl-arm-head"></div>
                             </div>
                         </div>
-                        <div style="display:flex; flex-direction:column; gap:6px; flex:1; min-width:0;">
+                        <div style="display:flex; flex-direction:column; gap:5px; flex:1; min-width:0;">
+                            <div class="eq-bars js-eq ${isPlaying ? 'playing' : ''}">
+                                <div class="eq-bar"></div><div class="eq-bar"></div><div class="eq-bar"></div>
+                                <div class="eq-bar"></div><div class="eq-bar"></div><div class="eq-bar"></div>
+                            </div>
                             <button class="btn-sharp primary mono js-aud-btn" style="justify-content:center;" onclick="event.stopPropagation(); toggleAudio()">${isPlaying ? 'STOP' : 'PLAY'}</button>
-                            <button class="btn-sharp mono" style="justify-content:center;" onclick="event.stopPropagation(); nextAudio()">NEXT</button>
+                            <div style="display:flex; gap:4px;">
+                                <button class="btn-sharp mono" style="flex:1; justify-content:center; padding:4px 4px; font-size:0.64rem;" onclick="event.stopPropagation(); nextAudio()">NEXT</button>
+                                <button class="btn-sharp mono js-beat-btn ${beatOn?'primary':''}" style="flex:1; justify-content:center; padding:4px 4px; font-size:0.62rem;" onclick="event.stopPropagation(); toggleBeat()">${beatOn?'BEAT:ON':'BEAT:OFF'}</button>
+                            </div>
                         </div>
                     </div>`;
+            } else if (w.widgetType === 'calc') {
+                p.innerHTML = `<div class="w-head mono"><span>CALCULATOR</span><span>ET-66</span></div>`;
+                const scr = document.createElement('div');
+                scr.className = 'calc-screen mono';
+                scr.textContent = '0';
+                const grid = document.createElement('div');
+                grid.className = 'calc-keys';
+                let expr = '';
+                const keys = ['C','/','*','DEL','7','8','9','-','4','5','6','+','1','2','3','=','0','.'];
+                keys.forEach(k => {
+                    const b = document.createElement('button');
+                    b.type = 'button';
+                    b.className = 'calc-key mono' + (['/','*','-','+'].includes(k) ? ' op' : '') + (k === '=' ? ' eq' : '');
+                    if (k === '0') b.style.gridColumn = 'span 2';
+                    if (k === '=') b.style.gridRow = 'span 2';
+                    b.textContent = k === '*' ? '×' : k === '/' ? '÷' : k === 'DEL' ? '⌫' : k;
+                    b.addEventListener('pointerdown', e => { if (!isEditMode) e.stopPropagation(); });
+                    b.onclick = e => {
+                        e.stopPropagation();
+                        if (k === 'C') { expr = ''; scr.textContent = '0'; }
+                        else if (k === 'DEL') { expr = expr.slice(0, -1); scr.textContent = expr || '0'; }
+                        else if (k === '=') {
+                            try {
+                                if (/^[0-9+\-*/().\s]+$/.test(expr)) {
+                                    const val = Function(`"use strict"; return (${expr})`)();
+                                    expr = Number.isFinite(val) ? String(Math.round(val * 1e8) / 1e8) : '';
+                                    scr.textContent = expr || 'ERR';
+                                }
+                            } catch (err) { scr.textContent = 'ERR'; expr = ''; }
+                        } else {
+                            expr += k;
+                            scr.textContent = expr;
+                        }
+                    };
+                    grid.appendChild(b);
+                });
+                p.append(scr, grid);
             } else if (w.widgetType === 'note') {
                 const key = w.storageKey || `grid_note_${w.id}`;
                 p.innerHTML = `<div class="w-head mono"><span>NOTES</span><span>AUTO-SAVE</span></div>`;
@@ -1650,7 +1768,9 @@ html
                 if (item.newTab) { el.target = '_blank'; el.rel = 'noopener'; }
                 el.innerHTML = (GLYPHS[item.icon] || GLYPHS.web) + `<span>${escapeHtml(item.name)}</span>`;
             } else {
-                el.className = 'tile ' + (item.type === 'app' ? 'is-app' : `sz-${item.size || '2x2'}`) + (isSel ? ' is-selected' : '');
+                const animClass = !initialAnimated ? ' animate-in' : '';
+                el.className = 'tile ' + (item.type === 'app' ? 'is-app' : `sz-${item.size || '2x2'}`) + (isSel ? ' is-selected' : '') + animClass;
+                if (!initialAnimated) el.style.animationDelay = `${Math.min(idx * 18, 280)}ms`;
                 if (item.type === 'app') {
                     el.href = isSafeUrl(item.url) ? item.url : '#';
                     if (item.newTab) { el.target = '_blank'; el.rel = 'noopener'; }
@@ -1717,6 +1837,7 @@ html
                 track.scrollTo({ left: currentPage * track.clientWidth, behavior: 'instant' });
                 recalcGridCells();
                 if (prevRects) playFlip(prevRects);
+                initialAnimated = true;
             });
             updateInspector(); updateClocks(); renderTimers(); renderTodos();
         }
